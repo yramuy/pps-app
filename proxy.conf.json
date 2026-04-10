@@ -1,0 +1,8 @@
+{
+  "/BioMetricAttendance": {
+    "target": "http://192.168.235.39",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  }
+}

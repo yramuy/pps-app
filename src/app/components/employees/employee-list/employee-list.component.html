@@ -1,0 +1,35 @@
+<section class="content">
+  <div class="container-fluid">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Employee List</h3>
+      </div>
+
+      <div class="card-body">
+        <table id="employeeTable" class="table table-bordered table-striped">
+          <thead>
+            <tr>
+              <th>Sno</th>
+              <th>Employee ID</th>
+              <th>Employee Name</th>
+              <th>Email</th>
+              <th>Mobile</th>
+              <th>DOB</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let employee of employees; let i = index">
+              <td>{{ i + 1 }}</td>
+              <td>{{ employee.employee_id }}</td>
+              <td>{{ employee.emp_firstname }} {{ employee.emp_lastname }}</td>
+              <td>{{ employee.emp_work_email }}</td>
+              <td>{{ employee.emp_mobile }}</td>
+              <td>{{ employee.emp_birthday }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>

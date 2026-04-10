@@ -1,0 +1,78 @@
+.main-header {
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1030;
+}
+/* Push content below header */
+.content-wrapper {
+  margin-top: 60px; /* adjust based on header height */
+}
+
+.main-sidebar {
+  background-color: #2c2c54 !important;
+  margin-top: 0px;
+}
+
+.brand-link {
+  background-color: #1e1e3f !important;
+}
+
+.nav-sidebar .nav-link.active {
+  background-color: #6c5ce7 !important;
+}
+
+/* Hide accessibility skip link */
+a[href="#main-content"],
+a.skip-link {
+  display: none !important;
+}
+
+/* ===== CARD BASE ===== */
+.card {
+  border: none;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+}
+
+/* ===== CARD HEADER ===== */
+.card-header {
+  background: linear-gradient(135deg, #2c2c54, #1e1e3f); /* match sidebar */
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 16px;
+  border-bottom: none;
+  padding: 12px 16px;
+}
+
+/* Header Title */
+.card-title {
+  margin: 0;
+}
+
+/* ===== CARD BODY ===== */
+.card-body {
+  background-color: #ffffff;
+  padding: 16px;
+  color: #333;
+}
+
+/* ===== CARD FOOTER ===== */
+.card-footer {
+  background-color: #f4f5fb;
+  border-top: 1px solid #eee;
+}
+
+/* ===== HOVER EFFECT ===== */
+.card:hover {
+  transform: translateY(-3px);
+  transition: 0.3s;
+}
+
+/* ===== OPTIONAL ACCENT BORDER ===== */
+.card-accent {
+  border-left: 4px solid #6c5ce7; /* active color */
+}
+

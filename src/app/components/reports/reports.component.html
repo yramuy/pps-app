@@ -1,0 +1,97 @@
+<section class="content">
+  <div class="container-fluid">
+
+    <!-- Summary Cards -->
+    <div class="row">
+
+      <div class="col-lg-3 col-6">
+        <div class="small-box bg-info">
+          <div class="inner">
+            <h3>150</h3>
+            <p>Total Employees</p>
+          </div>
+          <div class="icon">
+            <i class="fas fa-users"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-6">
+        <div class="small-box bg-success">
+          <div class="inner">
+            <h3>120</h3>
+            <p>Active Employees</p>
+          </div>
+          <div class="icon">
+            <i class="fas fa-user-check"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-6">
+        <div class="small-box bg-warning">
+          <div class="inner">
+            <h3>20</h3>
+            <p>On Leave</p>
+          </div>
+          <div class="icon">
+            <i class="fas fa-user-clock"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-6">
+        <div class="small-box bg-danger">
+          <div class="inner">
+            <h3>10</h3>
+            <p>Inactive</p>
+          </div>
+          <div class="icon">
+            <i class="fas fa-user-times"></i>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Report Table -->
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Employee Report</h3>
+      </div>
+
+      <div class="card-body table-responsive">
+        <table class="table table-bordered table-hover">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Department</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let emp of reports">
+              <td>{{emp.id}}</td>
+              <td>{{emp.name}}</td>
+              <td>{{emp.department}}</td>
+              <td>
+                <span class="badge"
+                      [ngClass]="{
+                        'badge-success': emp.status=='Active',
+                        'badge-warning': emp.status=='Leave',
+                        'badge-danger': emp.status=='Inactive'
+                      }">
+                  {{emp.status}}
+                </span>
+              </td>
+            </tr>
+          </tbody>
+
+        </table>
+      </div>
+    </div>
+
+  </div>
+</section>

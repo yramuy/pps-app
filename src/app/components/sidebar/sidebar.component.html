@@ -1,0 +1,126 @@
+<aside class="main-sidebar sidebar-dark-primary elevation-4">
+  <!-- Brand Logo -->
+  <a routerLink="/dashboard" class="brand-link text-center">
+    <span class="brand-text font-weight-bold">
+      <img src="assets/images/prospecta_newlogo.png" width="100" />
+    </span>
+  </a>
+
+  <div class="sidebar">
+
+    <!-- User Panel -->
+    <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+      <div class="image">
+        <img src="https://i.pravatar.cc/40" class="img-circle elevation-2" />
+      </div>
+      <div class="info">
+        <a href="#" class="d-block">John Doe</a>
+        <span class="text-white">Admin</span>
+      </div>
+    </div>
+
+    <!-- MENU -->
+    <nav>
+      <ul class="nav nav-pills nav-sidebar flex-column">
+
+        <!-- Dashboard -->
+        <li class="nav-item">
+          <a routerLink="/dashboard" routerLinkActive="active" class="nav-link">
+            <i class="fas fa-tachometer-alt"></i>
+            <p>Dashboard</p>
+          </a>
+        </li>
+
+        <!-- Configuration -->
+        <li class="nav-item has-treeview" [class.menu-open]="menuState.config">
+          <a href="#" class="nav-link" (click)="toggleMenu('config', $event)">
+            <i class="fas fa-cogs"></i>
+            <p>
+              Configuration
+              <i class="right fas fa-angle-left"></i>
+            </p>
+          </a>
+
+          <ul class="nav nav-treeview" [style.display]="menuState.config ? 'block' : 'none'">
+
+            <li class="nav-item">
+              <a routerLink="/category" routerLinkActive="active" class="nav-link">
+                <i class="far fa-circle"></i>
+                <p>Category</p>
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a routerLink="/sub-category" routerLinkActive="active" class="nav-link">
+                <i class="far fa-circle"></i>
+                <p>Sub Category</p>
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a routerLink="/types" routerLinkActive="active" class="nav-link">
+                <i class="far fa-circle"></i>
+                <p>Types</p>
+              </a>
+            </li>
+
+          </ul>
+        </li>
+
+        <!-- Reports -->
+        <li class="nav-item has-treeview" [class.menu-open]="menuState.reports">
+          <a href="#" class="nav-link" (click)="toggleMenu('reports', $event)">
+            <i class="fas fa-chart-bar"></i>
+            <p>
+              Reports
+              <i class="right fas fa-angle-left"></i>
+            </p>
+          </a>
+
+          <ul class="nav nav-treeview" [style.display]="menuState.reports ? 'block' : 'none'">
+
+            <!-- Daily -->
+            <li class="nav-item has-treeview" [class.menu-open]="menuState.daily">
+              <a href="#" class="nav-link" (click)="toggleMenu('daily', $event)">
+                <i class="far fa-calendar-alt"></i>
+                <p>
+                  Daily
+                  <i class="right fas fa-angle-left"></i>
+                </p>
+              </a>
+
+              <ul class="nav nav-treeview" [style.display]="menuState.daily ? 'block' : 'none'">
+
+                <li class="nav-item">
+                  <a routerLink="/daily-attendance" routerLinkActive="active" class="nav-link">
+                    <i class="far fa-dot-circle"></i>
+                    <p>Daily Attendance</p>
+                  </a>
+                </li>
+
+                <li class="nav-item">
+                  <a routerLink="/daily-summary" routerLinkActive="active" class="nav-link">
+                    <i class="far fa-dot-circle"></i>
+                    <p>Summary</p>
+                  </a>
+                </li>
+
+              </ul>
+            </li>
+
+            <!-- Monthly -->
+            <li class="nav-item">
+              <a routerLink="/monthly-report" routerLinkActive="active" class="nav-link">
+                <i class="far fa-calendar"></i>
+                <p>Monthly</p>
+              </a>
+            </li>
+
+          </ul>
+        </li>
+
+      </ul>
+    </nav>
+
+  </div>
+</aside>

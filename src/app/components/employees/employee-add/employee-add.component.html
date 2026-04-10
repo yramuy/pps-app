@@ -1,0 +1,79 @@
+<section class="content">
+  <div class="container-fluid">
+
+    <div class="card card-primary">
+      <div class="card-header">
+        <h3 class="card-title">Add Employee</h3>
+      </div>
+
+      <form (ngSubmit)="submitForm()" #empForm="ngForm">
+        <div class="card-body">
+
+          <div class="row">
+
+            <!-- Name -->
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Name *</label>
+                <input type="text" class="form-control"
+                       name="name"
+                       [(ngModel)]="employee.name"
+                       required>
+              </div>
+            </div>
+
+            <!-- Email -->
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Email *</label>
+                <input type="email" class="form-control"
+                       name="email"
+                       [(ngModel)]="employee.email"
+                       required>
+              </div>
+            </div>
+
+            <!-- Phone -->
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Phone</label>
+                <input type="text" class="form-control"
+                       name="phone"
+                       [(ngModel)]="employee.phone">
+              </div>
+            </div>
+
+            <!-- Position -->
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Position</label>
+                <select class="form-control"
+                        name="position"
+                        [(ngModel)]="employee.position">
+                  <option value="">Select</option>
+                  <option>Developer</option>
+                  <option>Manager</option>
+                  <option>HR</option>
+                </select>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="card-footer">
+          <button type="submit" class="btn btn-primary" [disabled]="!empForm.valid">
+            Submit
+          </button>
+          <button type="button" class="btn btn-secondary ml-2" (click)="resetForm()">
+            Reset
+          </button>
+        </div>
+
+      </form>
+
+    </div>
+
+  </div>
+</section>

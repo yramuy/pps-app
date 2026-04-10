@@ -1,0 +1,127 @@
+<section class="content">
+  <div class="container-fluid">
+
+    <!-- 🔥 Summary Cards -->
+    <div class="row">
+
+      <div class="col-lg-3 col-6">
+        <div class="small-box bg-primary">
+          <div class="inner">
+            <h3>{{totalIssues}}</h3>
+            <p>Total Issues</p>
+          </div>
+          <div class="icon">
+            <i class="fas fa-exclamation-circle"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-6">
+        <div class="small-box bg-success">
+          <div class="inner">
+            <h3>{{resolved}}</h3>
+            <p>Resolved</p>
+          </div>
+          <div class="icon">
+            <i class="fas fa-check-circle"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-6">
+        <div class="small-box bg-warning">
+          <div class="inner">
+            <h3>{{pending}}</h3>
+            <p>Pending</p>
+          </div>
+          <div class="icon">
+            <i class="fas fa-clock"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-6">
+        <div class="small-box bg-danger">
+          <div class="inner">
+            <h3>{{critical}}</h3>
+            <p>Critical Issues</p>
+          </div>
+          <div class="icon">
+            <i class="fas fa-bug"></i>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 📊 Charts Row -->
+    <div class="row">
+
+      <!-- Category Wise -->
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Category Wise Issues</h3>
+          </div>
+          <div class="card-body">
+            <canvas id="categoryChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Region Wise -->
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Region Wise Reports</h3>
+          </div>
+          <div class="card-body">
+            <canvas id="regionChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 📋 Recent Issues Table -->
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Recent Issues</h3>
+      </div>
+
+      <div class="card-body table-responsive">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Issue</th>
+              <th>Category</th>
+              <th>Region</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let item of issues">
+              <td>{{item.id}}</td>
+              <td>{{item.title}}</td>
+              <td>{{item.category}}</td>
+              <td>{{item.region}}</td>
+              <td>
+                <span class="badge"
+                  [ngClass]="{
+                    'badge-success': item.status=='Resolved',
+                    'badge-warning': item.status=='Pending'
+                  }">
+                  {{item.status}}
+                </span>
+              </td>
+            </tr>
+          </tbody>
+
+        </table>
+      </div>
+    </div>
+
+  </div>
+</section>
