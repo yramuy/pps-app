@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Login</title>
+
+    <!-- AdminLTE -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+
+    <style>
+      body {
+        background: linear-gradient(135deg, #4e73df, #1cc88a);
+        height: 100vh;
+      }
+
+      .login-box {
+        width: 400px;
+      }
+
+      .card {
+        border-radius: 15px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      }
+
+      .login-logo b {
+        color: #4e73df;
+      }
+
+      .form-control {
+        border-radius: 10px;
+      }
+
+      .btn-primary {
+        border-radius: 10px;
+        background: #4e73df;
+        border: none;
+      }
+
+      .btn-primary:hover {
+        background: #2e59d9;
+      }
+
+      .social-btn i {
+        margin-right: 8px;
+      }
+
+      .extra-links {
+        font-size: 14px;
+      }
+    </style>
+  </head>
+
+  <body class="hold-transition login-page">
+    <div class="login-box">
+      <div class="login-logo"><b>Entreplan </b>App</div>
+
+      <div class="card">
+        <div class="card-body login-card-body">
+          <p class="login-box-msg">Sign in to your account</p>
+
+          <!-- Login Form -->
+          <form (ngSubmit)="login()">
+            <div class="input-group mb-3">
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="username"
+                name="username"
+                required
+              />
+              <div class="input-group-append">
+                <div class="input-group-text">
+                  <span class="fas fa-envelope"></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="input-group mb-3">
+              <input
+                [type]="showPassword ? 'text' : 'password'"
+                class="form-control pe-5"
+                [(ngModel)]="password"
+                name="password"
+                required
+              />
+
+              <!-- Eye icon INSIDE input -->
+              <i
+                class="bi"
+                [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"
+                (click)="togglePassword()"
+              ></i>
+              <div class="input-group-append">
+                <div class="input-group-text">
+                  <span class="fas fa-lock"></span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Remember + Login -->
+            <div class="row mb-3">
+              <div class="col-6">
+                <div class="icheck-primary">
+                  <input type="checkbox" id="remember" />
+                  <label for="remember">Remember Me</label>
+                </div>
+              </div>
+
+              <div class="col-6">
+                <button type="submit" class="btn btn-primary btn-block">
+                  <i class="fas fa-sign-in-alt"></i> Login
+                </button>
+              </div>
+            </div>
+          </form>
+
+          <!-- Divider -->
+          <div class="text-center mb-3">
+            <span>OR</span>
+          </div>
+
+          <!-- Social Login -->
+          <div class="row">
+            <div class="col-6">
+              <button class="btn btn-danger btn-block social-btn">
+                <i class="fab fa-google"></i> Google
+              </button>
+            </div>
+            <div class="col-6">
+              <button class="btn btn-primary btn-block social-btn">
+                <i class="fab fa-facebook-f"></i> Facebook
+              </button>
+            </div>
+          </div>
+
+          <!-- Links -->
+          <p class="mt-3 mb-1 text-center extra-links">
+            <a href="#">Forgot Password?</a>
+          </p>
+          <p class="mb-0 text-center extra-links">
+            <a href="#">Create an Account</a>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/plugins/jquery/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
+  </body>
+</html>
