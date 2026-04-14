@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class ApiService {
-  private baseUrl = '/BioMetricAttendance'; // change this
+  private baseUrl = '/pps'; // change this
 
   constructor(private http: HttpClient) {}
 

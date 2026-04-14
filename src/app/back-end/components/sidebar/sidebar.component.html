@@ -7,26 +7,28 @@
   </a>
 
   <div class="sidebar">
-
     <!-- User Panel -->
     <div class="user-panel mt-3 pb-3 mb-3 d-flex">
       <div class="image">
         <img src="https://i.pravatar.cc/40" class="img-circle elevation-2" />
       </div>
       <div class="info">
-        <a href="#" class="d-block">John Doe</a>
-        <span class="text-white">Admin</span>
+        <a href="#" class="d-block">{{ user?.fullName }}</a>
+        <span class="text-white">{{ user?.roleName }}</span>
       </div>
     </div>
 
     <!-- MENU -->
     <nav>
       <ul class="nav nav-pills nav-sidebar flex-column">
-
         <!-- Dashboard -->
         <li class="nav-item">
-          <a routerLink="/admin/dashboard" routerLinkActive="active" class="nav-link">
-            <i class="fas fa-tachometer-alt"></i>
+          <a
+            routerLink="/admin/dashboard"
+            routerLinkActive="active"
+            class="nav-link"
+          >
+            <i class="nav-icon fas fa-tachometer-alt"></i>
             <p>Dashboard</p>
           </a>
         </li>
@@ -34,54 +36,111 @@
         <!-- Configuration -->
         <li class="nav-item has-treeview" [class.menu-open]="menuState.config">
           <a href="#" class="nav-link" (click)="toggleMenu('config', $event)">
-            <i class="fas fa-cogs"></i>
+            <i class="nav-icon fas fa-cogs"></i>
             <p>
               Configuration
               <i class="right fas fa-angle-left"></i>
             </p>
           </a>
 
-          <ul class="nav nav-treeview" [style.display]="menuState.config ? 'block' : 'none'">
-
+          <ul
+            class="nav nav-treeview"
+            [style.display]="menuState.config ? 'block' : 'none'"
+          >
             <li class="nav-item">
-              <a routerLink="/admin/category/list" routerLinkActive="active" class="nav-link">
-                <i class="far fa-circle"></i>
-                <p>Category List</p>
+              <a
+                routerLink="/admin/category/list"
+                routerLinkActive="menu-open"
+                class="nav-link"
+                [class.active]="isCategoryActive()"
+              >
+                <i class="nav-icon fas fa-folder"></i>
+
+                <p>Categories</p>
               </a>
             </li>
 
             <li class="nav-item">
-              <a routerLink="/admin/category/add" routerLinkActive="active" class="nav-link">
-                <i class="far fa-circle"></i>
-                <p>Add Category</p>
+              <a
+                routerLink="/admin/states"
+                routerLinkActive="active"
+                class="nav-link"
+              >
+                <i class="nav-icon fas fa-globe"></i>
+                <p>States</p>
               </a>
             </li>
 
             <li class="nav-item">
-              <a routerLink="/admin/types" routerLinkActive="active" class="nav-link">
-                <i class="far fa-circle"></i>
-                <p>Types</p>
+              <a
+                routerLink="/admin/districts"
+                routerLinkActive="active"
+                class="nav-link"
+              >
+                <i class="nav-icon fas fa-map-marked-alt"></i>
+                <p>Districts</p>
               </a>
             </li>
 
+            <li class="nav-item">
+              <a
+                routerLink="/admin/assemblies"
+                routerLinkActive="active"
+                class="nav-link"
+              >
+                <i class="nav-icon fas fa-landmark"></i>
+                <p>Assemblies</p>
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a
+                routerLink="/admin/mandals"
+                routerLinkActive="active"
+                class="nav-link"
+              >
+                <i class="nav-icon fas fa-sitemap"></i>
+                <p>Mandals</p>
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a
+                routerLink="/admin/villages"
+                routerLinkActive="active"
+                class="nav-link"
+              >
+                <i class="nav-icon fas fa-home"></i>
+                <p>Villages</p>
+              </a>
+            </li>
           </ul>
         </li>
 
         <!-- Reports -->
         <li class="nav-item has-treeview" [class.menu-open]="menuState.reports">
           <a href="#" class="nav-link" (click)="toggleMenu('reports', $event)">
-            <i class="fas fa-chart-bar"></i>
+            <i class="nav-icon fas fa-chart-bar"></i>
             <p>
               Reports
               <i class="right fas fa-angle-left"></i>
             </p>
           </a>
 
-          <ul class="nav nav-treeview" [style.display]="menuState.reports ? 'block' : 'none'">
-
+          <ul
+            class="nav nav-treeview"
+            [style.display]="menuState.reports ? 'block' : 'none'"
+          >
             <!-- Daily -->
-            <li class="nav-item has-treeview" [class.menu-open]="menuState.daily">
-              <a href="#" class="nav-link" (click)="toggleMenu('daily', $event)">
+            <li
+              class="nav-item has-treeview"
+              [class.menu-open]="menuState.daily"
+            >
+              <a
+                href="#"
+                class="nav-link"
+                (click)="toggleMenu('daily', $event)"
+              >
                 <i class="far fa-calendar-alt"></i>
                 <p>
                   Daily
@@ -89,38 +148,48 @@
                 </p>
               </a>
 
-              <ul class="nav nav-treeview" [style.display]="menuState.daily ? 'block' : 'none'">
-
+              <ul
+                class="nav nav-treeview"
+                [style.display]="menuState.daily ? 'block' : 'none'"
+              >
                 <li class="nav-item">
-                  <a routerLink="/daily-attendance" routerLinkActive="active" class="nav-link">
+                  <a
+                    routerLink="/daily-attendance"
+                    routerLinkActive="active"
+                    class="nav-link"
+                  >
                     <i class="far fa-dot-circle"></i>
                     <p>Daily Attendance</p>
                   </a>
                 </li>
 
                 <li class="nav-item">
-                  <a routerLink="/daily-summary" routerLinkActive="active" class="nav-link">
+                  <a
+                    routerLink="/daily-summary"
+                    routerLinkActive="active"
+                    class="nav-link"
+                  >
                     <i class="far fa-dot-circle"></i>
                     <p>Summary</p>
                   </a>
                 </li>
-
               </ul>
             </li>
 
             <!-- Monthly -->
             <li class="nav-item">
-              <a routerLink="/monthly-report" routerLinkActive="active" class="nav-link">
+              <a
+                routerLink="/monthly-report"
+                routerLinkActive="active"
+                class="nav-link"
+              >
                 <i class="far fa-calendar"></i>
                 <p>Monthly</p>
               </a>
             </li>
-
           </ul>
         </li>
-
       </ul>
     </nav>
-
   </div>
 </aside>

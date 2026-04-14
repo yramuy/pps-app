@@ -9,7 +9,7 @@ export class AuthService {
   private userSubject = new BehaviorSubject<any>(null);
   user$ = this.userSubject.asObservable();
 
-  private apiUrl = '/BioMetricAttendance/login';
+  private apiUrl = '/pps/login';
 
   constructor(private http: HttpClient) {}
 

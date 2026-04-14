@@ -1,6 +1,6 @@
 {
-  "/BioMetricAttendance": {
-    "target": "http://192.168.235.39",
+  "/pps": {
+    "target": "https://civsp.in",
     "secure": false,
     "changeOrigin": true,
     "logLevel": "debug"

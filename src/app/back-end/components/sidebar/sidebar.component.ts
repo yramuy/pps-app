@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
 
 declare var $: any;
@@ -14,12 +15,29 @@ export class SidebarComponent {
   menuState: any = {
     config: false,
     reports: false,
-    daily: false
+    daily: false,
   };
 
-  constructor(private authService: AuthService) { }
+  constructor(
+    private authService: AuthService,
+    public router: Router,
+  ) { }
 
   ngOnInit() {
+    //const url = this.router.url;
+
+    // Configuration menu
+    // if (
+    //   url.includes('/admin/category') ||
+    //   url.includes('/admin/states') ||
+    //   url.includes('/admin/districts') ||
+    //   url.includes('/admin/assemblies') ||
+    //   url.includes('/admin/mandals') ||
+    //   url.includes('/admin/villages')
+    // ) {
+    //   this.menuState.config = true;
+    // }
+
     this.authService.loadUserFromStorage();
 
     this.isLoggedIn = this.authService.isLoggedIn();
@@ -32,6 +50,10 @@ export class SidebarComponent {
   toggleMenu(key: string, event: Event) {
     event.preventDefault();
     this.menuState[key] = !this.menuState[key];
+  }
+
+  isCategoryActive(): boolean {
+    return this.router.url.includes('/admin/category');
   }
 
   ngAfterViewInit() {
