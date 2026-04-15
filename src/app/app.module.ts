@@ -23,6 +23,14 @@ import { AboutComponent } from './front-end/components/about/about.component';
 import { ContactComponent } from './front-end/components/contact/contact.component';
 import { CategoryAddComponent } from './back-end/components/category/category-add/category-add.component';
 import { CategoryListComponent } from './back-end/components/category/category-list/category-list.component';
+import { StatesComponent } from './back-end/components/states/states.component';
+import { DistrictsComponent } from './back-end/components/districts/districts.component';
+import { AssemblyListComponent } from './back-end/components/assemblies/assembly-list/assembly-list.component';
+import { AssemblyAddComponent } from './back-end/components/assemblies/assembly-add/assembly-add.component';
+import { MandalsAddComponent } from './back-end/components/mandals/mandals-add/mandals-add.component';
+import { MandalsListComponent } from './back-end/components/mandals/mandals-list/mandals-list.component';
+import { VillagesListComponent } from './back-end/components/villages/villages-list/villages-list.component';
+import { VillagesAddComponent } from './back-end/components/villages/villages-add/villages-add.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +50,15 @@ import { CategoryListComponent } from './back-end/components/category/category-l
     AboutComponent,
     ContactComponent,
     CategoryAddComponent,
-    CategoryListComponent
+    CategoryListComponent,
+    StatesComponent,
+    DistrictsComponent,
+    AssemblyListComponent,
+    AssemblyAddComponent,
+    MandalsAddComponent,
+    MandalsListComponent,
+    VillagesListComponent,
+    VillagesAddComponent
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,45 @@
+<section class="content">
+  <div class="container-fluid">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Assembly</h3>
+      </div>
+
+      <div id="pageLoader" *ngIf="loader.loading$ | async">
+        <div class="spinner-border text-primary"></div>
+      </div>
+
+      <div class="card-body">
+        <div
+          *ngIf="isMessage === true"
+          class="alert alert-info alert-dismissible fade show"
+          role="alert"
+        >
+          {{ message }}
+        </div>
+
+        <table id="assembliesTable" class="table table-bordered table-striped">
+          <thead>
+            <tr>
+              <th>Sno</th>
+              <th>Assembly ID</th>
+              <th>Assembly</th>
+              <th>District</th>
+              <th>State</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let assembly of assemblies; let i = index">
+              <td>{{ i + 1 }}</td>
+              <td>{{ assembly.id }}</td>
+              <td>{{ assembly.name }}</td>
+              <td>{{ assembly.district }}</td>
+              <td>{{ assembly.state }}</td>                   
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>

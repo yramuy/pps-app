@@ -67,8 +67,17 @@ export class CategoryListComponent {
         }, 0);
       },
       error: (err) => {
+        if (err.status === 401) {
+          this.showMessage('Token expired');
+          this.authService.setLoginStatus(false);
+        } else if (err.status === 400) {
+          this.showMessage('Invalid request data');
+        } else if (err.status === 500) {
+          this.showMessage('Server error. Please try again later');
+        } else {
+          this.showMessage('Something went wrong. Please try again later');
+        }
         this.loader.hide();
-        this.showMessage('Something went wrong');
       },
     });
   }
@@ -93,7 +102,12 @@ export class CategoryListComponent {
   }
 
   deleteCategory(id: string) {
-    this.apiService.request('DELETE', `/deleteCategory/${id}`).subscribe({
+    const payload = JSON.stringify({
+      id: id,
+      master_id: '1',
+    });
+
+    this.apiService.request('POST', '/deleteRecord', payload).subscribe({
       next: (res: any) => {
         this.showMessage(res.message);
 

@@ -1,60 +1,58 @@
 import { Component } from '@angular/core';
-import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ApiService } from 'src/app/services/api.service';
 import { AuthService } from 'src/app/services/auth.service';
+import { LoaderService } from 'src/app/services/loader.service';
 
 @Component({
-  selector: 'app-category-add',
-  templateUrl: './category-add.component.html',
-  styleUrls: ['./category-add.component.scss'],
+  selector: 'app-states',
+  templateUrl: './states.component.html',
+  styleUrls: ['./states.component.scss'],
 })
-export class CategoryAddComponent {
-  formData: any = {};
+export class StatesComponent {
+  states: any = [];
   message: string = '';
   isMessage: boolean = false;
-
-  category: any = {
-    id: '',
-    name: '',
-    master_id: '1',
-  };
-
-  isEdit: boolean = false;
 
   constructor(
     private apiService: ApiService,
     private authService: AuthService,
+    public loader: LoaderService,
     private router: Router,
   ) {}
 
   ngOnInit() {
-    const state: any = history.state;
-
-    if (state.category) {
-      this.category = {
-        ...state.category,
-        master_id: 1,
-      };
-      this.isEdit = state.isEdit;
-    }
+    this.loadStates();
   }
 
-  // ✅ Save function
-  saveCategory(form: NgForm) {
-    if (form.invalid) {
-      return;
-    }
+  loadStates() {
+    this.loader.show();
 
-    console.log('Payload:', this.category);
+    const payload = JSON.stringify({
+      master_id: '2',
+    });
 
-    this.apiService.request('POST', '/saveAndUpdateCategory', this.category).subscribe({
+    this.apiService.request('POST', '/masterData', payload).subscribe({
       next: (res: any) => {
-        this.router.navigate(['/admin/category/list'], {
-          state: { message: res?.message || 'Category saved successfully' },
-        });
+        this.states = res.master_data || [];
+
+        this.loader.hide();
+
+        setTimeout(() => {
+          // ✅ Destroy if already exists
+          if ($.fn.DataTable.isDataTable('#statesTable')) {
+            ($('#statesTable') as any).DataTable().destroy();
+          }
+
+          // ✅ Reinitialize
+          ($('#statesTable') as any).DataTable({
+            dom: 'Bfrtip',
+            buttons: ['excel', 'pdf'],
+            responsive: true,
+          });
+        }, 0);
       },
-      error: (err: any) => {
+      error: (err) => {
         if (err.status === 401) {
           this.showMessage('Token expired');
           this.authService.setLoginStatus(false);
@@ -65,12 +63,9 @@ export class CategoryAddComponent {
         } else {
           this.showMessage('Something went wrong. Please try again later');
         }
+        this.loader.hide();
       },
     });
-  }
-
-  handleBackBtn() {
-    this.router.navigate(['/admin/category/list']);
   }
 
   showMessage(msg: string) {

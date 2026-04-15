@@ -1,0 +1,49 @@
+<section class="content">
+  <div class="container-fluid">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Villages</h3>
+      </div>
+
+      <div id="pageLoader" *ngIf="loader.loading$ | async">
+        <div class="spinner-border text-primary"></div>
+      </div>
+
+      <div class="card-body">
+        <div
+          *ngIf="isMessage === true"
+          class="alert alert-info alert-dismissible fade show"
+          role="alert"
+        >
+          {{ message }}
+        </div>
+
+        <table id="villagesTable" class="table table-bordered table-striped">
+          <thead>
+            <tr>
+              <th>Sno</th>
+              <th>Village ID</th>
+              <th>Village</th>
+              <th>Mandal</th>
+              <th>Assembly</th>
+              <th>District</th>
+              <th>State</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let village of villages; let i = index">
+              <td>{{ i + 1 }}</td>
+              <td>{{ village.id }}</td>
+              <td>{{ village.name }}</td>
+              <td>{{ village.mandal }}</td>
+              <td>{{ village.assembly }}</td>
+              <td>{{ village.district }}</td>
+              <td>{{ village.state }}</td>                   
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>

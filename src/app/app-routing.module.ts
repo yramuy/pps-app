@@ -15,6 +15,11 @@ import { AboutComponent } from './front-end/components/about/about.component';
 import { ContactComponent } from './front-end/components/contact/contact.component';
 import { CategoryListComponent } from './back-end/components/category/category-list/category-list.component';
 import { CategoryAddComponent } from './back-end/components/category/category-add/category-add.component';
+import { StatesComponent } from './back-end/components/states/states.component';
+import { DistrictsComponent } from './back-end/components/districts/districts.component';
+import { AssemblyListComponent } from './back-end/components/assemblies/assembly-list/assembly-list.component';
+import { MandalsListComponent } from './back-end/components/mandals/mandals-list/mandals-list.component';
+import { VillagesListComponent } from './back-end/components/villages/villages-list/villages-list.component';
 
 const routes: Routes = [
   
@@ -35,6 +40,11 @@ const routes: Routes = [
       { path: 'dashboard', component: DashboardComponent },
       { path: 'category/list', component: CategoryListComponent },
       { path: 'category/add', component: CategoryAddComponent },
+      { path: 'states/list', component: StatesComponent },
+      { path: 'districts/list', component: DistrictsComponent },
+      { path: 'assembly/list', component: AssemblyListComponent },
+      { path: 'mandal/list', component: MandalsListComponent },
+      { path: 'village/list', component: VillagesListComponent },
       { path: 'employees/add', component: EmployeeAddComponent },
       { path: 'reports', component: ReportsComponent }
     ],
