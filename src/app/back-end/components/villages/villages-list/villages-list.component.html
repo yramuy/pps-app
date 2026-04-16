@@ -18,6 +18,12 @@
           {{ message }}
         </div>
 
+        <div class="d-flex justify-content-end">
+          <button class="btn btn-primary mb-2" (click)="handleAdd()">
+            Add Village
+          </button>
+        </div>
+
         <table id="villagesTable" class="table table-bordered table-striped">
           <thead>
             <tr>
@@ -28,6 +34,7 @@
               <th>Assembly</th>
               <th>District</th>
               <th>State</th>
+              <th>Actions</th>
             </tr>
           </thead>
 
@@ -39,7 +46,23 @@
               <td>{{ village.mandal }}</td>
               <td>{{ village.assembly }}</td>
               <td>{{ village.district }}</td>
-              <td>{{ village.state }}</td>                   
+              <td>{{ village.state }}</td> 
+              <td>
+                <div class="d-flex">
+                  <button
+                    class="btn btn-success mr-2"
+                    (click)="handleEdit(village)"
+                  >
+                    <i class="fas fa-edit"></i>
+                  </button>
+                  <button
+                    class="btn btn-danger"
+                    (click)="confirmDelete(village.id)"
+                  >
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </div>
+              </td>                  
             </tr>
           </tbody>
         </table>

@@ -18,14 +18,22 @@
           {{ message }}
         </div>
 
+        <div class="d-flex justify-content-end">
+          <button class="btn btn-primary mb-2" (click)="handleAdd()">
+            Add Mandal
+          </button>
+        </div>
+
         <table id="mandalsTable" class="table table-bordered table-striped">
           <thead>
             <tr>
               <th>Sno</th>
               <th>Mandal ID</th>
               <th>Mandal</th>
+              <th>Assembly</th>
               <th>District</th>
               <th>State</th>
+              <th>Actions</th>
             </tr>
           </thead>
 
@@ -34,8 +42,25 @@
               <td>{{ i + 1 }}</td>
               <td>{{ mandal.id }}</td>
               <td>{{ mandal.name }}</td>
+              <td>{{ mandal.assembly }}</td>
               <td>{{ mandal.district }}</td>
-              <td>{{ mandal.state }}</td>                   
+              <td>{{ mandal.state }}</td>
+              <td>
+                <div class="d-flex">
+                  <button
+                    class="btn btn-success mr-2"
+                    (click)="handleEdit(mandal)"
+                  >
+                    <i class="fas fa-edit"></i>
+                  </button>
+                  <button
+                    class="btn btn-danger"
+                    (click)="confirmDelete(mandal.id)"
+                  >
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </div>
+              </td>                   
             </tr>
           </tbody>
         </table>

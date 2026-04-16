@@ -21,6 +21,8 @@ import { AssemblyListComponent } from './back-end/components/assemblies/assembly
 import { MandalsListComponent } from './back-end/components/mandals/mandals-list/mandals-list.component';
 import { VillagesListComponent } from './back-end/components/villages/villages-list/villages-list.component';
 import { AssemblyAddComponent } from './back-end/components/assemblies/assembly-add/assembly-add.component';
+import { MandalsAddComponent } from './back-end/components/mandals/mandals-add/mandals-add.component';
+import { VillagesAddComponent } from './back-end/components/villages/villages-add/villages-add.component';
 
 const routes: Routes = [
   
@@ -46,7 +48,9 @@ const routes: Routes = [
       { path: 'assembly/list', component: AssemblyListComponent },
       { path: 'assembly/add', component: AssemblyAddComponent },
       { path: 'mandal/list', component: MandalsListComponent },
+      { path: 'mandal/add', component: MandalsAddComponent },
       { path: 'village/list', component: VillagesListComponent },
+      { path: 'village/add', component: VillagesAddComponent },
       { path: 'employees/add', component: EmployeeAddComponent },
       { path: 'reports', component: ReportsComponent }
     ],

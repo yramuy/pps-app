@@ -54,14 +54,14 @@ export class AssemblyListComponent {
 
   confirmDelete(id: string) {
     if (confirm('Are you sure you want to delete this record?')) {
-      this.deleteCategory(id);
+      this.deleteRecord(id);
     }
   }
 
-  deleteCategory(id: string) {
+  deleteRecord(id: string) {
     const payload = JSON.stringify({
       id: id,
-      master_id: '1',
+      master_id: '4',
     });
 
     this.apiService.request('POST', '/deleteRecord', payload).subscribe({

@@ -97,8 +97,9 @@
             <li class="nav-item">
               <a
                 routerLink="/admin/mandal/list"
-                routerLinkActive="active"
+                routerLinkActive="menu-open"
                 class="nav-link"
+                [class.active]="isMenuActive('/admin/mandal')"
               >
                 <i class="nav-icon fas fa-sitemap"></i>
                 <p>Mandals</p>
@@ -108,8 +109,9 @@
             <li class="nav-item">
               <a
                 routerLink="/admin/village/list"
-                routerLinkActive="active"
+                routerLinkActive="menu-open"
                 class="nav-link"
+                [class.active]="isMenuActive('/admin/village')"
               >
                 <i class="nav-icon fas fa-home"></i>
                 <p>Villages</p>
