@@ -33,6 +33,30 @@
           </a>
         </li>
 
+        <!-- Dashboard -->
+        <li class="nav-item">
+          <a
+            routerLink="/admin/users/list"
+            routerLinkActive="active"
+            class="nav-link"
+          >
+            <i class="nav-icon fas fa-users"></i>
+            <p>Users</p>
+          </a>
+        </li>
+
+        <!-- Dashboard -->
+        <li class="nav-item">
+          <a
+            routerLink="/admin/userRole/list"
+            routerLinkActive="active"
+            class="nav-link"
+          >
+            <i class="nav-icon fas fa-user-cog"></i>
+            <p>User Roles</p>
+          </a>
+        </li>
+
         <!-- Configuration -->
         <li class="nav-item has-treeview" [class.menu-open]="menuState.config">
           <a href="#" class="nav-link" (click)="toggleMenu('config', $event)">

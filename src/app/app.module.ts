@@ -31,6 +31,10 @@ import { MandalsAddComponent } from './back-end/components/mandals/mandals-add/m
 import { MandalsListComponent } from './back-end/components/mandals/mandals-list/mandals-list.component';
 import { VillagesListComponent } from './back-end/components/villages/villages-list/villages-list.component';
 import { VillagesAddComponent } from './back-end/components/villages/villages-add/villages-add.component';
+import { UsersListComponent } from './back-end/components/users/users-list/users-list.component';
+import { UsersAddComponent } from './back-end/components/users/users-add/users-add.component';
+import { UserRolesAddComponent } from './back-end/components/user-roles/user-roles-add/user-roles-add.component';
+import { UserRolesListComponent } from './back-end/components/user-roles/user-roles-list/user-roles-list.component';
 
 @NgModule({
   declarations: [
@@ -58,7 +62,11 @@ import { VillagesAddComponent } from './back-end/components/villages/villages-ad
     MandalsAddComponent,
     MandalsListComponent,
     VillagesListComponent,
-    VillagesAddComponent
+    VillagesAddComponent,
+    UsersListComponent,
+    UsersAddComponent,
+    UserRolesAddComponent,
+    UserRolesListComponent
   ],
   imports: [
     BrowserModule,

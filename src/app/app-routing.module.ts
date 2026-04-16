@@ -6,8 +6,6 @@ import { authGuard } from './guards/auth.guard';
 import { LoginComponent } from './back-end/components/login/login.component';
 import { LayoutComponent } from './back-end/components/layout/layout.component';
 import { DashboardComponent } from './back-end/components/dashboard/dashboard.component';
-import { EmployeeListComponent } from './back-end/components/employees/employee-list/employee-list.component';
-import { EmployeeAddComponent } from './back-end/components/employees/employee-add/employee-add.component';
 import { ReportsComponent } from './back-end/components/reports/reports.component';
 import { WebsiteLayoutComponent } from './front-end/components/website-layout/website-layout.component';
 import { HomeComponent } from './front-end/components/home/home.component';
@@ -23,6 +21,10 @@ import { VillagesListComponent } from './back-end/components/villages/villages-l
 import { AssemblyAddComponent } from './back-end/components/assemblies/assembly-add/assembly-add.component';
 import { MandalsAddComponent } from './back-end/components/mandals/mandals-add/mandals-add.component';
 import { VillagesAddComponent } from './back-end/components/villages/villages-add/villages-add.component';
+import { UsersListComponent } from './back-end/components/users/users-list/users-list.component';
+import { UsersAddComponent } from './back-end/components/users/users-add/users-add.component';
+import { UserRolesListComponent } from './back-end/components/user-roles/user-roles-list/user-roles-list.component';
+import { UserRolesAddComponent } from './back-end/components/user-roles/user-roles-add/user-roles-add.component';
 
 const routes: Routes = [
   
@@ -51,7 +53,10 @@ const routes: Routes = [
       { path: 'mandal/add', component: MandalsAddComponent },
       { path: 'village/list', component: VillagesListComponent },
       { path: 'village/add', component: VillagesAddComponent },
-      { path: 'employees/add', component: EmployeeAddComponent },
+      { path: 'users/list', component: UsersListComponent },
+      { path: 'users/add', component: UsersAddComponent },
+      { path: 'userRole/list', component: UserRolesListComponent },
+      { path: 'userRole/add', component: UserRolesAddComponent },
       { path: 'reports', component: ReportsComponent }
     ],
   },
