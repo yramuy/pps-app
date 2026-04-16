@@ -20,6 +20,7 @@ import { DistrictsComponent } from './back-end/components/districts/districts.co
 import { AssemblyListComponent } from './back-end/components/assemblies/assembly-list/assembly-list.component';
 import { MandalsListComponent } from './back-end/components/mandals/mandals-list/mandals-list.component';
 import { VillagesListComponent } from './back-end/components/villages/villages-list/villages-list.component';
+import { AssemblyAddComponent } from './back-end/components/assemblies/assembly-add/assembly-add.component';
 
 const routes: Routes = [
   
@@ -43,6 +44,7 @@ const routes: Routes = [
       { path: 'states/list', component: StatesComponent },
       { path: 'districts/list', component: DistrictsComponent },
       { path: 'assembly/list', component: AssemblyListComponent },
+      { path: 'assembly/add', component: AssemblyAddComponent },
       { path: 'mandal/list', component: MandalsListComponent },
       { path: 'village/list', component: VillagesListComponent },
       { path: 'employees/add', component: EmployeeAddComponent },

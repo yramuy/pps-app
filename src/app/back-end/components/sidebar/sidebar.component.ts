@@ -52,8 +52,8 @@ export class SidebarComponent {
     this.menuState[key] = !this.menuState[key];
   }
 
-  isCategoryActive(): boolean {
-    return this.router.url.includes('/admin/category');
+  isMenuActive(url: string): boolean {
+    return this.router.url.includes(url);
   }
 
   ngAfterViewInit() {

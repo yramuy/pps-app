@@ -1,1 +1,130 @@
-<p>assembly-add works!</p>
+<div class="card">
+  <div class="card-header">
+    <h5>Add Assembly</h5>
+  </div>
+
+  <form #assemblyForm="ngForm" (ngSubmit)="saveAssembly(assemblyForm)">
+    <div class="card-body">
+      <!-- Alert -->
+      <div
+        *ngIf="isMessage === true"
+        class="alert alert-danger alert-dismissible fade show"
+        role="alert"
+      >
+        {{ message }}
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+        ></button>
+      </div>
+
+      <div class="row">
+        <div class="col-6 mb-3">
+          <label class="form-label">
+            State <span class="text-danger">*</span>
+          </label>
+
+          <select
+            class="form-control"
+            [(ngModel)]="assembly.state_id"
+            name="state_id"
+            (change)="loadDistricts(assembly.state_id)"
+            required
+          >
+            <option value="">-- Select State --</option>
+            <option *ngFor="let state of states" [value]="state.id">
+              {{ state.name }}
+            </option>
+          </select>
+
+          <!-- Validation -->
+          <div
+            class="text-danger mt-1"
+            *ngIf="
+              assemblyForm.submitted &&
+              assemblyForm.controls['state_id']?.invalid
+            "
+          >
+            <small>State is required</small>
+          </div>
+        </div>
+
+        <div class="col-6 mb-3">
+          <label class="form-label">
+            District <span class="text-danger">*</span>
+          </label>
+
+          <select
+            class="form-control"
+            [(ngModel)]="assembly.district_id"
+            name="district_id"
+            required
+          >
+            <option value="">-- Select District --</option>
+            <option *ngFor="let district of districts" [value]="district.id">
+              {{ district.name }}
+            </option>
+          </select>
+
+          <!-- Validation -->
+          <div
+            class="text-danger mt-1"
+            *ngIf="
+              assemblyForm.submitted &&
+              assemblyForm.controls['district_id']?.invalid
+            "
+          >
+            <small>District is required</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-6 mb-3">
+          <label class="form-label">
+            Name <span class="text-danger">*</span>
+          </label>
+
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="assembly.name"
+            name="name"
+            required
+          />
+
+          <!-- Validation -->
+          <div
+            class="text-danger mt-1"
+            *ngIf="
+              assemblyForm.submitted && assemblyForm.controls['name']?.invalid
+            "
+          >
+            <small>Name is required</small>
+          </div>
+        </div>
+
+        <div class="col-6 mb-3">
+          <label class="form-label"> Code </label>
+
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="assembly.code"
+            name="code"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="card-footer">
+      <button class="btn btn-primary mr-3">
+        {{ isEdit ? "Update" : "Save" }}
+      </button>
+      <button type="button" class="btn btn-dark" (click)="handleBackBtn()">
+        Back
+      </button>
+    </div>
+  </form>
+</div>

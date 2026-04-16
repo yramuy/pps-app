@@ -52,7 +52,7 @@
                 routerLink="/admin/category/list"
                 routerLinkActive="menu-open"
                 class="nav-link"
-                [class.active]="isCategoryActive()"
+                [class.active]="isMenuActive('/admin/category')"
               >
                 <i class="nav-icon fas fa-folder"></i>
 
@@ -85,8 +85,9 @@
             <li class="nav-item">
               <a
                 routerLink="/admin/assembly/list"
-                routerLinkActive="active"
+                routerLinkActive="menu-open"
                 class="nav-link"
+                [class.active]="isMenuActive('/admin/assembly')"
               >
                 <i class="nav-icon fas fa-landmark"></i>
                 <p>Assemblies</p>

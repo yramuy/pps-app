@@ -22,7 +22,78 @@ export class AssemblyListComponent {
   ) {}
 
   ngOnInit() {
+    const state = history.state;
+
+    if (state.message) {
+      this.message = state.message;
+      this.isMessage = true;
+
+      // Clear History
+      history.replaceState({}, '');
+
+      setTimeout(() => {
+        this.isMessage = false;
+      }, 3000);
+    }
+
     this.loadAssemblies();
+  }
+
+  handleAdd() {
+    this.router.navigate(['/admin/assembly/add']);
+  }
+
+  handleEdit(assemObj: any) {
+    this.router.navigate(['/admin/assembly/add'], {
+      state: {
+        assembly: assemObj,
+        isEdit: true,
+      },
+    });
+  }
+
+  confirmDelete(id: string) {
+    if (confirm('Are you sure you want to delete this record?')) {
+      this.deleteCategory(id);
+    }
+  }
+
+  deleteCategory(id: string) {
+    const payload = JSON.stringify({
+      id: id,
+      master_id: '1',
+    });
+
+    this.apiService.request('POST', '/deleteRecord', payload).subscribe({
+      next: (res: any) => {
+        this.showMessage(res.message);
+
+        // ✅ Remove from array
+        this.assemblies = this.assemblies.filter((c: any) => c.id !== id);
+
+        // ✅ Reload DataTable properly
+        this.reloadDataTable();
+      },
+      error: (err) => {
+        console.error(err);
+      },
+    });
+  }
+
+  reloadDataTable() {
+    // ✅ Destroy first
+    if ($.fn.DataTable.isDataTable('#assembliesTable')) {
+      ($('#assembliesTable') as any).DataTable().destroy();
+    }
+
+    // ✅ Wait for Angular DOM update
+    setTimeout(() => {
+      ($('#assembliesTable') as any).DataTable({
+        dom: 'Bfrtip',
+        buttons: ['excel', 'pdf'],
+        responsive: true,
+      });
+    }, 100);
   }
 
   loadAssemblies() {
