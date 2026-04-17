@@ -44,6 +44,7 @@ export class UserRolesListComponent {
 
     const payload = JSON.stringify({
       master_id: '7',
+      mode: 'web',
     });
 
     this.apiService.request('POST', '/masterData', payload).subscribe({

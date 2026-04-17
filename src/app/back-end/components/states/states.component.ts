@@ -30,6 +30,7 @@ export class StatesComponent {
 
     const payload = JSON.stringify({
       master_id: '2',
+      mode: 'web',
     });
 
     this.apiService.request('POST', '/masterData', payload).subscribe({

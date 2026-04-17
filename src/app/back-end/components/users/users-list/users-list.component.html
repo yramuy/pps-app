@@ -1,1 +1,75 @@
-<p>users-list works!</p>
+<section class="content">
+  <div class="container-fluid">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">User List</h3>
+      </div>
+
+      <div id="pageLoader" *ngIf="loader.loading$ | async">
+        <div class="spinner-border text-primary"></div>
+      </div>
+
+      <div class="card-body">
+        <div
+          *ngIf="isMessage === true"
+          class="alert alert-info alert-dismissible fade show"
+          role="alert"
+        >
+          {{ message }}
+        </div>
+
+        <div class="d-flex justify-content-end">
+          <button class="btn btn-primary mb-2" (click)="handleAdd()">
+            Add User
+          </button>
+        </div>
+        <table id="userTable" class="table table-bordered table-striped">
+          <thead>
+            <tr>
+              <th>Sno</th>
+              <th>Role</th>
+              <th>User Name</th>
+              <th>Full Name</th>
+              <th>State</th>
+              <th>District</th>
+              <th>Assembly</th>
+              <th>Mandal</th>
+              <th>Village</th>              
+              <th>Actions</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let user of users; let i = index">
+              <td>{{ i + 1 }}</td>
+              <td>{{ user.role }}</td>
+              <td>{{ user.user_name }}</td>
+              <td>{{ user.full_name }}</td>
+              <td>{{ user.state }}</td>
+              <td>{{ user.district }}</td>
+              <td>{{ user.assembly }}</td>
+              <td>{{ user.mandal }}</td>
+              <td>{{ user.village }}</td>
+              <td>
+                <div class="d-flex">
+                  <button
+                    class="btn btn-success mr-2"
+                    (click)="handleEdit(user)"
+                  >
+                    <i class="fas fa-edit"></i>
+                  </button>
+                  <button
+                    class="btn btn-danger"
+                    (click)="confirmDelete(user.id)"
+                  >
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>

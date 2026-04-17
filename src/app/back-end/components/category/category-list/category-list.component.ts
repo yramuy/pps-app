@@ -44,6 +44,7 @@ export class CategoryListComponent {
 
     const payload = JSON.stringify({
       master_id: '1',
+      mode: 'web',
     });
 
     this.apiService.request('POST', '/masterData', payload).subscribe({

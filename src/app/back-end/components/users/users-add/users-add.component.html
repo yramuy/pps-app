@@ -1,1 +1,312 @@
-<p>users-add works!</p>
+<div class="card">
+  <div class="card-header">
+    <h5>Add User</h5>
+  </div>
+
+  <form #userForm="ngForm" (ngSubmit)="saveUser(userForm)">
+    <div class="card-body">
+      <!-- Alert -->
+      <div
+        *ngIf="isMessage === true"
+        class="alert alert-danger alert-dismissible fade show"
+        role="alert"
+      >
+        {{ message }}
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+        ></button>
+      </div>
+
+      <div class="row">
+        <div class="col-6 mb-3">
+          <label class="form-label">
+            User Role <span class="text-danger">*</span>
+          </label>
+
+          <select
+            class="form-control"
+            [(ngModel)]="user.user_role_id"
+            name="user_role_id"
+            required
+          >
+            <option value="">-- Select User Role --</option>
+            <option *ngFor="let userRole of userRoles" [value]="userRole.id">
+              {{ userRole.name }}
+            </option>
+          </select>
+
+          <!-- Validation -->
+          <div
+            class="text-danger mt-1"
+            *ngIf="
+              userForm.submitted && userForm.controls['user_role_id']?.invalid
+            "
+          >
+            <small>User Role is required</small>
+          </div>
+        </div>
+
+        <div class="col-6 mb-3">
+          <label class="form-label">
+            Full Name <span class="text-danger">*</span>
+          </label>
+
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="user.full_name"
+            name="full_name"
+            required
+          />
+
+          <!-- Validation -->
+          <div
+            class="text-danger mt-1"
+            *ngIf="
+              userForm.submitted && userForm.controls['full_name']?.invalid
+            "
+          >
+            <small>Full Name is required</small>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="row">
+
+        <div class="col-6 mb-3">
+          <label class="form-label">
+            Email <span class="text-danger">*</span>
+          </label>
+
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="user.email"
+            name="email"
+            required
+          />
+
+          <!-- Validation -->
+          <div
+            class="text-danger mt-1"
+            *ngIf="
+              userForm.submitted && userForm.controls['email']?.invalid
+            "
+          >
+            <small>Email is required</small>
+          </div>
+        </div>
+
+        <div class="col-6 mb-3">
+          <label class="form-label">
+            Mobile
+          </label>
+
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="user.mobile"
+            name="mobile"
+          />
+
+          <!-- Validation -->
+          <div
+            class="text-danger mt-1"
+            *ngIf="
+              userForm.submitted && userForm.controls['mobile']?.invalid
+            "
+          >
+            <small>Mobile is required</small>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="row">
+        <div class="col-6 mb-3">
+          <label class="form-label">
+            State <span class="text-danger">*</span>
+          </label>
+
+          <select
+            class="form-control"
+            [(ngModel)]="user.state_id"
+            name="state_id"
+            (change)="loadDistricts(user.state_id)"
+            required
+          >
+            <option value="">-- Select State --</option>
+            <option *ngFor="let state of states" [value]="state.id">
+              {{ state.name }}
+            </option>
+          </select>
+
+          <!-- Validation -->
+          <div
+            class="text-danger mt-1"
+            *ngIf="
+              userForm.submitted && userForm.controls['state_id']?.invalid
+            "
+          >
+            <small>State is required</small>
+          </div>
+        </div>
+
+        <div class="col-6 mb-3">
+          <label class="form-label">
+            District <span class="text-danger">*</span>
+          </label>
+
+          <select
+            class="form-control"
+            [(ngModel)]="user.district_id"
+            name="district_id"
+            (change)="loadAssemblies(user.district_id)"
+            required
+          >
+            <option value="">-- Select District --</option>
+            <option *ngFor="let district of districts" [value]="district.id">
+              {{ district.name }}
+            </option>
+          </select>
+
+          <!-- Validation -->
+          <div
+            class="text-danger mt-1"
+            *ngIf="
+              userForm.submitted &&
+              userForm.controls['district_id']?.invalid
+            "
+          >
+            <small>District is required</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-6 mb-3">
+          <label class="form-label">
+            Assembly <span class="text-danger">*</span>
+          </label>
+
+          <select
+            class="form-control"
+            [(ngModel)]="user.assembly_id"
+            name="assembly_id"
+            (change)="loadMandals(user.assembly_id)"
+            required
+          >
+            <option value="">-- Select Assembly --</option>
+            <option *ngFor="let assembly of assemblies" [value]="assembly.id">
+              {{ assembly.name }}
+            </option>
+          </select>
+
+          <!-- Validation -->
+          <div
+            class="text-danger mt-1"
+            *ngIf="
+              userForm.submitted &&
+              userForm.controls['assembly_id']?.invalid
+            "
+          >
+            <small>Assembly is required</small>
+          </div>
+        </div>
+
+        <div class="col-6 mb-3">
+          <label class="form-label">
+            Mandal <span class="text-danger">*</span>
+          </label>
+
+          <select
+            class="form-control"
+            [(ngModel)]="user.mandal_id"
+            name="mandal_id"
+            required
+          >
+            <option value="">-- Select Mandal --</option>
+            <option *ngFor="let mandal of mandals" [value]="mandal.id">
+              {{ mandal.name }}
+            </option>
+          </select>
+
+          <!-- Validation -->
+          <div
+            class="text-danger mt-1"
+            *ngIf="
+              userForm.submitted &&
+              userForm.controls['mandal_id']?.invalid
+            "
+          >
+            <small>Mandal is required</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+
+        <div class="col-6 mb-3">
+          <label class="form-label">
+            User Name <span class="text-danger">*</span>
+          </label>
+
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="user.name"
+            name="name"
+            required
+          />
+
+          <!-- Validation -->
+          <div
+            class="text-danger mt-1"
+            *ngIf="
+              userForm.submitted && userForm.controls['name']?.invalid
+            "
+          >
+            <small>Name is required</small>
+          </div>
+        </div>
+
+        <div class="col-6 mb-3">
+          <label class="form-label">
+            Pincode 
+          </label>
+
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="user.pincode"
+            name="pincode"
+          />
+
+          <!-- Validation -->
+          <div
+            class="text-danger mt-1"
+            *ngIf="
+              userForm.submitted && userForm.controls['pincode']?.invalid
+            "
+          >
+            <small>Pincode is required</small>
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+
+    <div class="card-footer">
+      <button class="btn btn-primary mr-3">
+        {{ isEdit ? "Update" : "Save" }}
+      </button>
+      <button type="button" class="btn btn-dark" (click)="handleBackBtn()">
+        Back
+      </button>
+    </div>
+  </form>
+</div>

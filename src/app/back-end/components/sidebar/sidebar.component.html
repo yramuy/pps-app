@@ -37,8 +37,9 @@
         <li class="nav-item">
           <a
             routerLink="/admin/users/list"
-            routerLinkActive="active"
+            routerLinkActive="menu-open"
             class="nav-link"
+            [class.active]="isMenuActive('/admin/users')"
           >
             <i class="nav-icon fas fa-users"></i>
             <p>Users</p>
@@ -49,8 +50,9 @@
         <li class="nav-item">
           <a
             routerLink="/admin/userRole/list"
-            routerLinkActive="active"
+            routerLinkActive="menu-open"
             class="nav-link"
+            [class.active]="isMenuActive('/admin/userRole')"
           >
             <i class="nav-icon fas fa-user-cog"></i>
             <p>User Roles</p>

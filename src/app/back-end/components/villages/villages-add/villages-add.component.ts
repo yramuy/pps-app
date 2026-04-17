@@ -58,6 +58,7 @@ export class VillagesAddComponent {
     loadStates() {
       const payload = JSON.stringify({
         master_id: 2,
+        mode: 'web',
       });
   
       this.apiService.request('POST', '/masterData', payload).subscribe({
@@ -83,6 +84,7 @@ export class VillagesAddComponent {
       const payload = JSON.stringify({
         master_id: 3,
         dropdown_id: stateId,
+        mode: 'web',
       });
   
       console.log('Payload : ', payload);
@@ -112,6 +114,7 @@ export class VillagesAddComponent {
       const payload = JSON.stringify({
         master_id: 4,
         dropdown_id: districtId,
+        mode: 'web',
       });
   
       console.log('Payload : ', payload);
@@ -141,6 +144,7 @@ export class VillagesAddComponent {
       const payload = JSON.stringify({
         master_id: 5,
         dropdown_id: assemblyId,
+        mode: 'web',
       });
   
       console.log('Payload : ', payload);

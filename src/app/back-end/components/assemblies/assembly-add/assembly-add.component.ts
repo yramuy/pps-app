@@ -52,6 +52,7 @@ export class AssemblyAddComponent {
   loadStates() {
     const payload = JSON.stringify({
       master_id: 2,
+      mode: 'web',
     });
 
     this.apiService.request('POST', '/masterData', payload).subscribe({
@@ -77,6 +78,7 @@ export class AssemblyAddComponent {
     const payload = JSON.stringify({
       master_id: 3,
       dropdown_id: stateId,
+      mode: 'web',
     });
 
     console.log('Payload : ', payload);
