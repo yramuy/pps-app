@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ApiService } from 'src/app/services/api.service';
@@ -18,19 +18,33 @@ export class UsersAddComponent {
   assemblies: any = [];
   mandals: any = [];
   userRoles: any = [];
+  villages: any = [];
+  createdBy: any = '';
+  loginUser: any;
 
   user: any = {
     id: '',
     user_role_id: '',
-    name: '',
+    full_name: '',
+    user_name: '',
+    password: '',
+    email: '',
+    mobile: '',
     state_id: '',
     district_id: '',
     assembly_id: '',
     mandal_id: '',
+    village_id: '',
     master_id: '8',
+    mode: 'web',
   };
 
   isEdit: boolean = false;
+  selectedFile: File | null = null;
+  imagePreview: string | ArrayBuffer | null = null;
+  baseUrl = 'https://civsp.in/pps'; // change to your server URL
+
+  @ViewChild('fileInput') fileInput!: ElementRef;
 
   constructor(
     private apiService: ApiService,
@@ -54,6 +68,47 @@ export class UsersAddComponent {
       this.loadDistricts(state.user.state_id);
       this.loadAssemblies(state.user.district_id);
       this.loadMandals(state.user.assembly_id);
+      this.loadVillages(state.user.mandal_id);
+    }
+
+    this.authService.user$.subscribe((lUser) => {
+      this.loginUser = lUser;
+    });
+  }
+
+  onFileChange(event: any) {
+    const file = event.target.files[0];
+
+    if (file && file.type.startsWith('image/')) {
+      this.selectedFile = file;
+
+      // preview
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.imagePreview = reader.result;
+      };
+      reader.readAsDataURL(file);
+    } else {
+      alert('Only image files are allowed');
+      event.target.value = '';
+      this.selectedFile = null;
+      this.imagePreview = null;
+    }
+  }
+
+  resetImage(removeExisting: boolean = false) {
+    // clear selected file
+    this.selectedFile = null;
+    this.imagePreview = null;
+
+    // clear file input
+    if (this.fileInput) {
+      this.fileInput.nativeElement.value = '';
+    }
+
+    // if edit mode and user clicks remove
+    if (removeExisting) {
+      this.user.profile_pic = '';
     }
   }
 
@@ -197,21 +252,20 @@ export class UsersAddComponent {
       });
   }
 
-  // ✅ Save function
-  saveUser(form: NgForm) {
-    if (form.invalid) {
-      return;
-    }
+  loadVillages(mandalId: any) {
+    const payload = JSON.stringify({
+      master_id: 6,
+      dropdown_id: mandalId,
+      mode: 'web',
+    });
 
-    console.log('Payload:', this.user);
+    console.log('Payload : ', payload);
 
     this.apiService
-      .request('POST', '/saveAndUpdateUser', this.user)
+      .request('POST', '/dependanceMasterData', payload)
       .subscribe({
         next: (res: any) => {
-          this.router.navigate(['/admin/users/list'], {
-            state: { message: res?.message || 'User saved successfully' },
-          });
+          this.villages = res.dependance_master_data || [];
         },
         error: (err: any) => {
           if (err.status === 401) {
@@ -226,6 +280,59 @@ export class UsersAddComponent {
           }
         },
       });
+  }
+
+  // ✅ Save function
+  saveUser(form: NgForm) {
+    if (form.invalid) return;
+
+    const formData = new FormData();
+
+    // ✅ 1. Append form fields
+    Object.entries(form.value).forEach(([key, value]) => {
+      formData.append(key, value as any);
+    });
+
+    // ✅ 2. Add extra required keys
+
+    formData.append('id', this.user.id ?? '');
+    formData.append('master_id', '8');
+    formData.append('mode', 'web');
+    formData.append('created_by', this.loginUser?.userId);
+
+    // ✅ 3. Append file
+    if (this.selectedFile) {
+      formData.append('profile_pic', this.selectedFile);
+    }
+
+    // ✅ Debug
+    formData.forEach((value, key) => {
+      console.log(key, value);
+    });
+
+    this.apiService.request('POST', '/saveAndUpdateUser', formData).subscribe({
+      next: (res: any) => {
+        if (res.status) {
+          this.router.navigate(['/admin/users/list'], {
+            state: { message: res?.message || 'User saved successfully' },
+          });
+        } else {
+          this.showMessage(res?.message);
+        }
+      },
+      error: (err: any) => {
+        if (err.status === 401) {
+          this.showMessage('Token expired');
+          this.authService.setLoginStatus(false);
+        } else if (err.status === 400) {
+          this.showMessage('Invalid request data');
+        } else if (err.status === 500) {
+          this.showMessage('Server error. Please try again later');
+        } else {
+          this.showMessage('Something went wrong. Please try again later');
+        }
+      },
+    });
   }
 
   handleBackBtn() {

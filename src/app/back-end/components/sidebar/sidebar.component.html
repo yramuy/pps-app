@@ -33,8 +33,8 @@
           </a>
         </li>
 
-        <!-- Dashboard -->
-        <li class="nav-item">
+        <!-- Users -->
+        <li class="nav-item" *ngIf="user?.roleId == '1' || user?.roleId == '2'">
           <a
             routerLink="/admin/users/list"
             routerLinkActive="menu-open"
@@ -46,8 +46,8 @@
           </a>
         </li>
 
-        <!-- Dashboard -->
-        <li class="nav-item">
+        <!-- User Roles -->
+        <li class="nav-item" *ngIf="user?.roleId == '1' || user?.roleId == '2'">
           <a
             routerLink="/admin/userRole/list"
             routerLinkActive="menu-open"
@@ -60,7 +60,11 @@
         </li>
 
         <!-- Configuration -->
-        <li class="nav-item has-treeview" [class.menu-open]="menuState.config">
+        <li
+          class="nav-item has-treeview"
+          [class.menu-open]="menuState.config"
+          *ngIf="user?.roleId == '1' || user?.roleId == '2'"
+        >
           <a href="#" class="nav-link" (click)="toggleMenu('config', $event)">
             <i class="nav-icon fas fa-cogs"></i>
             <p>
@@ -141,6 +145,45 @@
               >
                 <i class="nav-icon fas fa-home"></i>
                 <p>Villages</p>
+              </a>
+            </li>
+          </ul>
+        </li>
+
+        <!-- Issues -->
+        <li class="nav-item has-treeview" [class.menu-open]="menuState.issue">
+          <a href="#" class="nav-link" (click)="toggleMenu('issue', $event)">
+            <i class="nav-icon fas fa-bug"></i>
+            <p>
+              Issues
+              <i class="right fas fa-angle-left"></i>
+            </p>
+          </a>
+
+          <ul
+            class="nav nav-treeview"
+            [style.display]="menuState.issue ? 'block' : 'none'"
+          >
+            <li class="nav-item">
+              <a
+                routerLink="/admin/issues/list"
+                routerLinkActive="active"
+                class="nav-link"
+                [class.active]="isMenuActive('/admin/issues')"
+              >
+                <i class="nav-icon fas fa-clipboard-list"></i>
+                <p>Issues List</p>
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a
+                routerLink="/admin/issues/create"
+                routerLinkActive="active"
+                class="nav-link"
+              >
+                <i class="nav-icon fas fa-plus-circle"></i>
+                <p>Create Issue</p>
               </a>
             </li>
           </ul>

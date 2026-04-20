@@ -35,6 +35,8 @@ import { UsersListComponent } from './back-end/components/users/users-list/users
 import { UsersAddComponent } from './back-end/components/users/users-add/users-add.component';
 import { UserRolesAddComponent } from './back-end/components/user-roles/user-roles-add/user-roles-add.component';
 import { UserRolesListComponent } from './back-end/components/user-roles/user-roles-list/user-roles-list.component';
+import { IssuesListComponent } from './back-end/components/issues/issues-list/issues-list.component';
+import { IssueCreateComponent } from './back-end/components/issues/issue-create/issue-create.component';
 
 @NgModule({
   declarations: [
@@ -66,7 +68,9 @@ import { UserRolesListComponent } from './back-end/components/user-roles/user-ro
     UsersListComponent,
     UsersAddComponent,
     UserRolesAddComponent,
-    UserRolesListComponent
+    UserRolesListComponent,
+    IssuesListComponent,
+    IssueCreateComponent
   ],
   imports: [
     BrowserModule,

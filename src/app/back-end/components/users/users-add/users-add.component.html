@@ -1,309 +1,299 @@
 <div class="card">
   <div class="card-header">
-    <h5>Add User</h5>
+    <h5>{{ isEdit ? "Update User" : "Add User" }}</h5>
   </div>
 
-  <form #userForm="ngForm" (ngSubmit)="saveUser(userForm)">
+  <form
+    #userForm="ngForm"
+    (ngSubmit)="saveUser(userForm)"
+    enctype="multipart/form-data"
+    novalidate
+  >
     <div class="card-body">
+
       <!-- Alert -->
-      <div
-        *ngIf="isMessage === true"
-        class="alert alert-danger alert-dismissible fade show"
-        role="alert"
-      >
+      <div *ngIf="isMessage" class="alert alert-danger">
         {{ message }}
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="alert"
-        ></button>
       </div>
 
       <div class="row">
-        <div class="col-6 mb-3">
-          <label class="form-label">
-            User Role <span class="text-danger">*</span>
-          </label>
 
+        <!-- User Role -->
+        <div class="col-6 mb-3">
+          <label>User Role *</label>
           <select
             class="form-control"
-            [(ngModel)]="user.user_role_id"
             name="user_role_id"
+            [(ngModel)]="user.user_role_id"
+            #user_role_id="ngModel"
             required
           >
-            <option value="">-- Select User Role --</option>
-            <option *ngFor="let userRole of userRoles" [value]="userRole.id">
-              {{ userRole.name }}
+            <option value="">-- Select --</option>
+            <option *ngFor="let r of userRoles" [value]="r.id">
+              {{ r.name }}
             </option>
           </select>
 
-          <!-- Validation -->
-          <div
-            class="text-danger mt-1"
-            *ngIf="
-              userForm.submitted && userForm.controls['user_role_id']?.invalid
-            "
-          >
-            <small>User Role is required</small>
-          </div>
+          <small class="text-danger"
+            *ngIf="userForm.submitted && user_role_id.invalid">
+            User Role is required
+          </small>
         </div>
 
+        <!-- Full Name -->
         <div class="col-6 mb-3">
-          <label class="form-label">
-            Full Name <span class="text-danger">*</span>
-          </label>
-
+          <label>Full Name *</label>
           <input
             type="text"
             class="form-control"
-            [(ngModel)]="user.full_name"
             name="full_name"
+            [(ngModel)]="user.full_name"
+            #full_name="ngModel"
             required
           />
 
-          <!-- Validation -->
-          <div
-            class="text-danger mt-1"
-            *ngIf="
-              userForm.submitted && userForm.controls['full_name']?.invalid
-            "
-          >
-            <small>Full Name is required</small>
-          </div>
+          <small class="text-danger"
+            *ngIf="userForm.submitted && full_name.invalid">
+            Full Name is required
+          </small>
         </div>
 
       </div>
 
       <div class="row">
 
+        <!-- Username -->
         <div class="col-6 mb-3">
-          <label class="form-label">
-            Email <span class="text-danger">*</span>
-          </label>
-
+          <label>Username *</label>
           <input
             type="text"
             class="form-control"
-            [(ngModel)]="user.email"
+            name="user_name"
+            [(ngModel)]="user.user_name"
+            #user_name="ngModel"
+            required
+          />
+
+          <small class="text-danger"
+            *ngIf="userForm.submitted && user_name.invalid">
+            Username is required
+          </small>
+        </div>
+
+        <!-- Password -->
+        <div class="col-6 mb-3">
+          <label>Password *</label>
+          <input
+            type="password"
+            class="form-control"
+            name="password"
+            [(ngModel)]="user.password"
+            #password="ngModel"
+            [required]="!isEdit"
+          />
+
+          <small class="text-danger"
+            *ngIf="userForm.submitted && password.invalid">
+            Password is required
+          </small>
+        </div>
+
+      </div>
+
+      <div class="row">
+
+        <!-- Email -->
+        <div class="col-6 mb-3">
+          <label>Email *</label>
+          <input
+            type="email"
+            class="form-control"
             name="email"
+            [(ngModel)]="user.email"
+            #email="ngModel"
             required
+            email
           />
 
-          <!-- Validation -->
-          <div
-            class="text-danger mt-1"
-            *ngIf="
-              userForm.submitted && userForm.controls['email']?.invalid
-            "
-          >
-            <small>Email is required</small>
-          </div>
+          <small class="text-danger"
+            *ngIf="userForm.submitted && email.invalid">
+            Valid Email is required
+          </small>
         </div>
 
+        <!-- Mobile -->
         <div class="col-6 mb-3">
-          <label class="form-label">
-            Mobile
-          </label>
-
+          <label>Mobile</label>
           <input
             type="text"
             class="form-control"
-            [(ngModel)]="user.mobile"
             name="mobile"
+            [(ngModel)]="user.mobile"
+            pattern="^[0-9]{10}$"
+            #mobile="ngModel"
           />
 
-          <!-- Validation -->
-          <div
-            class="text-danger mt-1"
-            *ngIf="
-              userForm.submitted && userForm.controls['mobile']?.invalid
-            "
-          >
-            <small>Mobile is required</small>
-          </div>
+          <small class="text-danger"
+            *ngIf="userForm.submitted && mobile.invalid">
+            Enter valid 10-digit mobile number
+          </small>
         </div>
 
       </div>
 
+      <!-- Location -->
       <div class="row">
-        <div class="col-6 mb-3">
-          <label class="form-label">
-            State <span class="text-danger">*</span>
-          </label>
 
+        <div class="col-6 mb-3">
+          <label>State *</label>
           <select
             class="form-control"
-            [(ngModel)]="user.state_id"
             name="state_id"
+            [(ngModel)]="user.state_id"
+            #state_id="ngModel"
             (change)="loadDistricts(user.state_id)"
             required
           >
-            <option value="">-- Select State --</option>
-            <option *ngFor="let state of states" [value]="state.id">
-              {{ state.name }}
-            </option>
+            <option value="">-- Select --</option>
+            <option *ngFor="let s of states" [value]="s.id">{{ s.name }}</option>
           </select>
 
-          <!-- Validation -->
-          <div
-            class="text-danger mt-1"
-            *ngIf="
-              userForm.submitted && userForm.controls['state_id']?.invalid
-            "
-          >
-            <small>State is required</small>
-          </div>
+          <small class="text-danger"
+            *ngIf="userForm.submitted && state_id.invalid">
+            State is required
+          </small>
         </div>
 
         <div class="col-6 mb-3">
-          <label class="form-label">
-            District <span class="text-danger">*</span>
-          </label>
-
+          <label>District *</label>
           <select
             class="form-control"
-            [(ngModel)]="user.district_id"
             name="district_id"
+            [(ngModel)]="user.district_id"
+            #district_id="ngModel"
             (change)="loadAssemblies(user.district_id)"
             required
           >
-            <option value="">-- Select District --</option>
-            <option *ngFor="let district of districts" [value]="district.id">
-              {{ district.name }}
-            </option>
+            <option value="">-- Select --</option>
+            <option *ngFor="let d of districts" [value]="d.id">{{ d.name }}</option>
           </select>
 
-          <!-- Validation -->
-          <div
-            class="text-danger mt-1"
-            *ngIf="
-              userForm.submitted &&
-              userForm.controls['district_id']?.invalid
-            "
-          >
-            <small>District is required</small>
-          </div>
+          <small class="text-danger"
+            *ngIf="userForm.submitted && district_id.invalid">
+            District is required
+          </small>
         </div>
+
       </div>
 
       <div class="row">
-        <div class="col-6 mb-3">
-          <label class="form-label">
-            Assembly <span class="text-danger">*</span>
-          </label>
 
+        <div class="col-6 mb-3">
+          <label>Assembly </label>
           <select
             class="form-control"
-            [(ngModel)]="user.assembly_id"
             name="assembly_id"
+            [(ngModel)]="user.assembly_id"
+            #assembly_id="ngModel"
             (change)="loadMandals(user.assembly_id)"
-            required
+            
           >
-            <option value="">-- Select Assembly --</option>
-            <option *ngFor="let assembly of assemblies" [value]="assembly.id">
-              {{ assembly.name }}
-            </option>
+            <option value="">-- Select --</option>
+            <option *ngFor="let a of assemblies" [value]="a.id">{{ a.name }}</option>
           </select>
 
-          <!-- Validation -->
-          <div
-            class="text-danger mt-1"
-            *ngIf="
-              userForm.submitted &&
-              userForm.controls['assembly_id']?.invalid
-            "
-          >
-            <small>Assembly is required</small>
-          </div>
+          <!-- <small class="text-danger"
+            *ngIf="userForm.submitted && assembly_id.invalid">
+            Assembly is required
+          </small> -->
         </div>
 
         <div class="col-6 mb-3">
-          <label class="form-label">
-            Mandal <span class="text-danger">*</span>
-          </label>
-
+          <label>Mandal </label>
           <select
             class="form-control"
-            [(ngModel)]="user.mandal_id"
             name="mandal_id"
-            required
+            [(ngModel)]="user.mandal_id"
+            #mandal_id="ngModel"
+            (change)="loadVillages(user.mandal_id)"
+            
           >
-            <option value="">-- Select Mandal --</option>
-            <option *ngFor="let mandal of mandals" [value]="mandal.id">
-              {{ mandal.name }}
-            </option>
+            <option value="">-- Select --</option>
+            <option *ngFor="let m of mandals" [value]="m.id">{{ m.name }}</option>
           </select>
 
-          <!-- Validation -->
-          <div
-            class="text-danger mt-1"
-            *ngIf="
-              userForm.submitted &&
-              userForm.controls['mandal_id']?.invalid
-            "
-          >
-            <small>Mandal is required</small>
-          </div>
+          <!-- <small class="text-danger"
+            *ngIf="userForm.submitted && mandal_id.invalid">
+            Mandal is required
+          </small> -->
         </div>
+
       </div>
 
       <div class="row">
 
         <div class="col-6 mb-3">
-          <label class="form-label">
-            User Name <span class="text-danger">*</span>
-          </label>
-
-          <input
-            type="text"
+          <label>Village </label>
+          <select
             class="form-control"
-            [(ngModel)]="user.name"
-            name="name"
-            required
-          />
-
-          <!-- Validation -->
-          <div
-            class="text-danger mt-1"
-            *ngIf="
-              userForm.submitted && userForm.controls['name']?.invalid
-            "
+            name="village_id"
+            [(ngModel)]="user.village_id"
+            #village_id="ngModel"
+            
           >
-            <small>Name is required</small>
-          </div>
+            <option value="">-- Select --</option>
+            <option *ngFor="let v of villages" [value]="v.id">{{ v.name }}</option>
+          </select>
+
+          <!-- <small class="text-danger"
+            *ngIf="userForm.submitted && village_id.invalid">
+            Village is required
+          </small> -->
         </div>
 
+        <!-- Profile Pic -->
         <div class="col-6 mb-3">
-          <label class="form-label">
-            Pincode 
-          </label>
+          <label>Profile Pic</label>
 
           <input
-            type="text"
+            type="file"
+            #fileInput
             class="form-control"
-            [(ngModel)]="user.pincode"
-            name="pincode"
+            name="profile_pic"
+            accept="image/*"
+            (change)="onFileChange($event)"
           />
 
-          <!-- Validation -->
           <div
-            class="text-danger mt-1"
-            *ngIf="
-              userForm.submitted && userForm.controls['pincode']?.invalid
-            "
+            *ngIf="imagePreview || (isEdit && user.profile_pic)"
+            class="mt-2 d-flex align-items-center"
           >
-            <small>Pincode is required</small>
+            <img
+              [src]="imagePreview ? imagePreview : (baseUrl + '/uploads/profile/' + user.profile_pic)"
+              width="100"
+              height="100"
+              style="object-fit: cover; border-radius: 5px"
+            />
+
+            <button
+              type="button"
+              class="btn btn-danger btn-sm ml-2"
+              (click)="resetImage(true)"
+            >
+              Reset
+            </button>
           </div>
         </div>
-
 
       </div>
+
     </div>
 
-    <div class="card-footer">
-      <button class="btn btn-primary mr-3">
+    <div class="card-footer d-flex align-items-center">
+      <button class="btn btn-primary mr-2">
         {{ isEdit ? "Update" : "Save" }}
       </button>
+
       <button type="button" class="btn btn-dark" (click)="handleBackBtn()">
         Back
       </button>

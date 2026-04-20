@@ -105,7 +105,7 @@ export class UsersListComponent {
   deleteUser(id: string) {
     const payload = JSON.stringify({
       id: id,
-      master_id: '1',
+      master_id: '8',
     });
 
     this.apiService.request('POST', '/deleteRecord', payload).subscribe({
