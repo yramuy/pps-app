@@ -4,13 +4,13 @@ import { AuthService } from 'src/app/services/auth.service';
 import { LoaderService } from 'src/app/services/loader.service';
 
 @Component({
-  selector: 'app-issues-list',
-  templateUrl: './issues-list.component.html',
-  styleUrls: ['./issues-list.component.scss'],
+  selector: 'app-assigned-to-me-issues',
+  templateUrl: './assigned-to-me-issues.component.html',
+  styleUrls: ['./assigned-to-me-issues.component.scss'],
 })
-export class IssuesListComponent {
+export class AssignedToMeIssuesComponent {
   // 🔹 Signals (state)
-  issuesList = signal<any[]>([]);
+  assignedToMeIssues = signal<any[]>([]);
   loginUser = signal<any>(null);
   loading = signal(false);
   message = signal('');
@@ -25,46 +25,40 @@ export class IssuesListComponent {
       this.loginUser.set(user);
 
       if (user) {
-        this.loadAllIssues(user); // ✅ only once per user
+        this.loadAssignedToMeIssues(user); // ✅ only once per user
       }
     });
   }
 
   // 🔥 API call
-  loadAllIssues(user: any) {
+  loadAssignedToMeIssues(user: any) {
     this.loading.set(true);
     this.loader.show();
 
     const payloadObj: any = {};
 
-    if (user?.stateID) payloadObj.state_id = user.stateID;
-    if (user?.districtID) payloadObj.district_id = user.districtID;
-    if (user?.assemblyID) payloadObj.assembly_id = user.assemblyID;
-    if (user?.mandalID) payloadObj.mandal_id = user.mandalID;
-    if (user?.villageID) payloadObj.village_id = user.villageID;
+    if (user?.userId) payloadObj.assigned_to = user.userId;
 
     payloadObj.category_id = '';
 
     const payload = JSON.stringify(payloadObj);
 
-    console.log('All Issues Payload:', payload);
-
-    this.apiService.request('POST', '/allIssues', payload).subscribe({
+    this.apiService.request('POST', '/assignedToMeIssues', payload).subscribe({
       next: (res: any) => {
-        this.issuesList.set(res.all_issues || []);
-        console.log('issuesList : ', this.issuesList()); // ✅ correct place
+        this.assignedToMeIssues.set(res.assignedToMe_issues || []);
+        console.log('assignedToMeIssues : ', this.assignedToMeIssues()); // ✅ correct place
         this.loading.set(false);
         this.loader.hide();
 
         setTimeout(() => {
-          if (this.issuesList().length > 0) {
+          if (this.assignedToMeIssues().length > 0) {
             // ✅ Destroy if already exists
-            if ($.fn.DataTable.isDataTable('#issuesTable')) {
-              ($('#issuesTable') as any).DataTable().destroy();
+            if ($.fn.DataTable.isDataTable('#assignedToMeIssuesTable')) {
+              ($('#assignedToMeIssuesTable') as any).DataTable().destroy();
             }
 
             // ✅ Reinitialize
-            ($('#issuesTable') as any).DataTable({
+            ($('#assignedToMeIssuesTable') as any).DataTable({
               dom: 'Bfrtip',
               buttons: ['excel', 'pdf'],
               responsive: true,

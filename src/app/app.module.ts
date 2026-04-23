@@ -37,6 +37,8 @@ import { UserRolesAddComponent } from './back-end/components/user-roles/user-rol
 import { UserRolesListComponent } from './back-end/components/user-roles/user-roles-list/user-roles-list.component';
 import { IssuesListComponent } from './back-end/components/issues/issues-list/issues-list.component';
 import { IssueCreateComponent } from './back-end/components/issues/issue-create/issue-create.component';
+import { MyIssuesComponent } from './back-end/components/issues/my-issues/my-issues.component';
+import { AssignedToMeIssuesComponent } from './back-end/components/issues/assigned-to-me-issues/assigned-to-me-issues.component';
 
 @NgModule({
   declarations: [
@@ -70,7 +72,9 @@ import { IssueCreateComponent } from './back-end/components/issues/issue-create/
     UserRolesAddComponent,
     UserRolesListComponent,
     IssuesListComponent,
-    IssueCreateComponent
+    IssueCreateComponent,
+    MyIssuesComponent,
+    AssignedToMeIssuesComponent
   ],
   imports: [
     BrowserModule,

@@ -2,7 +2,7 @@
   <div class="container-fluid">
     <div class="card">
       <div class="card-header">
-        <h3 class="card-title">All Issues</h3>
+        <h3 class="card-title">My Issues</h3>
       </div>
 
       <div id="pageLoader" *ngIf="loader.loading$ | async">
@@ -18,35 +18,31 @@
           {{ message() }}
         </div> -->
 
-        <table id="issuesTable" class="table table-bordered table-striped">
+        <table id="myIssuesTable" class="table table-bordered table-striped">
           <thead>
             <tr>
               <th>Sno</th>
               <th>Category</th>
               <th>Issue Title</th>
               <th>Description</th>
-              <th>Assembly</th>
               <th>Madal</th>
               <th>Village</th>
-              <th>Tag Representive</th>
               <th>Status</th>
             </tr>
           </thead>
 
           <tbody>
-            <tr *ngFor="let issue of issuesList(); let i = index">
+            <tr *ngFor="let issue of myIssues(); let i = index">
               <td>{{ i + 1 }}</td>
               <td>{{ issue.category }}</td>
               <td>{{ issue.issue_title }}</td>
               <td>{{ issue.issue_description }}</td>
-              <td>{{ issue.assembly }}</td>
               <td>{{ issue.mandal }}</td>
               <td>{{ issue.village }}</td>
-              <td>{{ issue.full_name }}</td>
               <td>{{ issue.status }}</td>
             </tr>
-            <tr *ngIf="issuesList().length === 0">
-              <td colspan="5">No issues found</td>
+            <tr *ngIf="myIssues().length === 0">
+              <td colspan="7">No issues found</td>
             </tr>
           </tbody>
         </table>

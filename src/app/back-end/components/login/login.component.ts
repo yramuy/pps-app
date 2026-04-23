@@ -15,15 +15,14 @@ export class LoginComponent {
 
   constructor(
     private router: Router,
-    private authService: AuthService
-  ) { }
+    private authService: AuthService,
+  ) {}
 
   togglePassword() {
-    this.showPassword = !this.showPassword
+    this.showPassword = !this.showPassword;
   }
 
   login() {
-
     if (!this.username || !this.password) {
       alert('Username and Password are required');
       return;
@@ -33,33 +32,37 @@ export class LoginComponent {
 
     const payload = {
       username: this.username,
-      password: this.password
+      password: this.password,
     };
-
-    console.log("Payload :", payload);
-
 
     this.authService.login(payload).subscribe({
       next: (res: any) => {
+        // ✅ Check API response
+        if (res.status === true) {
+          this.authService.saveToken(res.token);
+          this.authService.saveUserData(res);
+          this.authService.setLoginStatus(true);
 
-        this.authService.saveToken(res.token);
-        this.authService.saveUserData(res);
-        // set login status
-        this.authService.setLoginStatus(true);
-
-        this.router.navigate(['/admin/dashboard']);
+          this.router.navigate(['/admin/dashboard']);
+        } else {
+          // ❌ Invalid credentials case
+          alert(res.message || 'Invalid username or password');
+          this.authService.setLoginStatus(false);
+        }
 
         this.loading = false;
       },
+
       error: (err) => {
         if (err.status === 401) {
           alert('Invalid username or password');
         } else {
           alert('Something went wrong. Please try again');
         }
-        this.loading = false;
-      }
-    });
 
+        this.authService.setLoginStatus(false);
+        this.loading = false;
+      },
+    });
   }
 }

@@ -27,6 +27,8 @@ import { UserRolesListComponent } from './back-end/components/user-roles/user-ro
 import { UserRolesAddComponent } from './back-end/components/user-roles/user-roles-add/user-roles-add.component';
 import { IssuesListComponent } from './back-end/components/issues/issues-list/issues-list.component';
 import { IssueCreateComponent } from './back-end/components/issues/issue-create/issue-create.component';
+import { MyIssuesComponent } from './back-end/components/issues/my-issues/my-issues.component';
+import { AssignedToMeIssuesComponent } from './back-end/components/issues/assigned-to-me-issues/assigned-to-me-issues.component';
 
 const routes: Routes = [
   
@@ -62,6 +64,8 @@ const routes: Routes = [
 
       { path: 'issues/list', component: IssuesListComponent },
       { path: 'issues/create', component: IssueCreateComponent },
+      { path: 'issues/my-issues', component: MyIssuesComponent },
+      { path: 'issues/assigned-to-me-issues', component: AssignedToMeIssuesComponent },
 
       { path: 'reports', component: ReportsComponent }
     ],

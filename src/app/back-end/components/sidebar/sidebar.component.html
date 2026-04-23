@@ -166,26 +166,51 @@
           >
             <li class="nav-item">
               <a
-                routerLink="/admin/issues/list"
-                routerLinkActive="active"
-                class="nav-link"
-                [class.active]="isMenuActive('/admin/issues')"
-              >
-                <i class="nav-icon fas fa-clipboard-list"></i>
-                <p>Issues List</p>
-              </a>
-            </li>
-
-            <li class="nav-item">
-              <a
                 routerLink="/admin/issues/create"
-                routerLinkActive="active"
+                routerLinkActive="menu-open"
                 class="nav-link"
+                [class.active]="isMenuActive('/admin/issues/create')"
               >
                 <i class="nav-icon fas fa-plus-circle"></i>
                 <p>Create Issue</p>
               </a>
             </li>
+            <li class="nav-item">
+              <a
+                routerLink="/admin/issues/my-issues"
+                routerLinkActive="menu-open"
+                class="nav-link"
+                [class.active]="isMenuActive('/admin/issues/my-issues')"
+              >
+                <i class="nav-icon fas fa-user-circle"></i>
+                <p>MY Issues</p>
+              </a>
+            </li>
+            <li class="nav-item" *ngIf="user?.roleId != '7'">
+              <a
+                routerLink="/admin/issues/assigned-to-me-issues"
+                routerLinkActive="menu-open"
+                class="nav-link"
+                [class.active]="isMenuActive('/admin/issues/assigned-to-me-issues')"
+              >
+                <i class="nav-icon fas fa-user-circle"></i>
+                <p>Assigned To Me Issues</p>
+              </a>
+            </li>
+
+            <li class="nav-item" *ngIf="user?.roleId != '7'">
+              <a
+                routerLink="/admin/issues/list"
+                routerLinkActive="menu-open"
+                class="nav-link"
+                [class.active]="isMenuActive('/admin/issues/list')"
+              >
+                <i class="nav-icon fas fa-clipboard-list"></i>
+                <p>ALL Issues</p>
+              </a>
+            </li>
+
+            
           </ul>
         </li>
 

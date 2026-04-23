@@ -1,13 +1,11 @@
 <section class="content">
   <div class="container-fluid">
-
     <!-- 🔥 Summary Cards -->
     <div class="row">
-
       <div class="col-lg-3 col-6">
         <div class="small-box bg-primary">
           <div class="inner">
-            <h3>{{totalIssues}}</h3>
+            <h3>{{ totalIssues() }}</h3>
             <p>Total Issues</p>
           </div>
           <div class="icon">
@@ -19,7 +17,7 @@
       <div class="col-lg-3 col-6">
         <div class="small-box bg-success">
           <div class="inner">
-            <h3>{{resolved}}</h3>
+            <h3>{{ resolved() }}</h3>
             <p>Resolved</p>
           </div>
           <div class="icon">
@@ -31,7 +29,7 @@
       <div class="col-lg-3 col-6">
         <div class="small-box bg-warning">
           <div class="inner">
-            <h3>{{pending}}</h3>
+            <h3>{{ pending() }}</h3>
             <p>Pending</p>
           </div>
           <div class="icon">
@@ -43,7 +41,7 @@
       <div class="col-lg-3 col-6">
         <div class="small-box bg-danger">
           <div class="inner">
-            <h3>{{critical}}</h3>
+            <h3>{{ critical() }}</h3>
             <p>Critical Issues</p>
           </div>
           <div class="icon">
@@ -51,12 +49,10 @@
           </div>
         </div>
       </div>
-
     </div>
 
     <!-- 📊 Charts Row -->
     <div class="row">
-
       <!-- Category Wise -->
       <div class="col-md-6">
         <div class="card">
@@ -80,7 +76,6 @@
           </div>
         </div>
       </div>
-
     </div>
 
     <!-- 📋 Recent Issues Table -->
@@ -102,26 +97,29 @@
           </thead>
 
           <tbody>
-            <tr *ngFor="let item of issues">
-              <td>{{item.id}}</td>
-              <td>{{item.title}}</td>
-              <td>{{item.category}}</td>
-              <td>{{item.region}}</td>
+            <tr *ngFor="let item of recent_issues()">
+              <td>{{ item.id }}</td>
+              <td>{{ item.issue_title }}</td>
+              <td>{{ item.category }}</td>
+              <td>{{ item.assembly }}</td>
               <td>
-                <span class="badge"
+                <span
+                  class="badge"
                   [ngClass]="{
-                    'badge-success': item.status=='Resolved',
-                    'badge-warning': item.status=='Pending'
-                  }">
-                  {{item.status}}
+                    'badge-success': item.status == 'Resolved',
+                    'badge-warning': item.status == 'Submitted',
+                  }"
+                >
+                  {{ item.status }}
                 </span>
               </td>
             </tr>
+            <tr *ngIf="recent_issues().length === 0">
+              <td colspan="5">No recent issues found</td>
+            </tr>
           </tbody>
-
         </table>
       </div>
     </div>
-
   </div>
 </section>

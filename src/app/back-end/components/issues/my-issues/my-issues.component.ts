@@ -4,13 +4,13 @@ import { AuthService } from 'src/app/services/auth.service';
 import { LoaderService } from 'src/app/services/loader.service';
 
 @Component({
-  selector: 'app-issues-list',
-  templateUrl: './issues-list.component.html',
-  styleUrls: ['./issues-list.component.scss'],
+  selector: 'app-my-issues',
+  templateUrl: './my-issues.component.html',
+  styleUrls: ['./my-issues.component.scss'],
 })
-export class IssuesListComponent {
+export class MyIssuesComponent {
   // 🔹 Signals (state)
-  issuesList = signal<any[]>([]);
+  myIssues = signal<any[]>([]);
   loginUser = signal<any>(null);
   loading = signal(false);
   message = signal('');
@@ -25,46 +25,38 @@ export class IssuesListComponent {
       this.loginUser.set(user);
 
       if (user) {
-        this.loadAllIssues(user); // ✅ only once per user
+        this.loadMyIssues(user); // ✅ only once per user
       }
     });
   }
 
   // 🔥 API call
-  loadAllIssues(user: any) {
+  loadMyIssues(user: any) {
     this.loading.set(true);
     this.loader.show();
 
     const payloadObj: any = {};
 
-    if (user?.stateID) payloadObj.state_id = user.stateID;
-    if (user?.districtID) payloadObj.district_id = user.districtID;
-    if (user?.assemblyID) payloadObj.assembly_id = user.assemblyID;
-    if (user?.mandalID) payloadObj.mandal_id = user.mandalID;
-    if (user?.villageID) payloadObj.village_id = user.villageID;
+    if (user?.userId) payloadObj.created_by = user.userId;
 
     payloadObj.category_id = '';
 
     const payload = JSON.stringify(payloadObj);
 
-    console.log('All Issues Payload:', payload);
-
-    this.apiService.request('POST', '/allIssues', payload).subscribe({
+    this.apiService.request('POST', '/myIssues', payload).subscribe({
       next: (res: any) => {
-        this.issuesList.set(res.all_issues || []);
-        console.log('issuesList : ', this.issuesList()); // ✅ correct place
+        this.myIssues.set(res.my_issues || []);
+        console.log('myIssues : ', this.myIssues()); // ✅ correct place
         this.loading.set(false);
         this.loader.hide();
 
         setTimeout(() => {
-          if (this.issuesList().length > 0) {
-            // ✅ Destroy if already exists
-            if ($.fn.DataTable.isDataTable('#issuesTable')) {
-              ($('#issuesTable') as any).DataTable().destroy();
+          if (this.myIssues().length > 0) {
+            if ($.fn.DataTable.isDataTable('#myIssuesTable')) {
+              ($('#myIssuesTable') as any).DataTable().destroy();
             }
 
-            // ✅ Reinitialize
-            ($('#issuesTable') as any).DataTable({
+            ($('#myIssuesTable') as any).DataTable({
               dom: 'Bfrtip',
               buttons: ['excel', 'pdf'],
               responsive: true,
