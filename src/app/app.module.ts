@@ -39,6 +39,7 @@ import { IssuesListComponent } from './back-end/components/issues/issues-list/is
 import { IssueCreateComponent } from './back-end/components/issues/issue-create/issue-create.component';
 import { MyIssuesComponent } from './back-end/components/issues/my-issues/my-issues.component';
 import { AssignedToMeIssuesComponent } from './back-end/components/issues/assigned-to-me-issues/assigned-to-me-issues.component';
+import { ViewIssueComponent } from './back-end/components/issues/view-issue/view-issue.component';
 
 @NgModule({
   declarations: [
@@ -74,7 +75,8 @@ import { AssignedToMeIssuesComponent } from './back-end/components/issues/assign
     IssuesListComponent,
     IssueCreateComponent,
     MyIssuesComponent,
-    AssignedToMeIssuesComponent
+    AssignedToMeIssuesComponent,
+    ViewIssueComponent
   ],
   imports: [
     BrowserModule,

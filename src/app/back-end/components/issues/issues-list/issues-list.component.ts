@@ -1,4 +1,5 @@
 import { Component, signal } from '@angular/core';
+import { Router } from '@angular/router';
 import { ApiService } from 'src/app/services/api.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { LoaderService } from 'src/app/services/loader.service';
@@ -19,6 +20,7 @@ export class IssuesListComponent {
     private authService: AuthService,
     private apiService: ApiService,
     public loader: LoaderService,
+    private router: Router
   ) {
     // ✅ Subscribe once → trigger API
     this.authService.user$.subscribe((user) => {
@@ -76,7 +78,7 @@ export class IssuesListComponent {
       error: (err: any) => {
         if (err.status === 401) {
           this.message.set('Token expired');
-          this.authService.setLoginStatus(false);
+          this.authService.logout();
         } else if (err.status === 400) {
           this.message.set('Invalid request data');
         } else if (err.status === 500) {
@@ -87,6 +89,14 @@ export class IssuesListComponent {
 
         this.loading.set(false);
         this.loader.hide();
+      },
+    });
+  }
+
+    handleView(id: any) {
+    this.router.navigate(['/admin/issues/view-issue'], {
+      state: {
+        issueID: id
       },
     });
   }

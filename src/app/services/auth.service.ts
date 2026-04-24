@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
+import { BehaviorSubject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private userSubject = new BehaviorSubject<any>(null);
+  private userSubject = new BehaviorSubject<any>(this.getUserFromStorage());
   user$ = this.userSubject.asObservable();
 
   private apiUrl = '/pps/login';
@@ -17,37 +17,35 @@ export class AuthService {
     return this.http.post(this.apiUrl, data);
   }
 
+  // ✅ Save token
   saveToken(token: string) {
     localStorage.setItem('token', token);
   }
 
+  // ✅ Save user + update signal instantly
   saveUserData(userData: any) {
     localStorage.setItem('user', JSON.stringify(userData));
-    this.userSubject.next(userData);
+    this.userSubject.next(userData); // 🔥 immediate update
   }
 
-  getUser() {
+  // ✅ Get from storage
+  private getUserFromStorage() {
     return JSON.parse(localStorage.getItem('user') || 'null');
   }
 
-  loadUserFromStorage() {
-    const user = this.getUser();
-    if (user) {
-      this.userSubject.next(user);
-    }
+  getUser() {
+    return this.userSubject.value;
   }
 
-  // auth.service.ts
-  isLoggedIn$ = new BehaviorSubject<boolean>(
-    JSON.parse(localStorage.getItem('isLoggedIn') || 'false'),
-  );
-
-  setLoginStatus(status: boolean) {
-    localStorage.setItem('isLoggedIn', JSON.stringify(status));
-    this.isLoggedIn$.next(status);
-  }
-
+  // ✅ Login check based on user
   isLoggedIn(): boolean {
-    return JSON.parse(localStorage.getItem('isLoggedIn') || 'false');
+    return !!this.userSubject.value;
+  }
+
+  // ✅ Logout
+  logout() {
+    localStorage.removeItem('user');
+    localStorage.removeItem('token');
+    this.userSubject.next(null);
   }
 }

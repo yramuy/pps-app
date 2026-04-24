@@ -151,8 +151,10 @@
             </option>
           </select>
 
-          <small class="text-danger"
-            *ngIf="issueForm.submitted && assembly_id.invalid">
+          <small
+            class="text-danger"
+            *ngIf="issueForm.submitted && assembly_id.invalid"
+          >
             Assembly is required
           </small>
         </div>
@@ -234,32 +236,24 @@
 
           <input
             type="file"
-            #fileInput="ngModel"
+            #fileInput
             class="form-control"
-            name="issue_pic"
-            [(ngModel)]="issue.issue_pic"
             accept="image/*"
             (change)="onFileChange($event)"
-            required
           />
 
+          <!-- Validation -->
           <small
             class="text-danger"
-            *ngIf="issueForm.submitted && !issue.issue_pic && !imagePreview"
+            *ngIf="issueForm.submitted && !imagePreview"
           >
             Issue Picture is required
           </small>
 
-          <div
-            *ngIf="imagePreview || (isEdit && issue.issue_pic)"
-            class="mt-2 d-flex align-items-center"
-          >
+          <!-- Preview -->
+          <div *ngIf="imagePreview" class="mt-2 d-flex align-items-center">
             <img
-              [src]="
-                imagePreview
-                  ? imagePreview
-                  : baseUrl + '/uploads/issues/' + issue.issue_pic
-              "
+              [src]="imagePreview"
               width="100"
               height="100"
               style="object-fit: cover; border-radius: 5px"

@@ -1,4 +1,4 @@
-import { Component, ElementRef, signal, ViewChild } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ApiService } from 'src/app/services/api.service';
@@ -10,19 +10,18 @@ import { AuthService } from 'src/app/services/auth.service';
   styleUrls: ['./issue-create.component.scss'],
 })
 export class IssueCreateComponent {
-  formData: any = {};
   message: string = '';
   isMessage: boolean = false;
+
   states: any = [];
   districts: any = [];
   assemblies: any = [];
   mandals: any = [];
-  issueRoles: any = [];
   villages: any = [];
-  createdBy: any = '';
-  loginUser: any;
   categories: any = [];
   representatives: any = [];
+
+  loginUser: any;
 
   issue: any = {
     id: '',
@@ -35,14 +34,17 @@ export class IssueCreateComponent {
     mandal_id: '',
     village_id: '',
     assigned_to: '',
+    issue_pic: '',
     master_id: '9',
     mode: 'web',
   };
 
   isEdit: boolean = false;
+
   selectedFile: File | null = null;
   imagePreview: string | ArrayBuffer | null = null;
-  baseUrl = 'https://civsp.in/pps'; // change to your server URL
+
+  baseUrl = 'https://civsp.in/pps';
 
   @ViewChild('fileInput') fileInput!: ElementRef;
 
@@ -58,17 +60,22 @@ export class IssueCreateComponent {
 
     const state: any = history.state;
 
+    // ✅ Edit Mode Data Binding
     if (state.issue) {
-      this.issue = {
-        ...state.issue,
-        master_id: 8,
-      };
-      this.isEdit = state.isEdit;
+      this.issue = state.issue;
+      this.isEdit = true;
 
-      this.loadDistricts(state.issue.state_id);
-      this.loadAssemblies(state.issue.district_id);
-      this.loadMandals(state.issue.assembly_id);
-      this.loadVillages(state.issue.mandal_id);
+      // ✅ Set preview from existing image
+      if (this.issue.issue_pic) {
+        this.imagePreview = this.issue.issue_pic;
+      }
+
+      console.log('imagePreview', this.imagePreview);
+
+      this.loadDistricts(this.issue.state_id);
+      this.loadAssemblies(this.issue.district_id);
+      this.loadMandals(this.issue.assembly_id);
+      this.loadVillages(this.issue.mandal_id);
     }
 
     this.authService.user$.subscribe((user) => {
@@ -76,272 +83,181 @@ export class IssueCreateComponent {
     });
   }
 
+  // ================= FILE HANDLING =================
   onFileChange(event: any) {
     const file = event.target.files[0];
 
     if (file && file.type.startsWith('image/')) {
       this.selectedFile = file;
 
-      // preview
       const reader = new FileReader();
       reader.onload = () => {
         this.imagePreview = reader.result;
       };
       reader.readAsDataURL(file);
     } else {
-      alert('Only image files are allowed');
-      event.target.value = '';
-      this.selectedFile = null;
-      this.imagePreview = null;
+      alert('Only image files allowed');
+      this.resetImage();
     }
   }
 
   resetImage(removeExisting: boolean = false) {
-    // clear selected file
     this.selectedFile = null;
     this.imagePreview = null;
 
-    // clear file input
     if (this.fileInput) {
       this.fileInput.nativeElement.value = '';
     }
 
-    // if edit mode and issue clicks remove
     if (removeExisting) {
       this.issue.issue_pic = '';
     }
   }
 
+  // ================= MASTER LOAD =================
   loadCategories() {
-    const payload = JSON.stringify({
-      master_id: 1,
-      mode: 'web',
-    });
-
-    this.apiService.request('POST', '/masterData', payload).subscribe({
-      next: (res: any) => {
+    this.apiService
+      .request(
+        'POST',
+        '/masterData',
+        JSON.stringify({
+          master_id: 1,
+          mode: 'web',
+        }),
+      )
+      .subscribe((res) => {
         this.categories = res.master_data || [];
-      },
-      error: (err: any) => {
-        if (err.status === 401) {
-          this.showMessage('Token expired');
-          this.authService.setLoginStatus(false);
-        } else if (err.status === 400) {
-          this.showMessage('Invalid request data');
-        } else if (err.status === 500) {
-          this.showMessage('Server error. Please try again later');
-        } else {
-          this.showMessage('Something went wrong. Please try again later');
-        }
-      },
-    });
+      });
   }
 
   loadStates() {
-    const payload = JSON.stringify({
-      master_id: 2,
-      mode: 'web',
-    });
-
-    this.apiService.request('POST', '/masterData', payload).subscribe({
-      next: (res: any) => {
+    this.apiService
+      .request(
+        'POST',
+        '/masterData',
+        JSON.stringify({
+          master_id: 2,
+          mode: 'web',
+        }),
+      )
+      .subscribe((res) => {
         this.states = res.master_data || [];
-      },
-      error: (err: any) => {
-        if (err.status === 401) {
-          this.showMessage('Token expired');
-          this.authService.setLoginStatus(false);
-        } else if (err.status === 400) {
-          this.showMessage('Invalid request data');
-        } else if (err.status === 500) {
-          this.showMessage('Server error. Please try again later');
-        } else {
-          this.showMessage('Something went wrong. Please try again later');
-        }
-      },
-    });
+      });
   }
 
   loadDistricts(stateId: any) {
     this.loadRepresentatives();
 
-    const payload = JSON.stringify({
-      master_id: 3,
-      dropdown_id: stateId,
-      mode: 'web',
-    });
-
-    console.log('Payload : ', payload);
-
     this.apiService
-      .request('POST', '/dependanceMasterData', payload)
-      .subscribe({
-        next: (res: any) => {
-          this.districts = res.dependance_master_data || [];
-        },
-        error: (err: any) => {
-          if (err.status === 401) {
-            this.showMessage('Token expired');
-            this.authService.setLoginStatus(false);
-          } else if (err.status === 400) {
-            this.showMessage('Invalid request data');
-          } else if (err.status === 500) {
-            this.showMessage('Server error. Please try again later');
-          } else {
-            this.showMessage('Something went wrong. Please try again later');
-          }
-        },
+      .request(
+        'POST',
+        '/dependanceMasterData',
+        JSON.stringify({
+          master_id: 3,
+          dropdown_id: stateId,
+          mode: 'web',
+        }),
+      )
+      .subscribe((res) => {
+        this.districts = res.dependance_master_data || [];
       });
   }
 
   loadAssemblies(districtId: any) {
     this.loadRepresentatives();
 
-    const payload = JSON.stringify({
-      master_id: 4,
-      dropdown_id: districtId,
-      mode: 'web',
-    });
-
-    console.log('Payload : ', payload);
-
     this.apiService
-      .request('POST', '/dependanceMasterData', payload)
-      .subscribe({
-        next: (res: any) => {
-          this.assemblies = res.dependance_master_data || [];
-        },
-        error: (err: any) => {
-          if (err.status === 401) {
-            this.showMessage('Token expired');
-            this.authService.setLoginStatus(false);
-          } else if (err.status === 400) {
-            this.showMessage('Invalid request data');
-          } else if (err.status === 500) {
-            this.showMessage('Server error. Please try again later');
-          } else {
-            this.showMessage('Something went wrong. Please try again later');
-          }
-        },
+      .request(
+        'POST',
+        '/dependanceMasterData',
+        JSON.stringify({
+          master_id: 4,
+          dropdown_id: districtId,
+          mode: 'web',
+        }),
+      )
+      .subscribe((res) => {
+        this.assemblies = res.dependance_master_data || [];
       });
   }
 
   loadMandals(assemblyId: any) {
     this.loadRepresentatives();
 
-    const payload = JSON.stringify({
-      master_id: 5,
-      dropdown_id: assemblyId,
-      mode: 'web',
-    });
-
-    console.log('Payload : ', payload);
-
     this.apiService
-      .request('POST', '/dependanceMasterData', payload)
-      .subscribe({
-        next: (res: any) => {
-          this.mandals = res.dependance_master_data || [];
-        },
-        error: (err: any) => {
-          if (err.status === 401) {
-            this.showMessage('Token expired');
-            this.authService.setLoginStatus(false);
-          } else if (err.status === 400) {
-            this.showMessage('Invalid request data');
-          } else if (err.status === 500) {
-            this.showMessage('Server error. Please try again later');
-          } else {
-            this.showMessage('Something went wrong. Please try again later');
-          }
-        },
+      .request(
+        'POST',
+        '/dependanceMasterData',
+        JSON.stringify({
+          master_id: 5,
+          dropdown_id: assemblyId,
+          mode: 'web',
+        }),
+      )
+      .subscribe((res) => {
+        this.mandals = res.dependance_master_data || [];
       });
   }
 
   loadVillages(mandalId: any) {
     this.loadRepresentatives();
 
-    const payload = JSON.stringify({
-      master_id: 6,
-      dropdown_id: mandalId,
-      mode: 'web',
-    });
-
-    console.log('Payload : ', payload);
-
     this.apiService
-      .request('POST', '/dependanceMasterData', payload)
-      .subscribe({
-        next: (res: any) => {
-          this.villages = res.dependance_master_data || [];
-        },
-        error: (err: any) => {
-          if (err.status === 401) {
-            this.showMessage('Token expired');
-            this.authService.setLoginStatus(false);
-          } else if (err.status === 400) {
-            this.showMessage('Invalid request data');
-          } else if (err.status === 500) {
-            this.showMessage('Server error. Please try again later');
-          } else {
-            this.showMessage('Something went wrong. Please try again later');
-          }
-        },
+      .request(
+        'POST',
+        '/dependanceMasterData',
+        JSON.stringify({
+          master_id: 6,
+          dropdown_id: mandalId,
+          mode: 'web',
+        }),
+      )
+      .subscribe((res) => {
+        this.villages = res.dependance_master_data || [];
       });
   }
 
   loadRepresentatives() {
-    const payload = JSON.stringify({
-      state_id: this.issue.state_id,
-      district_id: this.issue.district_id,
-      assembly_id: this.issue.assembly_id,
-      mandal_id: this.issue.mandal_id,
-      village_id: this.issue.village_id,
-    });
-
-    console.log('Representative Payload : ', payload);
-
-    this.apiService.request('POST', '/usersListByLocation', payload).subscribe({
-      next: (res: any) => {
+    this.apiService
+      .request(
+        'POST',
+        '/usersListByLocation',
+        JSON.stringify({
+          state_id: this.issue.state_id,
+          district_id: this.issue.district_id,
+          assembly_id: this.issue.assembly_id,
+          mandal_id: this.issue.mandal_id,
+          village_id: this.issue.village_id,
+        }),
+      )
+      .subscribe((res) => {
         this.representatives = res.usersList || [];
-      },
-      error: (err: any) => {
-        if (err.status === 401) {
-          this.showMessage('Token expired');
-          this.authService.setLoginStatus(false);
-        } else if (err.status === 400) {
-          this.showMessage('Invalid request data');
-        } else if (err.status === 500) {
-          this.showMessage('Server error. Please try again later');
-        } else {
-          this.showMessage('Something went wrong. Please try again later');
-        }
-      },
-    });
+      });
   }
 
-  // ✅ Save function
+  // ================= SAVE / UPDATE =================
   saveIssue(form: NgForm) {
     if (form.invalid) return;
 
     const formData = new FormData();
 
-    // ✅ 1. Append form fields
-    Object.entries(form.value).forEach(([key, value]) => {
-      formData.append(key, value as any);
+    // ✅ Always append from issue object
+    Object.keys(this.issue).forEach((key) => {
+      formData.append(key, this.issue[key] ?? '');
     });
 
-    // ✅ 2. Add extra required keys
-
+    // ✅ Extra fields
     formData.append('id', this.issue.id ?? '');
     formData.append('master_id', '9');
     formData.append('status_id', '1');
     formData.append('comment', 'New issue created');
     formData.append('created_by', this.loginUser?.userId);
 
-    // ✅ 3. Append file
+    // ✅ Image Handling
     if (this.selectedFile) {
       formData.append('issue_pic', this.selectedFile);
+    } else if (this.isEdit && this.issue.issue_pic) {
+      formData.append('issue_pic', this.issue.issue_pic);
     }
 
     // ✅ Debug
@@ -353,27 +269,19 @@ export class IssueCreateComponent {
       next: (res: any) => {
         if (res.status) {
           this.router.navigate(['/admin/issues/my-issues'], {
-            state: { message: res?.message || 'Issue saved successfully' },
+            state: { message: res.message || 'Success' },
           });
         } else {
-          this.showMessage(res?.message);
+          this.showMessage(res.message);
         }
       },
-      error: (err: any) => {
-        if (err.status === 401) {
-          this.showMessage('Token expired');
-          this.authService.setLoginStatus(false);
-        } else if (err.status === 400) {
-          this.showMessage('Invalid request data');
-        } else if (err.status === 500) {
-          this.showMessage('Server error. Please try again later');
-        } else {
-          this.showMessage('Something went wrong. Please try again later');
-        }
+      error: () => {
+        this.showMessage('Something went wrong');
       },
     });
   }
 
+  // ================= UTIL =================
   handleBackBtn() {
     this.router.navigate(['/admin/issues/my-issues']);
   }

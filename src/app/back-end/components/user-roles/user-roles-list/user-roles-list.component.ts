@@ -70,7 +70,7 @@ export class UserRolesListComponent {
       error: (err) => {
         if (err.status === 401) {
           this.showMessage('Token expired');
-          this.authService.setLoginStatus(false);
+          this.authService.logout();
         } else if (err.status === 400) {
           this.showMessage('Invalid request data');
         } else if (err.status === 500) {

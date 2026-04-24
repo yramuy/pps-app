@@ -38,7 +38,7 @@ export class SidebarComponent {
     //   this.menuState.config = true;
     // }
 
-    this.authService.loadUserFromStorage();
+    //this.authService.loadUserFromStorage();
 
     this.isLoggedIn = this.authService.isLoggedIn();
 

@@ -2,7 +2,7 @@
   <div class="container-fluid">
     <div class="card">
       <div class="card-header">
-        <h3 class="card-title">Assigned To Me Issues</h3>
+        <h3 class="card-title">Assigned To Me</h3>
       </div>
 
       <div id="pageLoader" *ngIf="loader.loading$ | async">
@@ -28,6 +28,7 @@
               <th>Madal</th>
               <th>Village</th>
               <th>Status</th>
+              <th>Actions</th>
             </tr>
           </thead>
 
@@ -40,6 +41,12 @@
               <td>{{ issue.mandal }}</td>
               <td>{{ issue.village }}</td>
               <td>{{ issue.status }}</td>
+              <td>
+                <button class="btn btn-info " 
+                  (click)="handleView(issue.id)">
+                    <i class="fas fa-eye"></i>
+                  </button>
+              </td>
             </tr>
             <tr *ngIf="assignedToMeIssues().length === 0">
               <td colspan="5">No issues found</td>

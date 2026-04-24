@@ -2,7 +2,7 @@
   <div class="container-fluid">
     <div class="card">
       <div class="card-header">
-        <h3 class="card-title">My Issues</h3>
+        <h3 class="card-title">Created By Me</h3>
       </div>
 
       <div id="pageLoader" *ngIf="loader.loading$ | async">
@@ -10,13 +10,13 @@
       </div>
 
       <div class="card-body">
-        <!-- <div
+        <div
           *ngIf="loading()"
           class="alert alert-info alert-dismissible fade show"
           role="alert"
         >
           {{ message() }}
-        </div> -->
+        </div>
 
         <table id="myIssuesTable" class="table table-bordered table-striped">
           <thead>
@@ -28,6 +28,7 @@
               <th>Madal</th>
               <th>Village</th>
               <th>Status</th>
+              <th>Actions</th>
             </tr>
           </thead>
 
@@ -40,6 +41,29 @@
               <td>{{ issue.mandal }}</td>
               <td>{{ issue.village }}</td>
               <td>{{ issue.status }}</td>
+              <td>
+                <div class="d-flex">
+                  <button
+                    class="btn btn-success mr-2"
+                    (click)="handleEdit(issue)"
+                  >
+                    <i class="fas fa-edit"></i>
+                  </button>
+
+                  <button
+                    class="btn btn-danger mr-2"
+                    (click)="confirmDelete(issue.id)"
+                  >
+                    <i class="fas fa-trash"></i>
+                  </button>
+
+                  <button class="btn btn-info " 
+                  (click)="handleView(issue.id)">
+                    <i class="fas fa-eye"></i>
+                  </button>
+
+                </div>
+              </td>
             </tr>
             <tr *ngIf="myIssues().length === 0">
               <td colspan="7">No issues found</td>

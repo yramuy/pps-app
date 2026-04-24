@@ -18,7 +18,7 @@ export class HeaderComponent {
 
   logout() {
 
-    this.authService.setLoginStatus(false);
+    this.authService.logout();
     // clear session/local storage
     localStorage.clear();
 

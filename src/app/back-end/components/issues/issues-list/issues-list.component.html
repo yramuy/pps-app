@@ -30,6 +30,7 @@
               <th>Village</th>
               <th>Tag Representive</th>
               <th>Status</th>
+              <th>Actions</th>
             </tr>
           </thead>
 
@@ -44,6 +45,12 @@
               <td>{{ issue.village }}</td>
               <td>{{ issue.full_name }}</td>
               <td>{{ issue.status }}</td>
+              <td>
+                <button class="btn btn-info " 
+                  (click)="handleView(issue.id)">
+                    <i class="fas fa-eye"></i>
+                  </button>
+              </td>
             </tr>
             <tr *ngIf="issuesList().length === 0">
               <td colspan="5">No issues found</td>

@@ -41,13 +41,12 @@ export class LoginComponent {
         if (res.status === true) {
           this.authService.saveToken(res.token);
           this.authService.saveUserData(res);
-          this.authService.setLoginStatus(true);
 
           this.router.navigate(['/admin/dashboard']);
         } else {
           // ❌ Invalid credentials case
           alert(res.message || 'Invalid username or password');
-          this.authService.setLoginStatus(false);
+          this.authService.logout();
         }
 
         this.loading = false;
@@ -55,12 +54,13 @@ export class LoginComponent {
 
       error: (err) => {
         if (err.status === 401) {
-          alert('Invalid username or password');
+          alert('Session expired');
+          this.authService.logout();
         } else {
           alert('Something went wrong. Please try again');
         }
 
-        this.authService.setLoginStatus(false);
+        
         this.loading = false;
       },
     });

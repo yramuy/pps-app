@@ -29,6 +29,7 @@ import { IssuesListComponent } from './back-end/components/issues/issues-list/is
 import { IssueCreateComponent } from './back-end/components/issues/issue-create/issue-create.component';
 import { MyIssuesComponent } from './back-end/components/issues/my-issues/my-issues.component';
 import { AssignedToMeIssuesComponent } from './back-end/components/issues/assigned-to-me-issues/assigned-to-me-issues.component';
+import { ViewIssueComponent } from './back-end/components/issues/view-issue/view-issue.component';
 
 const routes: Routes = [
   
@@ -66,6 +67,7 @@ const routes: Routes = [
       { path: 'issues/create', component: IssueCreateComponent },
       { path: 'issues/my-issues', component: MyIssuesComponent },
       { path: 'issues/assigned-to-me-issues', component: AssignedToMeIssuesComponent },
+      { path: 'issues/view-issue', component: ViewIssueComponent },
 
       { path: 'reports', component: ReportsComponent }
     ],

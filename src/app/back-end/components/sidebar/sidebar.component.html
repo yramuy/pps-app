@@ -10,7 +10,7 @@
     <!-- User Panel -->
     <div class="user-panel mt-3 pb-3 mb-3 d-flex">
       <div class="image">
-        <img src="https://i.pravatar.cc/40" class="img-circle elevation-2" />
+        <img src={{user?.profile_pic}} class="img-circle elevation-2" />
       </div>
       <div class="info">
         <a href="#" class="d-block">{{ user?.fullName }}</a>
@@ -181,9 +181,10 @@
                 routerLinkActive="menu-open"
                 class="nav-link"
                 [class.active]="isMenuActive('/admin/issues/my-issues')"
+                [routerLinkActiveOptions]="{ exact: false }"
               >
                 <i class="nav-icon fas fa-user-circle"></i>
-                <p>MY Issues</p>
+                <p>Created by me</p>
               </a>
             </li>
             <li class="nav-item" *ngIf="user?.roleId != '7'">
@@ -194,7 +195,7 @@
                 [class.active]="isMenuActive('/admin/issues/assigned-to-me-issues')"
               >
                 <i class="nav-icon fas fa-user-circle"></i>
-                <p>Assigned To Me Issues</p>
+                <p>Assigned to me</p>
               </a>
             </li>
 
