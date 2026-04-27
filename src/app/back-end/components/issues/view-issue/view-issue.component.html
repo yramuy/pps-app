@@ -16,6 +16,11 @@
 
       <div class="card-body">
         <!-- 🔹 Image (Full Width) -->
+        <!-- Alert -->
+        <div *ngIf="isMessage" class="alert alert-info">
+          {{ message }}
+        </div>
+
         <div class="row mb-2">
           <div class="col-11">
             <img
@@ -29,11 +34,23 @@
         <!-- 🔹 Location -->
         <div class="row mb-3 justify-content-center">
           <div class="col-auto">
-            <span class="d-flex align-items-center">
-              <i class="fa fa-map-marker-alt text-danger me-2"></i>
-              {{ issueData.assembly }}, {{ issueData.mandal }},
-              {{ issueData.village }}
-            </span>
+            <div class="d-flex align-items-center gap-5">
+              <!-- 👉 gap between blocks -->
+
+              <!-- Location -->
+              <span class="d-flex align-items-center gap-2">
+                <!-- 👉 gap between icon & text -->
+                <i class="fa fa-map-marker-alt text-danger"></i>
+                <span style="margin-left: 3px;">{{ getLocation() }}</span>
+              </span>
+
+              <!-- Views -->
+              <span class="d-flex align-items-center gap-2" style="margin-left: 20px;">
+                <!-- 👉 gap between icon & text -->
+                <i class="fa fa-user text-primary" ></i>
+                <span style="margin-left: 3px;">{{ views || 0 }} views</span>
+              </span>
+            </div>
           </div>
         </div>
 
@@ -55,10 +72,117 @@
           </div>
         </div>
 
+        <!-- 🔹 Workflow Section -->
+        <form
+          #issueWfForm="ngForm"
+          (ngSubmit)="submitWorkFlow(issueWfForm)"
+          *ngIf="
+            (issueData.status_id == '1' || issueData.status_id == '2') &&
+            loginUser.roleId != '7'
+          "
+        >
+          <!-- Title -->
+          <div class="row">
+            <div class="col-6">
+              <h4 class="fw-bold mb-3">Issue Workflow</h4>
+            </div>
+          </div>
+
+          <!-- Status -->
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="fw-bold">Status *</label>
+
+              <select
+                class="form-control mb-2"
+                name="status_id"
+                [(ngModel)]="selectedStatusId"
+                required
+              >
+                <option value="">-- Select --</option>
+                <option *ngFor="let r of issueStatuses" [value]="r.id">
+                  {{ r.name }}
+                </option>
+              </select>
+
+              <!-- Validation -->
+              <small
+                class="text-danger"
+                *ngIf="selectedStatusId.touched && selectedStatusId.invalid"
+              >
+                Status is required
+              </small>
+            </div>
+          </div>
+
+          <!-- Comment -->
+          <div class="row">
+            <div class="col-md-12 mb-3">
+              <label class="fw-bold">Comment</label>
+
+              <textarea
+                class="form-control"
+                name="wf_comment"
+                [(ngModel)]="wf_comment"
+                #wf_comment_ref="ngModel"
+                rows="4"
+                placeholder="Enter your comment..."
+                [required]="selectedStatusId == '3'"
+              ></textarea>
+
+              <!-- Validation (only when Reject selected) -->
+              <small
+                class="text-danger"
+                *ngIf="
+                  wf_comment_ref.touched &&
+                  wf_comment_ref.invalid &&
+                  selectedStatusId == 3
+                "
+              >
+                Comment is required when status is Reject
+              </small>
+            </div>
+          </div>
+
+          <!-- Submit -->
+          <div class="text-end">
+            <button
+              type="submit"
+              class="btn btn-primary"
+              [disabled]="issueWfForm.invalid"
+            >
+              Submit
+            </button>
+          </div>
+        </form>
+
+        <!-- ✅ Workflow Table (3 & 4) -->
+        <div>
+          <h5 class="fw-bold mt-4">Workflow History</h5>
+
+          <table class="table table-bordered">
+            <tr>
+              <th>#</th>
+              <th>Status</th>
+              <th>Comment</th>
+              <th>Action By</th>
+              <th>Action On</th>
+            </tr>
+
+            <tr *ngFor="let wf of issueWorkflowList; let i = index">
+              <td>{{ i + 1 }}</td>
+              <td>{{ wf.status }}</td>
+              <td>{{ wf.comment }}</td>
+              <td>{{ wf.action_by_name }}</td>
+              <td>{{ wf.created_on }}</td>
+            </tr>
+          </table>
+        </div>
+
         <!-- 🔹 Comment Section -->
         <form #issueCmtForm="ngForm" (ngSubmit)="submitComment(issueCmtForm)">
           <div class="row justify-content-center mt-4">
-            <div class="col-11">
+            <div class="col">
               <!-- Label -->
               <label class="fw-bold mb-2">Add Comment *</label>
 
@@ -94,6 +218,32 @@
             </div>
           </div>
         </form>
+        <br />
+
+        <div
+          class="row align-items-start mb-3"
+          *ngFor="let comment of issueComments"
+        >
+          <!-- Profile Image -->
+          <div class="col-auto">
+            <img
+              [src]="comment.profile_pic"
+              class="rounded-circle"
+              style="width: 60px; height: 60px; object-fit: cover"
+            />
+          </div>
+
+          <!-- Name + Comment -->
+          <div class="col">
+            <div style="font-weight: 600">
+              {{ comment.submitted_by_name }}
+            </div>
+
+            <div style="color: #555; margin-top: 4px">
+              {{ comment.comment }}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>

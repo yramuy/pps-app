@@ -68,8 +68,4 @@ export class DashboardComponent {
       },
     });
   }
-
-  logout() {
-    this.authService.logout();
-  }
 }
