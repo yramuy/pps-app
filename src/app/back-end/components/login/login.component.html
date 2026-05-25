@@ -13,54 +13,70 @@
     body {
       margin: 0;
       height: 100vh;
-      background: #1099ff;
-      display: flex;
-      justify-content: center;
-      align-items: center;
       font-family: 'Segoe UI', sans-serif;
     }
 
+    .main-container {
+      display: flex;
+      height: 100vh;
+    }
+
+    /* LEFT SIDE (LOGO AREA) */
+    .left-panel {
+      width: 50%;
+      background: linear-gradient(135deg, #cccfd1, #dee1c5);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .left-panel img {
+      width: 150px;
+      margin-bottom: 20px;
+    }
+
+    .left-panel h1 {
+      font-size: 32px;
+      font-weight: bold;
+    }
+
+    /* RIGHT SIDE (LOGIN) */
+    .right-panel {
+      width: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #f4f6f9;
+    }
+
     .login-box {
-      width: 380px;
+      width: 500px;
     }
 
     .card {
       border-radius: 12px;
       box-shadow: 0 8px 25px rgba(0,0,0,0.15);
       border: none;
-      padding: 20px;
+      padding: 40px;
     }
 
     .card-body {
-      padding: 30px 25px; /* increased height */
-    }
-
-    .login-logo {
-      text-align: center;
-      font-size: 28px;
-      font-weight: bold;
-      color: #fff;
-      margin-bottom: 20px;
+      padding: 80px 30px;
     }
 
     .login-box-msg {
       text-align: center;
-      color: #444;
       margin-bottom: 25px;
-      font-size: 15px;
     }
 
-    /* Grey border inputs */
     .form-control {
       border-radius: 8px;
       border: 1px solid #ccc;
       height: 45px;
       padding-right: 40px;
-    }
-
-    .form-control:focus {
-      border-color: #999;
-      box-shadow: none;
     }
 
     .input-group-text {
@@ -73,7 +89,6 @@
       border-right: none;
     }
 
-    /* Eye icon */
     .password-wrapper {
       position: relative;
     }
@@ -89,101 +104,111 @@
 
     .btn-primary {
       border-radius: 8px;
-      background: #0d6efd;
-      border: none;
       height: 45px;
       font-weight: 600;
     }
 
-    .btn-primary:hover {
-      background: #0b5ed7;
-    }
-
     .remember-label {
       font-size: 14px;
-      color: #333;
       margin-left: 5px;
     }
 
-    .row {
-      margin-top: 15px;
-    }
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .main-container {
+        flex-direction: column;
+      }
 
+      .left-panel {
+        width: 100%;
+        height: 30%;
+      }
+
+      .right-panel {
+        width: 100%;
+        height: 70%;
+      }
+    }
   </style>
 </head>
 
 <body>
 
-<div class="login-box">
-  <div class="login-logo">PPS Login</div>
+<div class="main-container">
 
-  <div class="card">
-    <div class="card-body">
+  <!-- LEFT SIDE -->
+  <div class="left-panel">
+    <img src="assets/images/pps-main-logo@2x.png" alt="App Logo"> <!-- change logo path -->
+    <h1>PPS Application</h1>
+    <p>Welcome to the system</p>
+  </div>
 
-      <p class="login-box-msg">Sign in to your account</p>
+  <!-- RIGHT SIDE -->
+  <div class="right-panel">
+    <div class="login-box">
 
-      <form (ngSubmit)="login()">
+      <div class="card">
+        <div class="card-body">
 
-        <!-- Username -->
-        <div class="input-group mb-4">
-          <input type="text"
-                 class="form-control"
-                 placeholder="Username"
-                 [(ngModel)]="username"
-                 name="username"
-                 required>
-          <div class="input-group-append">
-            <div class="input-group-text">
-              <i class="fas fa-user"></i>
+          <p class="login-box-msg">Sign in to your account</p>
+
+          <form (ngSubmit)="login()">
+
+            <!-- Username -->
+            <div class="input-group mb-4">
+              <input type="text" class="form-control" placeholder="Username"
+                     [(ngModel)]="username" name="username" required>
+              <div class="input-group-append">
+                <div class="input-group-text">
+                  <i class="fas fa-user"></i>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
 
-        <!-- Password -->
-        <div class="input-group mb-4 password-wrapper">
-          <input [type]="showPassword ? 'text' : 'password'"
-                 class="form-control"
-                 placeholder="Password"
-                 [(ngModel)]="password"
-                 name="password"
-                 required>
+            <!-- Password -->
+            <div class="input-group mb-4 password-wrapper">
+              <input [type]="showPassword ? 'text' : 'password'"
+                     class="form-control"
+                     placeholder="Password"
+                     [(ngModel)]="password"
+                     name="password"
+                     required>
 
-          <i class="fas"
-             [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"
-             (click)="togglePassword()"
-             class="toggle-eye"></i>
+              <i class="fas"
+                 [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"
+                 (click)="togglePassword()"
+                 class="toggle-eye"></i>
 
-          <div class="input-group-append">
-            <div class="input-group-text">
-              <i class="fas fa-lock"></i>
+              <div class="input-group-append">
+                <div class="input-group-text">
+                  <i class="fas fa-lock"></i>
+                </div>
+              </div>
             </div>
-          </div>
+
+            <!-- Remember + Login -->
+            <div class="row">
+              <div class="col-6 d-flex align-items-center">
+                <input type="checkbox" id="remember">
+                <label for="remember" class="remember-label">Remember</label>
+              </div>
+
+              <div class="col-6">
+                <button type="submit" class="btn btn-primary btn-block">
+                  Login
+                </button>
+              </div>
+            </div>
+
+          </form>
+
         </div>
-
-        <!-- Remember + Login -->
-        <div class="row">
-          <div class="col-6 d-flex align-items-center">
-            <input type="checkbox" id="remember">
-            <label for="remember" class="remember-label">Remember</label>
-          </div>
-
-          <div class="col-6">
-            <button type="submit" class="btn btn-primary btn-block">
-              Login
-            </button>
-          </div>
-        </div>
-
-      </form>
+      </div>
 
     </div>
   </div>
-</div>
 
-<!-- Scripts -->
-<script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/plugins/jquery/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
+</div>
 
 </body>
 </html>
