@@ -1,6 +1,6 @@
 {
   "/pps": {
-    "target": "https://civsp.in",
+    "target": "https://prasadit.com",
     "secure": false,
     "changeOrigin": true,
     "logLevel": "debug"

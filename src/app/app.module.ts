@@ -15,12 +15,6 @@ import { EmployeeListComponent } from './back-end/components/employees/employee-
 import { EmployeeAddComponent } from './back-end/components/employees/employee-add/employee-add.component';
 import { ReportsComponent } from './back-end/components/reports/reports.component';
 import { LoginComponent } from './back-end/components/login/login.component';
-import { WebsiteLayoutComponent } from './front-end/components/website-layout/website-layout.component';
-import { WebsiteHeaderComponent } from './front-end/components/website-header/website-header.component';
-import { WebsiteFooterComponent } from './front-end/components/website-footer/website-footer.component';
-import { HomeComponent } from './front-end/components/home/home.component';
-import { AboutComponent } from './front-end/components/about/about.component';
-import { ContactComponent } from './front-end/components/contact/contact.component';
 import { CategoryAddComponent } from './back-end/components/category/category-add/category-add.component';
 import { CategoryListComponent } from './back-end/components/category/category-list/category-list.component';
 import { StatesComponent } from './back-end/components/states/states.component';
@@ -40,6 +34,18 @@ import { IssueCreateComponent } from './back-end/components/issues/issue-create/
 import { MyIssuesComponent } from './back-end/components/issues/my-issues/my-issues.component';
 import { AssignedToMeIssuesComponent } from './back-end/components/issues/assigned-to-me-issues/assigned-to-me-issues.component';
 import { ViewIssueComponent } from './back-end/components/issues/view-issue/view-issue.component';
+import { WebsiteLayoutComponent } from './front-end/components/website-layout/website-layout.component';
+import { WebsiteHeaderComponent } from './front-end/components/website-header/website-header.component';
+import { WebsiteFooterComponent } from './front-end/components/website-footer/website-footer.component';
+import { HomeComponent } from './front-end/components/home/home.component';
+import { AboutComponent } from './front-end/components/about/about.component';
+import { ContactComponent } from './front-end/components/contact/contact.component';
+import { HeroComponent } from './front-end/components/hero/hero.component';
+import { SchemesComponent } from './front-end/components/schemes/schemes.component';
+import { IssuesComponent } from './front-end/components/issues/issues.component';
+import { CallToActionComponent } from './front-end/components/call-to-action/call-to-action.component';
+import { BrandMarqueeComponent } from './front-end/components/brand-marquee/brand-marquee.component';
+
 
 @NgModule({
   declarations: [
@@ -76,13 +82,19 @@ import { ViewIssueComponent } from './back-end/components/issues/view-issue/view
     IssueCreateComponent,
     MyIssuesComponent,
     AssignedToMeIssuesComponent,
-    ViewIssueComponent
+    ViewIssueComponent,
+    HeroComponent,
+    SchemesComponent,
+    IssuesComponent,
+    CallToActionComponent,
+    BrandMarqueeComponent
+
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
-    HttpClientModule
+    HttpClientModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

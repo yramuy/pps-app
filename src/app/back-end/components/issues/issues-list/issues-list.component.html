@@ -2,7 +2,7 @@
   <div class="container-fluid">
     <div class="card">
       <div class="card-header">
-        <h3 class="card-title">All Issues</h3>
+        <h3 class="card-title text-white">All Issues</h3>
       </div>
 
       <div id="pageLoader" *ngIf="loader.loading$ | async">
@@ -17,46 +17,48 @@
         >
           {{ message() }}
         </div> -->
+        
+        <div class="table-responsive">
+          <table id="issuesTable" class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th>Sno</th>
+                <th>Category</th>
+                <th>Issue Title</th>
+                <th>Description</th>
+                <th>Assembly</th>
+                <th>Madal</th>
+                <th>Village</th>
+                <th>Tag Representive</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
 
-        <table id="issuesTable" class="table table-bordered table-striped">
-          <thead>
-            <tr>
-              <th>Sno</th>
-              <th>Category</th>
-              <th>Issue Title</th>
-              <th>Description</th>
-              <th>Assembly</th>
-              <th>Madal</th>
-              <th>Village</th>
-              <th>Tag Representive</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            <tr *ngFor="let issue of issuesList(); let i = index">
-              <td>{{ i + 1 }}</td>
-              <td>{{ issue.category }}</td>
-              <td>{{ issue.issue_title }}</td>
-              <td>{{ issue.issue_description }}</td>
-              <td>{{ issue.assembly }}</td>
-              <td>{{ issue.mandal }}</td>
-              <td>{{ issue.village }}</td>
-              <td>{{ issue.full_name }}</td>
-              <td>{{ issue.status }}</td>
-              <td>
-                <button class="btn btn-info " 
-                  (click)="handleView(issue.id)">
+            <tbody>
+              <tr *ngFor="let issue of issuesList(); let i = index">
+                <td>{{ i + 1 }}</td>
+                <td>{{ issue.category }}</td>
+                <td class="description-cell">{{ issue.issue_title }}</td>
+                <td class="description-cell">{{ issue.issue_description }}</td>
+                <td>{{ issue.assembly }}</td>
+                <td>{{ issue.mandal }}</td>
+                <td>{{ issue.village }}</td>
+                <td>{{ issue.full_name }}</td>
+                <td>{{ issue.status }}</td>
+                <td>
+                  <button class="btn btn-info "
+                    (click)="handleView(issue.id)">
                     <i class="fas fa-eye"></i>
                   </button>
-              </td>
-            </tr>
-            <tr *ngIf="issuesList().length === 0">
-              <td colspan="5">No issues found</td>
-            </tr>
-          </tbody>
-        </table>
+                </td>
+              </tr>
+              <tr *ngIf="issuesList().length === 0">
+                <td colspan="5">No issues found</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>

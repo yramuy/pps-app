@@ -1,12 +1,35 @@
-<footer class="bg-dark text-white text-center py-4">
-  <div class="container">
+<footer class="footer pt-3">
 
-    <p class="mb-1">© 2026 Entreplan. All rights reserved.</p>
+  <div class="theme-bg text-white">
 
-    <div>
-      <a href="#" class="text-white mx-2">Privacy</a>
-      <a href="#" class="text-white mx-2">Terms</a>
+    <div class="container">
+
+      <div class="row pt-lg-1 pt-3 pb-lg-2 pb-4 justify-content-between text-center">
+
+        <div class="col-auto my-auto">
+          <p class="py-2 mb-0">
+            © {{ currentYear }} Your Website. All Rights Reserved.
+          </p>
+        </div>
+
+        <div class="col-auto pt-2">
+
+          <a routerLink="/privacy"
+             class="py-1 px-3 text-white">
+            Privacy Policy
+          </a>
+
+          <a routerLink="/terms"
+             class="py-1 px-3 text-white">
+            Terms of Service
+          </a>
+
+        </div>
+
+      </div>
+
     </div>
 
   </div>
+
 </footer>

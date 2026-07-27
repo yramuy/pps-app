@@ -1,0 +1,35 @@
+.ads-slider {
+    overflow: hidden;
+    position: relative;
+}
+
+.slider-track {
+    display: flex;
+    transition: transform .5s ease;
+}
+
+.ad-item {
+    flex: 0 0 50%;
+    padding: 10px;
+}
+
+@media (max-width:768px) {
+    .ad-item {
+        flex: 0 0 100%;
+    }
+}
+
+.nav-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+}
+
+.prev {
+    left: 10px;
+}
+
+.next {
+    right: 10px;
+}

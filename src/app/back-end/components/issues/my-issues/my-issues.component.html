@@ -1,76 +1,100 @@
 <section class="content">
   <div class="container-fluid">
     <div class="card">
+
       <div class="card-header">
-        <h3 class="card-title">Created By Me</h3>
+        <h3 class="card-title text-white">Created By Me</h3>
       </div>
 
-      <div id="pageLoader" *ngIf="loader.loading$ | async">
+      <!-- Loader -->
+      <div id="pageLoader" *ngIf="loader.loading$ | async" class="text-center p-3">
         <div class="spinner-border text-primary"></div>
       </div>
 
       <div class="card-body">
+
         <div
           *ngIf="loading()"
           class="alert alert-info alert-dismissible fade show"
-          role="alert"
-        >
+          role="alert">
           {{ message() }}
         </div>
 
-        <table id="myIssuesTable" class="table table-bordered table-striped">
-          <thead>
-            <tr>
-              <th>Sno</th>
-              <th>Category</th>
-              <th>Issue Title</th>
-              <th>Description</th>
-              <th>Madal</th>
-              <th>Village</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
+        <div class="table-responsive">
+            <table id="myIssuesTable" class="table table-bordered table-striped">
 
-          <tbody>
-            <tr *ngFor="let issue of myIssues(); let i = index">
-              <td>{{ i + 1 }}</td>
-              <td>{{ issue.category }}</td>
-              <td>{{ issue.issue_title }}</td>
-              <td>{{ issue.issue_description }}</td>
-              <td>{{ issue.mandal }}</td>
-              <td>{{ issue.village }}</td>
-              <td>{{ issue.status }}</td>
-              <td>
-                <div class="d-flex">
-                  <button
-                    class="btn btn-success mr-2"
-                    (click)="handleEdit(issue)"
-                  >
-                    <i class="fas fa-edit"></i>
-                  </button>
+            <thead>
+              <tr>
+                <th width="60">S.No</th>
+                <th>Category</th>
+                <th>Issue Title</th>
+                <th>Description</th>
+                <th>Mandal</th>
+                <th>Village</th>
+                <th>Status</th>
+                <th width="150" class="text-center">Actions</th>
+              </tr>
+            </thead>
 
-                  <button
-                    class="btn btn-danger mr-2"
-                    (click)="confirmDelete(issue.id)"
-                  >
-                    <i class="fas fa-trash"></i>
-                  </button>
+            <tbody>
 
-                  <button class="btn btn-info " 
-                  (click)="handleView(issue.id)">
-                    <i class="fas fa-eye"></i>
-                  </button>
+              <tr *ngFor="let issue of myIssues(); let i = index">
 
-                </div>
-              </td>
-            </tr>
-            <tr *ngIf="myIssues().length === 0">
-              <td colspan="7">No issues found</td>
-            </tr>
-          </tbody>
-        </table>
+                <td>{{ i + 1 }}</td>
+                <td>{{ issue.category }}</td>
+                <td>{{ issue.issue_title }}</td>
+                <td class="description-cell">{{ issue.issue_description }}</td>
+                <td>{{ issue.mandal }}</td>
+                <td>{{ issue.village }}</td>
+                <td>{{ issue.status }}</td>
+
+                <td class="text-center">
+
+                  <div class="action-buttons">
+
+                    <button
+                      type="button"
+                      class="btn btn-success btn-sm"
+                      (click)="handleEdit(issue)"
+                      title="Edit">
+                      <i class="fas fa-edit"></i>
+                    </button>
+
+                    <button
+                      type="button"
+                      class="btn btn-danger btn-sm"
+                      (click)="confirmDelete(issue.id)"
+                      title="Delete">
+                      <i class="fas fa-trash"></i>
+                    </button>
+
+                    <button
+                      type="button"
+                      class="btn btn-info btn-sm"
+                      (click)="handleView(issue.id)"
+                      title="View">
+                      <i class="fas fa-eye"></i>
+                    </button>
+
+                  </div>
+
+                </td>
+
+              </tr>
+
+              <tr *ngIf="myIssues().length === 0">
+                <td colspan="8" class="text-center">
+                  No issues found
+                </td>
+              </tr>
+
+            </tbody>
+
+          </table>
+        </div>
+
       </div>
+
     </div>
   </div>
 </section>
