@@ -10,13 +10,133 @@
       </div>
 
       <div class="card-body">
+        <!-- Error message -->
         <!-- <div
-          *ngIf="loading()"
-          class="alert alert-info alert-dismissible fade show"
+          *ngIf="message"
+          class="alert alert-danger alert-dismissible fade show"
           role="alert"
         >
-          {{ message() }}
+          {{ message }}
+
+          <button
+            type="button"
+            class="btn-close"
+            aria-label="Close"
+            (click)="message.set('')"
+          ></button>
         </div> -->
+
+        <!-- Filters -->
+        <div class="row mb-3">
+
+          <!-- Category -->
+          <div class="col-md-3 mb-3">
+            <label for="categoryFilter" class="form-label">
+              Category
+            </label>
+
+            <select
+              id="categoryFilter"
+              class="form-control"
+              [value]="selectedCategoryId"
+              (change)="onCategoryChange($event)"
+            >
+              <option value="">All Categories</option>
+
+              <option
+                *ngFor="let category of categories"
+                [value]="category.id"
+              >
+                {{ category.name }}
+              </option>
+            </select>
+          </div>
+
+          <!-- Assembly -->
+          <div class="col-md-3 mb-3">
+            <label for="assemblyFilter" class="form-label">
+              Assembly
+            </label>
+
+            <select
+              id="assemblyFilter"
+              class="form-control"
+              [value]="selectedAssemblyId"
+              (change)="onAssemblyChange($event)"
+              [disabled]="assemblies.length === 0"
+            >
+              <option value="">All Assemblies</option>
+
+              <option
+                *ngFor="let assembly of assemblies"
+                [value]="assembly.id"
+              >
+                {{ assembly.name }}
+              </option>
+            </select>
+          </div>
+
+          <!-- Mandal -->
+          <div class="col-md-3 mb-3">
+            <label for="mandalFilter" class="form-label">
+              Mandal
+            </label>
+
+            <select
+              id="mandalFilter"
+              class="form-control"
+              [value]="selectedMandalId"
+              (change)="onMandalChange($event)"
+              [disabled]="mandals.length === 0"
+            >
+              <option value="">All Mandals</option>
+
+              <option
+                *ngFor="let mandal of mandals"
+                [value]="mandal.id"
+              >
+                {{ mandal.name }}
+              </option>
+            </select>
+          </div>
+
+          <!-- Village -->
+          <div class="col-md-3 mb-3">
+            <label for="villageFilter" class="form-label">
+              Village
+            </label>
+
+            <select
+              id="villageFilter"
+              class="form-control"
+              [value]="selectedVillageId"
+              (change)="onVillageChange($event)"
+              [disabled]="villages.length === 0"
+            >
+              <option value="">All Villages</option>
+
+              <option
+                *ngFor="let village of villages"
+                [value]="village.id"
+              >
+                {{ village.name }}
+              </option>
+            </select>
+          </div>
+
+        </div>
+
+        <!-- Reset filters -->
+        <div class="mb-3">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            (click)="resetFilters()"
+          >
+            Reset Filters
+          </button>
+        </div>
+
         <div class="table-responsive">
           <table id="assignedToMeIssuesTable"
             class="table table-bordered table-striped">

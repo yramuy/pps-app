@@ -1,0 +1,110 @@
+<div class="card">
+  <div class="card-header">
+    <h5 class="text-white">{{ isEdit ? "Update Scheme" : "Add Scheme" }}</h5>
+  </div>
+
+  <form #schemeForm="ngForm" (ngSubmit)="saveScheme(schemeForm)"
+    enctype="multipart/form-data" novalidate>
+    <div class="card-body">
+      <div *ngIf="isMessage" class="alert alert-danger">
+        {{ message }}
+      </div>
+
+      <div class="row">
+        
+
+        <div class="col-6 mb-3">
+          <label>Scheme Title *</label>
+          <input
+            type="text"
+            class="form-control"
+            name="scheme_title"
+            [(ngModel)]="scheme.scheme_title"
+            #scheme_title="ngModel"
+            required />
+          <small class="text-danger"
+            *ngIf="schemeForm.submitted && scheme_title.invalid">
+            Scheme Title is required
+          </small>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-12 mb-3">
+          <label>Scheme Description *</label>
+          <textarea
+            class="form-control"
+            name="scheme_description"
+            [(ngModel)]="scheme.scheme_description"
+            #scheme_description="ngModel"
+            rows="4"
+            required></textarea>
+          <small class="text-danger"
+            *ngIf="schemeForm.submitted && scheme_description.invalid">
+            Scheme Description is required
+          </small>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-6 mb-3">
+          <label>Scheme Images *</label>
+          <input
+            type="file"
+            #fileInput
+            class="form-control"
+            accept="image/*"
+            multiple
+            (change)="onFileChange($event)" />
+
+          <small
+            class="text-danger"
+            *ngIf="scheme.submitted && imagePreviews.length === 0 && existingImages.length === 0">
+            At least one issue picture is required
+          </small>
+
+          <div *ngIf="existingImages.length || imagePreviews.length"
+            class="mt-2">
+            <div class="d-flex flex-wrap align-items-start gap-3">
+
+              <!-- Existing Images -->
+              <div *ngFor="let img of existingImages" class="text-center">
+                <img
+                  [src]="img"
+                  class="img-thumbnail"
+                  style="width:120px; height:120px; object-fit:cover;">
+              </div>
+
+              <!-- Uploaded Images -->
+              <div *ngFor="let img of imagePreviews; let i = index"
+                class="text-center">
+                <img
+                  [src]="img"
+                  class="img-thumbnail"
+                  style="width:120px; height:120px; object-fit:cover;">
+
+                <button
+                  type="button"
+                  class="btn btn-danger btn-sm mt-2 w-100"
+                  (click)="removeSelectedImage(i)">
+                  Remove
+                </button>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-footer d-flex align-items-center">
+      <button class="btn btn-primary mr-2">
+        {{ isEdit ? "Update" : "Save" }}
+      </button>
+
+      <button type="button" class="btn btn-dark" (click)="handleBackBtn()">
+        Back
+      </button>
+    </div>
+  </form>
+</div>

@@ -250,5 +250,18 @@ header .container {
 
 }
 
+.ck-editor__editable_inline {
+  min-height: 250px;
+}
+
+.ck.ck-editor {
+  width: 100%;
+}
+
+:root {
+  --ck-z-default: 100;
+  --ck-z-panel: 1100;
+}
+
 
 

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { AfterViewInit, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
 
@@ -9,7 +9,7 @@ declare var $: any;
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.scss'],
 })
-export class SidebarComponent {
+export class SidebarComponent implements AfterViewInit {
   isLoggedIn = false;
   user: any;
   menuState: any = {
@@ -22,6 +22,9 @@ export class SidebarComponent {
     private authService: AuthService,
     public router: Router,
   ) { }
+  
+
+  
 
   ngOnInit() {
     //const url = this.router.url;
@@ -46,6 +49,7 @@ export class SidebarComponent {
       this.user = user;
     });
   }
+  
 
   toggleMenu(key: string, event: Event) {
     event.preventDefault();

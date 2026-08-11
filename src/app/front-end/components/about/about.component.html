@@ -1,40 +1,38 @@
-<section class="py-5" id="about">
+<section class="about-section" id="about">
   <div class="container">
-    <div class="row">
-      <div class="col-lg-6"><h2 class="fs-1">Our Impact in Numbers</h2></div>
-      <div class="col-lg-6">
-        <p>
-          Our commitment to sustainable agriculture drives measurable results,
-          building healthier ecosystems, stronger communities, and lasting
-          prosperity
-        </p>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-lg-3">
-        <div class>
-          <h2 class="display-2 fw-bold">50K+</h2>
-          <p class="fs-4 mt-0">Farmers Supported</p>
+    <div class="row align-items-center">
+
+      <!-- Circular Image -->
+      <div class="col-lg-6 col-md-6">
+        <div class="about-image-wrapper">
+          <img
+            [src]="aboutUs.image || 'assets/images/no-image.jpg'"
+            [alt]="aboutUs.title || 'About Us'"
+            class="about-image"
+          >
         </div>
       </div>
-      <div class="col-lg-3">
-        <div class>
-          <h2 class="display-2 fw-bold">20K+</h2>
-          <p class="fs-4 mt-0">Acres Cultivated</p>
+
+      <!-- Description -->
+      <div class="col-lg-6 col-md-6">
+        <div class="about-content">
+
+          <span class="about-label">ABOUT US</span>
+
+          <h2 class="about-title">
+            {{ aboutUs.title }}
+          </h2>
+
+          <div class="about-line"></div>
+
+          <div
+            class="about-description"
+            [innerHTML]="aboutUs.description">
+          </div>
+
         </div>
       </div>
-      <div class="col-lg-3">
-        <div class>
-          <h2 class="display-2 fw-bold">40%</h2>
-          <p class="fs-4 mt-0">Average Yield Increase</p>
-        </div>
-      </div>
-      <div class="col-lg-3">
-        <div class>
-          <h2 class="display-2 fw-bold">30K+</h2>
-          <p class="fs-4 mt-0">Tons of Organic</p>
-        </div>
-      </div>
+
     </div>
   </div>
 </section>

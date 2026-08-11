@@ -1,75 +1,130 @@
-<section class="py-4">
+<section class="py-5">
   <div class="container">
+
     <div class="row">
-      <div class="col-lg-6">
-        <div class="row">
-          <div class="col-lg-6">
-            <div class="issue-box">
-              <img
-                src="assets/images/home-page-grid-image-3.webp"
-                class="img-fluid rounded-20"
-              />
-              <div class>
-                <h2 class="fs-4">Showcasing the Beauty and Innovation</h2>
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-6">
-            <div class="issue-box">
-              <img
-                src="assets/images/home-page-grid-image-4.webp"
-                class="img-fluid rounded-20"
-              />
-              <div class>
-                <h2 class="fs-5">Showcasing the Beauty and Innovation</h2>
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-6">
-            <div class="issue-box">
-              <img
-                src="assets/images/home-page-grid-image-3.webp"
-                class="img-fluid rounded-20"
-              />
-              <div class>
-                <h2 class="fs-5">Showcasing the Beauty and Innovation</h2>
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-6">
-            <div class="issue-box">
-              <img
-                src="assets/images/home-page-grid-image-4.webp"
-                class="img-fluid rounded-20"
-              />
-              <div class>
-                <h2 class="fs-5">Showcasing the Beauty and Innovation</h2>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-6">
-        <p
-          class="fs-5 fw-normal bg-light border rounded-pill d-inline-block px-3 py-1"
-        >
-          Governament Schemes
+      <div class="col-lg-8">
+        <p class="fs-5 fw-normal bg-light border rounded-pill d-inline-block px-3 py-1">
+          Government Schemes
         </p>
+
         <h2 class="fs-1 pb-4">
-          Showcasing the Beauty and Innovation of Sustainable Imagery
+          Explore Government Welfare Schemes
         </h2>
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent
-          interdum orci ac dolor malesuada pellentesque. Pellentesque gravida
-          rhoncus pulvinar. Vestibulum feugiat tristique cursus. Proin augue
-          sapien, bibendum sit amet velit ut, tincidunt condimentum elit. Aenean
-          eget viverra ex. Mauris euismod feugiat nisi pulvinar sollicitudin.
-          Duis eu varius est. Nunc pretium vestibulum libero vitae fringilla.
-          Cras at nulla a orci ornare vulputate. Proin ut magna quis massa
-          pretium aliquam.
-        </p>
-        <a href class="btn theme-btn">Explore All Schemes</a>
       </div>
     </div>
+
+    <div class="row">
+
+      <div class="col-lg-4 col-md-6 mb-4" *ngFor="let scheme of schemes()">
+
+        <div class="card issue-card h-100 border-0">
+
+          <img
+            [src]="scheme.scheme_pic || 'assets/images/no-image.jpg'"
+            [alt]="scheme.scheme_title"
+            class="card-img-top issue-img">
+
+          <div class="card-body d-flex flex-column">
+
+            <span class="badge badge-success mb-2 align-self-start">
+              Government Scheme
+            </span>
+
+            <h5 class="card-title mb-2">
+              {{ scheme.scheme_title }}
+            </h5>
+
+            <p class="card-text flex-grow-1">
+              {{ scheme.scheme_description | slice:0:80 }}
+              <span *ngIf="scheme.scheme_description?.length > 80">...</span>
+            </p>
+
+            <button
+              type="button"
+              class="btn btn-outline-success btn-readmore"
+              data-toggle="modal"
+              data-target="#schemeModal"
+              (click)="selectedScheme = scheme">
+
+              Read More
+              <i class="fas fa-arrow-right ml-1"></i>
+
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
   </div>
 </section>
+
+<div class="modal fade"
+     id="schemeModal"
+     tabindex="-1"
+     role="dialog">
+
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+
+        <div class="modal-content">
+
+            <div class="modal-header bg-success text-white">
+
+                <h5 class="modal-title">
+                    {{ selectedScheme?.scheme_title }}
+                </h5>
+
+                <button
+                    type="button"
+                    class="close text-white"
+                    data-dismiss="modal">
+
+                    <span>&times;</span>
+
+                </button>
+
+            </div>
+
+            <div class="modal-body">
+
+                <img
+                    [src]="selectedScheme?.scheme_pic || 'assets/images/no-image.jpg'"
+                    class="img-fluid rounded mb-3 w-100"
+                    style="height:300px;object-fit:cover;">
+
+                <p class="text-justify">
+                    {{ selectedScheme?.scheme_description }}
+                </p>
+
+                <hr>
+
+                <p class="mb-0">
+                    <strong>Created By :</strong>
+                    {{ selectedScheme?.created_by_name }}
+                </p>
+
+                <p>
+                    <strong>Created On :</strong>
+                    {{ selectedScheme?.created_on | date:'dd MMM yyyy' }}
+                </p>
+
+            </div>
+
+            <div class="modal-footer">
+
+                <button
+                    class="btn btn-secondary"
+                    data-dismiss="modal">
+                    Close
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

@@ -10,14 +10,12 @@
     novalidate
   >
     <div class="card-body">
-
       <!-- Alert -->
       <div *ngIf="isMessage" class="alert alert-danger">
         {{ message }}
       </div>
 
       <div class="row">
-
         <!-- User Role -->
         <div class="col-6 mb-3">
           <label>User Role *</label>
@@ -34,8 +32,10 @@
             </option>
           </select>
 
-          <small class="text-danger"
-            *ngIf="userForm.submitted && user_role_id.invalid">
+          <small
+            class="text-danger"
+            *ngIf="userForm.submitted && user_role_id.invalid"
+          >
             User Role is required
           </small>
         </div>
@@ -52,16 +52,16 @@
             required
           />
 
-          <small class="text-danger"
-            *ngIf="userForm.submitted && full_name.invalid">
+          <small
+            class="text-danger"
+            *ngIf="userForm.submitted && full_name.invalid"
+          >
             Full Name is required
           </small>
         </div>
-
       </div>
 
       <div class="row">
-
         <!-- Username -->
         <div class="col-6 mb-3">
           <label>Username *</label>
@@ -74,8 +74,10 @@
             required
           />
 
-          <small class="text-danger"
-            *ngIf="userForm.submitted && user_name.invalid">
+          <small
+            class="text-danger"
+            *ngIf="userForm.submitted && user_name.invalid"
+          >
             Username is required
           </small>
         </div>
@@ -92,16 +94,16 @@
             [required]="!isEdit"
           />
 
-          <small class="text-danger"
-            *ngIf="userForm.submitted && password.invalid">
+          <small
+            class="text-danger"
+            *ngIf="userForm.submitted && password.invalid"
+          >
             Password is required
           </small>
         </div>
-
       </div>
 
       <div class="row">
-
         <!-- Email -->
         <div class="col-6 mb-3">
           <label>Email *</label>
@@ -115,8 +117,10 @@
             email
           />
 
-          <small class="text-danger"
-            *ngIf="userForm.submitted && email.invalid">
+          <small
+            class="text-danger"
+            *ngIf="userForm.submitted && email.invalid"
+          >
             Valid Email is required
           </small>
         </div>
@@ -133,17 +137,17 @@
             #mobile="ngModel"
           />
 
-          <small class="text-danger"
-            *ngIf="userForm.submitted && mobile.invalid">
+          <small
+            class="text-danger"
+            *ngIf="userForm.submitted && mobile.invalid"
+          >
             Enter valid 10-digit mobile number
           </small>
         </div>
-
       </div>
 
       <!-- Location -->
       <div class="row">
-
         <div class="col-6 mb-3">
           <label>State *</label>
           <select
@@ -155,11 +159,15 @@
             required
           >
             <option value="">-- Select --</option>
-            <option *ngFor="let s of states" [value]="s.id">{{ s.name }}</option>
+            <option *ngFor="let s of states" [value]="s.id">
+              {{ s.name }}
+            </option>
           </select>
 
-          <small class="text-danger"
-            *ngIf="userForm.submitted && state_id.invalid">
+          <small
+            class="text-danger"
+            *ngIf="userForm.submitted && state_id.invalid"
+          >
             State is required
           </small>
         </div>
@@ -175,19 +183,21 @@
             required
           >
             <option value="">-- Select --</option>
-            <option *ngFor="let d of districts" [value]="d.id">{{ d.name }}</option>
+            <option *ngFor="let d of districts" [value]="d.id">
+              {{ d.name }}
+            </option>
           </select>
 
-          <small class="text-danger"
-            *ngIf="userForm.submitted && district_id.invalid">
+          <small
+            class="text-danger"
+            *ngIf="userForm.submitted && district_id.invalid"
+          >
             District is required
           </small>
         </div>
-
       </div>
 
       <div class="row">
-
         <div class="col-6 mb-3">
           <label>Assembly </label>
           <select
@@ -196,10 +206,11 @@
             [(ngModel)]="user.assembly_id"
             #assembly_id="ngModel"
             (change)="loadMandals(user.assembly_id)"
-            
           >
             <option value="">-- Select --</option>
-            <option *ngFor="let a of assemblies" [value]="a.id">{{ a.name }}</option>
+            <option *ngFor="let a of assemblies" [value]="a.id">
+              {{ a.name }}
+            </option>
           </select>
 
           <!-- <small class="text-danger"
@@ -216,10 +227,11 @@
             [(ngModel)]="user.mandal_id"
             #mandal_id="ngModel"
             (change)="loadVillages(user.mandal_id)"
-            
           >
             <option value="">-- Select --</option>
-            <option *ngFor="let m of mandals" [value]="m.id">{{ m.name }}</option>
+            <option *ngFor="let m of mandals" [value]="m.id">
+              {{ m.name }}
+            </option>
           </select>
 
           <!-- <small class="text-danger"
@@ -227,11 +239,9 @@
             Mandal is required
           </small> -->
         </div>
-
       </div>
 
       <div class="row">
-
         <div class="col-6 mb-3">
           <label>Village </label>
           <select
@@ -239,10 +249,11 @@
             name="village_id"
             [(ngModel)]="user.village_id"
             #village_id="ngModel"
-            
           >
             <option value="">-- Select --</option>
-            <option *ngFor="let v of villages" [value]="v.id">{{ v.name }}</option>
+            <option *ngFor="let v of villages" [value]="v.id">
+              {{ v.name }}
+            </option>
           </select>
 
           <!-- <small class="text-danger"
@@ -269,7 +280,11 @@
             class="mt-2 d-flex align-items-center"
           >
             <img
-              [src]="imagePreview ? imagePreview : (baseUrl + '/uploads/profile/' + user.profile_pic)"
+              [src]="
+                imagePreview
+                  ? imagePreview
+                  : baseUrl + '/uploads/profile/' + user.profile_pic
+              "
               width="100"
               height="100"
               style="object-fit: cover; border-radius: 5px"
@@ -284,9 +299,25 @@
             </button>
           </div>
         </div>
-
       </div>
 
+      <div class="row">
+        <div class="row">
+          <div class="col-md-12 mb-3">
+            <label> Bio Graphy </label>
+
+            <ckeditor
+              name="bio_graphy"
+              [editor]="Editor"
+              [(ngModel)]="user.bio_graphy"
+              [config]="editorConfig"
+              #description="ngModel"
+              required
+            >
+            </ckeditor>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="card-footer d-flex align-items-center">

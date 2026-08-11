@@ -45,7 +45,10 @@ import { SchemesComponent } from './front-end/components/schemes/schemes.compone
 import { IssuesComponent } from './front-end/components/issues/issues.component';
 import { CallToActionComponent } from './front-end/components/call-to-action/call-to-action.component';
 import { BrandMarqueeComponent } from './front-end/components/brand-marquee/brand-marquee.component';
-
+import { AddSchemeComponent } from './back-end/components/schemes/add-scheme/add-scheme.component';
+import { ViewSchemesComponent } from './back-end/components/schemes/view-schemes/view-schemes.component';
+import { AboutUsComponent } from './back-end/components/about-us/about-us.component';
+import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 
 @NgModule({
   declarations: [
@@ -87,7 +90,10 @@ import { BrandMarqueeComponent } from './front-end/components/brand-marquee/bran
     SchemesComponent,
     IssuesComponent,
     CallToActionComponent,
-    BrandMarqueeComponent
+    BrandMarqueeComponent,
+    AddSchemeComponent,
+    ViewSchemesComponent,
+    AboutUsComponent
 
   ],
   imports: [
@@ -95,6 +101,7 @@ import { BrandMarqueeComponent } from './front-end/components/brand-marquee/bran
     AppRoutingModule,
     FormsModule,
     HttpClientModule,
+    CKEditorModule    
   ],
   providers: [],
   bootstrap: [AppComponent]

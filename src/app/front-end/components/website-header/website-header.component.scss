@@ -124,14 +124,53 @@ header .container {
   border-bottom: 1px solid rgba(255,255,255,.15);
 }
 
-@media(max-width:991px){
+/* ==========================
+      Responsive
+========================== */
 
-  #desktopNav{
-    display:none;
-  }
+@media (max-width:991px) {
 
-  .menu-btn{
-    display:block;
-  }
+    header .container {
+        padding: 12px 15px;
+    }
+
+    .logo img {
+        height: 50px;
+    }
+
+    .menu-btn {
+        display: block;
+    }
+
+    #desktopNav {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 280px;
+        height: 100vh;
+        background: linear-gradient(180deg, #153770, #195cd7);
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 28px;
+        transition: .35s ease;
+        box-shadow: -10px 0 30px rgba(0,0,0,.25);
+        z-index: 999;
+    }
+
+    #desktopNav.active {
+        right: 0;
+    }
+
+    #desktopNav a {
+        font-size: 18px;
+        color: #fff;
+    }
+
+    .button-login {
+        margin-top: 20px;
+        width: 180px;
+        text-align: center;
+    }
 
 }

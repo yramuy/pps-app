@@ -1,5 +1,3 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
 
 import { loginGuard } from './guards/login.guard';
 import { authGuard } from './guards/auth.guard';
@@ -36,6 +34,11 @@ import { AboutComponent } from './front-end/components/about/about.component';
 import { ContactComponent } from './front-end/components/contact/contact.component';
 import { IssuesComponent } from './front-end/components/issues/issues.component';
 import { SchemesComponent } from './front-end/components/schemes/schemes.component';
+import { ViewSchemesComponent } from './back-end/components/schemes/view-schemes/view-schemes.component';
+import { AddSchemeComponent } from './back-end/components/schemes/add-scheme/add-scheme.component';
+import { RouterModule, Routes } from '@angular/router';
+import { NgModule } from '@angular/core';
+import { AboutUsComponent } from './back-end/components/about-us/about-us.component';
 
 const routes: Routes = [
 
@@ -82,6 +85,11 @@ const routes: Routes = [
       { path: 'issues/my-issues', component: MyIssuesComponent },
       { path: 'issues/assigned-to-me-issues', component: AssignedToMeIssuesComponent },
       { path: 'issues/view-issue', component: ViewIssueComponent },
+
+      { path: 'schemes/list', component: ViewSchemesComponent },
+      { path: 'schemes/add', component: AddSchemeComponent },
+
+      { path: 'aboutUs/add', component: AboutUsComponent },
 
       { path: 'reports', component: ReportsComponent }
     ]

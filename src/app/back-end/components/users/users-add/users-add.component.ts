@@ -3,6 +3,7 @@ import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ApiService } from 'src/app/services/api.service';
 import { AuthService } from 'src/app/services/auth.service';
+import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 @Component({
   selector: 'app-users-add',
@@ -10,6 +11,30 @@ import { AuthService } from 'src/app/services/auth.service';
   styleUrls: ['./users-add.component.scss'],
 })
 export class UsersAddComponent {
+  public Editor: any = ClassicEditor;
+
+  public editorConfig = {
+    toolbar: [
+      'heading',
+      '|',
+      'bold',
+      'italic',
+      'underline',
+      'strikethrough',
+      '|',
+      'link',
+      'bulletedList',
+      'numberedList',
+      '|',
+      'blockQuote',
+      'insertTable',
+      '|',
+      'undo',
+      'redo',
+    ],
+    placeholder: 'Enter Bio Graphy here...',
+  };
+
   formData: any = {};
   message: string = '';
   isMessage: boolean = false;
@@ -37,6 +62,7 @@ export class UsersAddComponent {
     village_id: '',
     master_id: '8',
     mode: 'web',
+    bio_graphy: '',
   };
 
   isEdit: boolean = false;

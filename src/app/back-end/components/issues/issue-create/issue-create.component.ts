@@ -41,10 +41,10 @@ export class IssueCreateComponent {
 
   isEdit: boolean = false;
 
-  selectedFile: File | null = null;
-  imagePreview: string | ArrayBuffer | null = null;
-
-  baseUrl = 'https://civsp.in/pps';
+  selectedFiles: File[] = [];
+  imagePreviews: string[] = [];
+  existingImages: string[] = [];
+  issue_images: string[] = [];
 
   @ViewChild('fileInput') fileInput!: ElementRef;
 
@@ -60,17 +60,19 @@ export class IssueCreateComponent {
 
     const state: any = history.state;
 
-    // ✅ Edit Mode Data Binding
     if (state.issue) {
       this.issue = state.issue;
       this.isEdit = true;
 
-      // ✅ Set preview from existing image
       if (this.issue.issue_pic) {
-        this.imagePreview = this.issue.issue_pic;
+        if (Array.isArray(this.issue.issue_pic)) {
+          this.existingImages = this.issue.issue_pic;
+        } else if (typeof this.issue.issue_pic === 'string') {
+          this.existingImages = [this.issue.issue_pic];
+        }
       }
 
-      console.log('imagePreview', this.imagePreview);
+      this.loadViewIssueDeta(this.issue.id);
 
       this.loadDistricts(this.issue.state_id);
       this.loadAssemblies(this.issue.district_id);
@@ -78,43 +80,73 @@ export class IssueCreateComponent {
       this.loadVillages(this.issue.mandal_id);
     }
 
-    this.authService.user$.subscribe((user) => {
+    this.authService.user$.subscribe((user: any) => {
       this.loginUser = user;
     });
   }
 
-  // ================= FILE HANDLING =================
-  onFileChange(event: any) {
-    const file = event.target.files[0];
+  loadViewIssueDeta(issueID: any) {
+    this.apiService.request('GET', `/issueDataById/${issueID}`).subscribe({
+      next: (res: any) => {
+        this.issue_images = res.issue_images || [];
 
-    if (file && file.type.startsWith('image/')) {
-      this.selectedFile = file;
+        this.existingImages = (res.issue_images || []).map(
+          (img: any) => img.img_url,
+        );
+      },
+    });
+  }
+
+  onFileChange(event: any) {
+    const files: FileList = event.target.files;
+
+    if (!files || files.length === 0) return;
+
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+
+      if (!file.type.startsWith('image/')) {
+        alert('Only image files allowed');
+        continue;
+      }
+
+      this.selectedFiles.push(file);
 
       const reader = new FileReader();
       reader.onload = () => {
-        this.imagePreview = reader.result;
+        this.imagePreviews.push(reader.result as string);
       };
       reader.readAsDataURL(file);
-    } else {
-      alert('Only image files allowed');
-      this.resetImage();
+    }
+
+    if (this.fileInput) {
+      this.fileInput.nativeElement.value = '';
     }
   }
 
-  resetImage(removeExisting: boolean = false) {
-    this.selectedFile = null;
-    this.imagePreview = null;
+  removeSelectedImage(index: number) {
+    this.selectedFiles.splice(index, 1);
+    this.imagePreviews.splice(index, 1);
+  }
+
+  removeExistingImage(index: number) {
+    this.existingImages.splice(index, 1);
+  }
+
+  resetImages(removeExisting: boolean = false) {
+    this.selectedFiles = [];
+    this.imagePreviews = [];
 
     if (this.fileInput) {
       this.fileInput.nativeElement.value = '';
     }
 
     if (removeExisting) {
+      this.existingImages = [];
       this.issue.issue_pic = '';
     }
   }
 
-  // ================= MASTER LOAD =================
   loadCategories() {
     this.apiService
       .request(
@@ -125,7 +157,7 @@ export class IssueCreateComponent {
           mode: 'web',
         }),
       )
-      .subscribe((res) => {
+      .subscribe((res: { master_data: never[] }) => {
         this.categories = res.master_data || [];
       });
   }
@@ -140,7 +172,7 @@ export class IssueCreateComponent {
           mode: 'web',
         }),
       )
-      .subscribe((res) => {
+      .subscribe((res: { master_data: never[] }) => {
         this.states = res.master_data || [];
       });
   }
@@ -158,7 +190,7 @@ export class IssueCreateComponent {
           mode: 'web',
         }),
       )
-      .subscribe((res) => {
+      .subscribe((res: { dependance_master_data: never[] }) => {
         this.districts = res.dependance_master_data || [];
       });
   }
@@ -176,7 +208,7 @@ export class IssueCreateComponent {
           mode: 'web',
         }),
       )
-      .subscribe((res) => {
+      .subscribe((res: { dependance_master_data: never[] }) => {
         this.assemblies = res.dependance_master_data || [];
       });
   }
@@ -194,7 +226,7 @@ export class IssueCreateComponent {
           mode: 'web',
         }),
       )
-      .subscribe((res) => {
+      .subscribe((res: { dependance_master_data: never[] }) => {
         this.mandals = res.dependance_master_data || [];
       });
   }
@@ -212,7 +244,7 @@ export class IssueCreateComponent {
           mode: 'web',
         }),
       )
-      .subscribe((res) => {
+      .subscribe((res: { dependance_master_data: never[] }) => {
         this.villages = res.dependance_master_data || [];
       });
   }
@@ -230,37 +262,44 @@ export class IssueCreateComponent {
           village_id: this.issue.village_id,
         }),
       )
-      .subscribe((res) => {
+      .subscribe((res: { usersList: never[] }) => {
         this.representatives = res.usersList || [];
       });
   }
 
-  // ================= SAVE / UPDATE =================
   saveIssue(form: NgForm) {
     if (form.invalid) return;
 
+    if (this.selectedFiles.length === 0 && this.existingImages.length === 0) {
+      this.showMessage('At least one issue picture is required');
+      return;
+    }
+
     const formData = new FormData();
 
-    // ✅ Always append from issue object
     Object.keys(this.issue).forEach((key) => {
-      formData.append(key, this.issue[key] ?? '');
+      if (key !== 'issue_pic') {
+        formData.append(key, this.issue[key] ?? '');
+      }
     });
 
-    // ✅ Extra fields
     formData.append('id', this.issue.id ?? '');
     formData.append('master_id', '9');
     formData.append('status_id', '1');
     formData.append('comment', 'New issue created');
     formData.append('created_by', this.loginUser?.userId);
 
-    // ✅ Image Handling
-    if (this.selectedFile) {
-      formData.append('issue_pic', this.selectedFile);
-    } else if (this.isEdit && this.issue.issue_pic) {
-      formData.append('issue_pic', this.issue.issue_pic);
-    }
+    // Existing images in edit mode
+    this.existingImages.forEach((img) => {
+      formData.append('existing_images[]', img);
+    });
 
-    // ✅ Debug
+    // New uploaded images
+    this.selectedFiles.forEach((file) => {
+      formData.append('images[]', file);
+    });
+
+    console.log('FormData values:');
     formData.forEach((value, key) => {
       console.log(key, value);
     });
@@ -281,7 +320,6 @@ export class IssueCreateComponent {
     });
   }
 
-  // ================= UTIL =================
   handleBackBtn() {
     this.router.navigate(['/admin/issues/my-issues']);
   }

@@ -1,65 +1,355 @@
-<section class="content">
-  <div class="container-fluid">
-    <div class="card">
-      <div class="card-header">
-        <h3 class="card-title text-white">All Issues</h3>
-      </div>
 
-      <div id="pageLoader" *ngIf="loader.loading$ | async">
-        <div class="spinner-border text-primary"></div>
-      </div>
+<div class="card-header">
+  <h3 class="card-title text-white">
+    All Issues
+  </h3>
+</div>
 
-      <div class="card-body">
-        <!-- <div
-          *ngIf="loading()"
-          class="alert alert-info alert-dismissible fade show"
-          role="alert"
-        >
-          {{ message() }}
-        </div> -->
-        
-        <div class="table-responsive">
-          <table id="issuesTable" class="table table-bordered table-striped">
-            <thead>
-              <tr>
-                <th>Sno</th>
-                <th>Category</th>
-                <th>Issue Title</th>
-                <th>Description</th>
-                <th>Assembly</th>
-                <th>Madal</th>
-                <th>Village</th>
-                <th>Tag Representive</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
 
-            <tbody>
-              <tr *ngFor="let issue of issuesList(); let i = index">
-                <td>{{ i + 1 }}</td>
-                <td>{{ issue.category }}</td>
-                <td class="description-cell">{{ issue.issue_title }}</td>
-                <td class="description-cell">{{ issue.issue_description }}</td>
-                <td>{{ issue.assembly }}</td>
-                <td>{{ issue.mandal }}</td>
-                <td>{{ issue.village }}</td>
-                <td>{{ issue.full_name }}</td>
-                <td>{{ issue.status }}</td>
-                <td>
-                  <button class="btn btn-info "
-                    (click)="handleView(issue.id)">
-                    <i class="fas fa-eye"></i>
-                  </button>
-                </td>
-              </tr>
-              <tr *ngIf="issuesList().length === 0">
-                <td colspan="5">No issues found</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
+<!-- Loader -->
+<div
+  id="pageLoader"
+  *ngIf="loader.loading$ | async"
+>
+  <div class="spinner-border text-primary"></div>
+</div>
+
+
+<div class="card-body">
+
+  <!-- ================================================= -->
+  <!-- ERROR MESSAGE -->
+  <!-- ================================================= -->
+
+  <div
+    *ngIf="message"
+    class="alert alert-danger alert-dismissible fade show"
+    role="alert"
+  >
+
+    {{ message }}
+
+    <button
+      type="button"
+      class="btn-close"
+      aria-label="Close"
+      (click)="message = ''"
+    >
+    </button>
+
   </div>
-</section>
+
+
+  <!-- ================================================= -->
+  <!-- FILTERS -->
+  <!-- ================================================= -->
+
+  <div class="row mb-3">
+
+
+    <!-- ================================================= -->
+    <!-- CATEGORY -->
+    <!-- ================================================= -->
+
+    <div class="col-md-3 mb-3">
+
+      <label
+        for="categoryFilter"
+        class="form-label"
+      >
+        Category
+      </label>
+
+      <select
+        id="categoryFilter"
+        class="form-control"
+        [value]="selectedCategoryId"
+        (change)="onCategoryChange($event)"
+        [disabled]="isCategoryDisabled()"
+      >
+
+        <option value="">
+          All Categories
+        </option>
+
+        <option
+          *ngFor="let category of categories"
+          [value]="category.id"
+        >
+          {{ category.name }}
+        </option>
+
+      </select>
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- ASSEMBLY -->
+    <!-- ================================================= -->
+
+    <div class="col-md-3 mb-3">
+
+      <label
+        for="assemblyFilter"
+        class="form-label"
+      >
+        Assembly
+      </label>
+
+      <select
+        id="assemblyFilter"
+        class="form-control"
+        [value]="selectedAssemblyId"
+        (change)="onAssemblyChange($event)"
+        [disabled]="
+          isAssemblyDisabled() ||
+          assemblies.length === 0
+        "
+      >
+
+        <!-- All is default for roles
+             that can change Assembly -->
+        <option value="">
+          All Assemblies
+        </option>
+
+
+        <option
+          *ngFor="let assembly of assemblies"
+          [value]="assembly.id"
+        >
+          {{ assembly.name }}
+        </option>
+
+      </select>
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- MANDAL -->
+    <!-- ================================================= -->
+
+    <div class="col-md-3 mb-3">
+
+      <label
+        for="mandalFilter"
+        class="form-label"
+      >
+        Mandal
+      </label>
+
+      <select
+        id="mandalFilter"
+        class="form-control"
+        [value]="selectedMandalId"
+        (change)="onMandalChange($event)"
+        [disabled]="
+          isMandalDisabled() ||
+          mandals.length === 0
+        "
+      >
+
+        <option value="">
+          All Mandals
+        </option>
+
+
+        <option
+          *ngFor="let mandal of mandals"
+          [value]="mandal.id"
+        >
+          {{ mandal.name }}
+        </option>
+
+      </select>
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- VILLAGE -->
+    <!-- ================================================= -->
+
+    <div class="col-md-3 mb-3">
+
+      <label
+        for="villageFilter"
+        class="form-label"
+      >
+        Village
+      </label>
+
+      <select
+        id="villageFilter"
+        class="form-control"
+        [value]="selectedVillageId"
+        (change)="onVillageChange($event)"
+        [disabled]="
+          isVillageDisabled() ||
+          villages.length === 0
+        "
+      >
+
+        <option value="">
+          All Villages
+        </option>
+
+
+        <option
+          *ngFor="let village of villages"
+          [value]="village.id"
+        >
+          {{ village.name }}
+        </option>
+
+      </select>
+
+    </div>
+
+  </div>
+
+
+  <!-- ================================================= -->
+  <!-- RESET -->
+  <!-- ================================================= -->
+
+  <div class="mb-3">
+
+    <button
+      type="button"
+      class="btn btn-secondary"
+      (click)="resetFilters()"
+    >
+      Reset Filters
+    </button>
+
+  </div>
+
+
+  <!-- ================================================= -->
+  <!-- ISSUES TABLE -->
+  <!-- ================================================= -->
+
+  <div class="table-responsive">
+
+    <table
+      id="issuesTable"
+      class="table table-bordered table-striped"
+    >
+
+      <thead>
+
+        <tr>
+
+          <th>Sno</th>
+
+          <th>Category</th>
+
+          <th>Issue Title</th>
+
+          <th>Description</th>
+
+          <th>Assembly</th>
+
+          <th>Mandal</th>
+
+          <th>Village</th>
+
+          <th>Tag Representative</th>
+
+          <th>Status</th>
+
+          <th>Actions</th>
+
+        </tr>
+
+      </thead>
+
+
+      <tbody>
+
+        <tr
+          *ngFor="
+            let issue of issuesList;
+            let i = index
+          "
+        >
+
+          <td>
+            {{ i + 1 }}
+          </td>
+
+          <td>
+            {{ issue.category }}
+          </td>
+
+          <td class="description-cell">
+            {{ issue.issue_title }}
+          </td>
+
+          <td class="description-cell">
+            {{ issue.issue_description }}
+          </td>
+
+          <td>
+            {{ issue.assembly }}
+          </td>
+
+          <td>
+            {{ issue.mandal }}
+          </td>
+
+          <td>
+            {{ issue.village }}
+          </td>
+
+          <td>
+            {{ issue.full_name }}
+          </td>
+
+          <td>
+            {{ issue.status }}
+          </td>
+
+          <td>
+
+            <button
+              type="button"
+              class="btn btn-info"
+              title="View Issue"
+              (click)="handleView(issue.id)"
+            >
+
+              <i class="fas fa-eye"></i>
+
+            </button>
+
+          </td>
+
+        </tr>
+
+
+        <!-- No Issues -->
+        <tr
+          *ngIf="issuesList.length === 0"
+        >
+
+          <td
+            colspan="10"
+            class="text-center"
+          >
+            No issues found
+          </td>
+
+        </tr>
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+</div>
+

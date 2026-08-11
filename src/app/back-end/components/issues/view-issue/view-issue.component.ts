@@ -25,6 +25,7 @@ export class ViewIssueComponent {
   loginUser: any;
   issueComments: any = [];
   issueStatuses: any = [];
+  issue_images: any = [];
 
   views: any = '';
 
@@ -38,7 +39,7 @@ export class ViewIssueComponent {
     const state = history.state;
     this.issueID = state.issueID;
 
-    this.authService.user$.subscribe((user) => {
+    this.authService.user$.subscribe((user: any) => {
       this.loginUser = user;
     });
 
@@ -85,10 +86,11 @@ export class ViewIssueComponent {
 
     this.apiService.request('GET', `/issueDataById/${issueID}`).subscribe({
       next: (res: any) => {
-        this.issueData = res.issueData?.[0] || {};
+        this.issueData = res.issueData || {};
         this.issueComments = res.comments || [];
         this.issueWorkflowList = res.workflow || [];
         this.views = res.views || 0;
+        this.issue_images = res.issue_images || [];
 
         // ✅ set dropdown value separately
         this.selectedStatusId = this.issueData.status_id;

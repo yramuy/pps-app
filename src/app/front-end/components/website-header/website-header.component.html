@@ -13,22 +13,22 @@
       </p>
     </a>
 
-    <nav id="desktopNav">
+    <nav id="desktopNav" [class.active]="isMenuOpen">
       <a
         routerLink="/"
         routerLinkActive="active"
         [routerLinkActiveOptions]="{ exact: true }"
-      >
+      (click)="closeMenu()">
         Home
       </a>
 
-      <a routerLink="/about" routerLinkActive="active"> About Us </a>
+      <a routerLink="/about" routerLinkActive="active" (click)="closeMenu()"> About Us </a>
 
-      <a routerLink="/issues" routerLinkActive="active"> Issues </a>
+      <a routerLink="/issues" routerLinkActive="active" (click)="closeMenu()"> Issues </a>
 
-      <a routerLink="/schemes" routerLinkActive="active"> Schemes </a>
+      <a routerLink="/schemes" routerLinkActive="active" (click)="closeMenu()"> Schemes </a>
 
-      <a routerLink="/contact" routerLinkActive="active"> Contact </a>
+      <a routerLink="/contact" routerLinkActive="active" (click)="closeMenu()"> Contact </a>
 
       <a routerLink="/admin/login" class="button-login px-3 py-2"> Login </a>
     </nav>

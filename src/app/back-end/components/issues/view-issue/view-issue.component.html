@@ -2,15 +2,14 @@
   <div class="container-fluid">
     <div class="card">
       <div class="card-header">
-        <h3 class="card-title">View Issue Details</h3>
+        <h3 class="card-title text-white">View Issue Details</h3>
       </div>
 
       <!-- Loader -->
       <div
         id="pageLoader"
         *ngIf="loader.loading$ | async"
-        class="text-center my-3"
-      >
+        class="text-center my-3">
         <div class="spinner-border text-primary"></div>
       </div>
 
@@ -21,13 +20,45 @@
           {{ message }}
         </div>
 
-        <div class="row mb-2">
+        <!-- <div class="row mb-2">
           <div class="col-11">
             <img
               [src]="issueData.issue_pic"
               class="img-fluid w-100 rounded"
               style="height: 450px; object-fit: cover"
             />
+          </div>
+        </div> -->
+
+        <div class="row mb-2" *ngIf="issue_images?.length">
+          <div class="col-11">
+            <div
+              id="issueImageCarousel"
+              class="carousel slide"
+              data-ride="carousel"
+              data-interval="3000">
+              <div class="carousel-inner rounded">
+                <div
+                  class="carousel-item"
+                  *ngFor="let img of issue_images; let i = index"
+                  [class.active]="i === 0">
+                  <img
+                    [src]="img.img_url"
+                    class="d-block w-100"
+                    style="height: 450px; object-fit: cover" />
+                </div>
+              </div>
+
+              <a class="carousel-control-prev custom-carousel-btn"
+                href="#issueImageCarousel" role="button" data-slide="prev">
+                <span style="font-size: 18px; color: #333;">&#10094;</span>
+              </a>
+
+              <a class="carousel-control-next custom-carousel-btn"
+                href="#issueImageCarousel" role="button" data-slide="next">
+                <span style="font-size: 18px; color: #333;">&#10095;</span>
+              </a>
+            </div>
           </div>
         </div>
 
@@ -45,9 +76,10 @@
               </span>
 
               <!-- Views -->
-              <span class="d-flex align-items-center gap-2" style="margin-left: 20px;">
+              <span class="d-flex align-items-center gap-2"
+                style="margin-left: 20px;">
                 <!-- 👉 gap between icon & text -->
-                <i class="fa fa-user text-primary" ></i>
+                <i class="fa fa-user text-primary"></i>
                 <span style="margin-left: 3px;">{{ views || 0 }} views</span>
               </span>
             </div>
@@ -79,8 +111,7 @@
           *ngIf="
             (issueData.status_id == '1' || issueData.status_id == '2') &&
             loginUser.roleId != '7'
-          "
-        >
+          ">
           <!-- Title -->
           <div class="row">
             <div class="col-6">
@@ -97,9 +128,8 @@
                 class="form-control mb-2"
                 name="status_id"
                 [(ngModel)]="selectedStatusId"
-                required
-              >
-                <option value="">-- Select --</option>
+                required>
+                <option value>-- Select --</option>
                 <option *ngFor="let r of issueStatuses" [value]="r.id">
                   {{ r.name }}
                 </option>
@@ -108,8 +138,7 @@
               <!-- Validation -->
               <small
                 class="text-danger"
-                *ngIf="selectedStatusId.touched && selectedStatusId.invalid"
-              >
+                *ngIf="selectedStatusId.touched && selectedStatusId.invalid">
                 Status is required
               </small>
             </div>
@@ -127,8 +156,7 @@
                 #wf_comment_ref="ngModel"
                 rows="4"
                 placeholder="Enter your comment..."
-                [required]="selectedStatusId == '3'"
-              ></textarea>
+                [required]="selectedStatusId == '3'"></textarea>
 
               <!-- Validation (only when Reject selected) -->
               <small
@@ -137,8 +165,7 @@
                   wf_comment_ref.touched &&
                   wf_comment_ref.invalid &&
                   selectedStatusId == 3
-                "
-              >
+                ">
                 Comment is required when status is Reject
               </small>
             </div>
@@ -149,8 +176,7 @@
             <button
               type="submit"
               class="btn btn-primary"
-              [disabled]="issueWfForm.invalid"
-            >
+              [disabled]="issueWfForm.invalid">
               Submit
             </button>
           </div>
@@ -194,14 +220,12 @@
                 #issueComment="ngModel"
                 rows="4"
                 placeholder="Enter your comment..."
-                required
-              ></textarea>
+                required></textarea>
 
               <!-- Validation Error -->
               <div
                 *ngIf="issueComment.invalid && issueComment.touched"
-                class="text-danger mt-1"
-              >
+                class="text-danger mt-1">
                 Comment is required
               </div>
 
@@ -210,8 +234,7 @@
                 <button
                   type="submit"
                   class="btn btn-primary"
-                  [disabled]="issueCmtForm.invalid || (loader.loading$ | async)"
-                >
+                  [disabled]="issueCmtForm.invalid || (loader.loading$ | async)">
                   Submit Comment
                 </button>
               </div>
@@ -222,15 +245,13 @@
 
         <div
           class="row align-items-start mb-3"
-          *ngFor="let comment of issueComments"
-        >
+          *ngFor="let comment of issueComments">
           <!-- Profile Image -->
           <div class="col-auto">
             <img
               [src]="comment.profile_pic"
               class="rounded-circle"
-              style="width: 60px; height: 60px; object-fit: cover"
-            />
+              style="width: 60px; height: 60px; object-fit: cover" />
           </div>
 
           <!-- Name + Comment -->

@@ -3,76 +3,138 @@
     <div class="row">
       <div class="col-lg-8">
         <p
-          class="fs-5 fw-normal bg-light border rounded-pill d-inline-block px-3 py-1"
-        >
+          class="fs-5 fw-normal bg-light border rounded-pill d-inline-block px-3 py-1">
           Latest Public Issues
         </p>
-
-        <h2 class="fs-1 pb-4">
-          Showcasing the Beauty and Innovation of Sustainable Imagery
-        </h2>
       </div>
     </div>
 
-    <div class="row py-3">
+    <div class="row">
+
       <!-- Card 1 -->
-      <div class="col-lg-4 my-2">
-        <div class="blog-home-01 rounded-20 zoom">
-          <div class="blog-content text-white">
-            <h2 class="fs-5 text-white">Lorem ipsum dolor sit</h2>
+      <div class="col-lg-4 col-md-6 mb-4" *ngFor="let issue of issues()">
+        <div class="card issue-card h-100 border-0">
 
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean
-              gravida hendrerit felis, et faucibus enim interdum.
+          <img
+            [src]="issue.issue_pic || 'assets/images/no-image.jpg'"
+            [alt]="issue.issue_title"
+            class="card-img-top issue-img">
+
+          <div class="card-body d-flex flex-column">
+
+            <span class="badge bg-warning text-dark mb-2 align-self-start">
+              {{ issue.category }}
+            </span>
+
+            <h5 class="card-title mb-2">
+              {{ issue.issue_title }}
+            </h5>
+
+            <p class="card-text flex-grow-1">
+              {{ issue.issue_description | slice:0:70 }}
+              <span *ngIf="issue.issue_description?.length > 70">...</span>
             </p>
 
-            <a routerLink="/issues" class="button border py-2 px-3">
-              Read More
-            </a>
+            <button
+              type="button"
+              class="btn btn-outline-primary btn-readmore"
+              data-toggle="modal"
+              data-target="#issueModal"
+              (click)="selectedIssue = issue">
+              Read More <i class="fas fa-arrow-right ml-1"></i>
+            </button>
+
           </div>
+
         </div>
       </div>
 
-      <!-- Card 2 & 3 -->
-      <div class="col-lg-4 my-2">
-        <div class="blog-home-02 rounded-20 zoom mb-3">
-          <div class="blog-content text-white">
-            <h2 class="fs-5 text-white">Lorem ipsum dolor sit</h2>
-
-            <a routerLink="/issues" class="button border py-2 px-3">
-              Read More
-            </a>
-          </div>
-        </div>
-
-        <div class="blog-home-03 rounded-20 zoom">
-          <div class="blog-content text-white">
-            <h2 class="fs-5 text-white">Lorem ipsum dolor sit</h2>
-
-            <a routerLink="/issues" class="button border py-2 px-3">
-              Read More
-            </a>
-          </div>
-        </div>
-      </div>
-
-      <!-- Card 4 -->
-      <div class="col-lg-4 my-2">
-        <div class="blog-home-04 rounded-20 zoom">
-          <div class="blog-content text-white">
-            <h2 class="fs-5 text-white">Lorem ipsum dolor sit</h2>
-
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean
-              gravida hendrerit felis, et faucibus enim interdum.
-            </p>
-
-            <a routerLink="/issues" class="button border py-2 px-3">
-              Read More
-            </a>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 </section>
+
+<div class="modal fade" id="issueModal" tabindex="-1" role="dialog"
+  aria-labelledby="issueModalLabel" aria-hidden="true">
+
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+
+    <div class="modal-content">
+
+      <!-- Header -->
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="issueModalLabel">
+          {{ selectedIssue?.issue_title }}
+        </h5>
+
+        <button type="button" class="close text-white" data-dismiss="modal"
+          aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <!-- Body -->
+      <div class="modal-body">
+
+        <img
+          [src]="selectedIssue?.issue_pic || 'assets/images/no-image.jpg'"
+          class="img-fluid rounded mb-3 w-100"
+          style="height:300px;object-fit:cover;">
+
+        <div class="mb-3">
+          <span class="badge badge-warning">
+            {{ selectedIssue?.category }}
+          </span>
+
+          <span class="badge badge-success ml-2">
+            {{ selectedIssue?.status }}
+          </span>
+        </div>
+
+        <p class="text-justify">
+          {{ selectedIssue?.issue_description }}
+        </p>
+
+        <hr>
+
+        <div class="row">
+
+          <div class="col-md-6 mb-2">
+            <strong>State :</strong> {{ selectedIssue?.state }}
+          </div>
+
+          <div class="col-md-6 mb-2">
+            <strong>District :</strong> {{ selectedIssue?.district }}
+          </div>
+
+          <div class="col-md-6 mb-2">
+            <strong>Assembly :</strong> {{ selectedIssue?.assembly }}
+          </div>
+
+          <div class="col-md-6 mb-2">
+            <strong>Mandal :</strong> {{ selectedIssue?.mandal }}
+          </div>
+
+          <div class="col-md-6 mb-2">
+            <strong>Village :</strong> {{ selectedIssue?.village }}
+          </div>
+
+          <div class="col-md-6 mb-2">
+            <strong>Assigned To :</strong> {{ selectedIssue?.full_name }}
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+          Close
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

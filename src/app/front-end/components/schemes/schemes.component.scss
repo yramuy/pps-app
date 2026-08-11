@@ -1,0 +1,66 @@
+.issue-card {
+    border-radius: 15px;
+    overflow: hidden;
+    background: linear-gradient(135deg, #ffffff, #f5f7fa);
+    box-shadow: 0 6px 18px rgba(0,0,0,.12);
+    transition: all .3s ease;
+}
+
+.issue-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0,0,0,.18);
+}
+
+.issue-img {
+    height: 180px;
+    object-fit: cover;
+}
+
+.card-body {
+    padding: 16px;
+}
+
+.card-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #212529;
+    line-height: 1.4;
+    min-height: 50px;
+}
+
+.card-text {
+    font-size: 14px;
+    color: #6c757d;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+.badge {
+    font-size: 12px;
+    padding: 6px 12px;
+    border-radius: 20px;
+}
+
+.btn {
+    border-radius: 25px;
+    padding: 6px 18px;
+    font-weight: 600;
+}
+
+.issue-card:hover .issue-img {
+    transform: scale(1.05);
+    transition: transform .4s ease;
+}
+.btn-readmore {
+    font-size: 13px;
+    font-weight: 600;
+    padding: 5px 14px;
+    border-radius: 20px;
+    transition: all .3s ease;
+}
+
+.btn-readmore:hover {
+    background: #007bff;
+    color: #fff;
+    transform: translateX(2px);
+}

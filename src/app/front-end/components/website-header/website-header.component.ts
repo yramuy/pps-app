@@ -24,13 +24,13 @@ export class WebsiteHeaderComponent {
   }
 
   toggleMenu() {
-    this.isMenuOpen = !this.isMenuOpen;
-    document.body.style.overflow = this.isMenuOpen ? 'hidden' : '';
-  }
+  this.isMenuOpen = !this.isMenuOpen;
+  document.body.style.overflow = this.isMenuOpen ? 'hidden' : '';
+}
 
-  closeMenu() {
-    this.isMenuOpen = false;
-    document.body.style.overflow = '';
-  }
+closeMenu() {
+  this.isMenuOpen = false;
+  document.body.style.overflow = '';
+}
 
 }

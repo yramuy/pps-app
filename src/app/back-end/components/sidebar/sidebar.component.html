@@ -215,6 +215,59 @@
           </ul>
         </li>
 
+        <!-- Schemes -->
+        <li class="nav-item has-treeview" [class.menu-open]="menuState.scheme" *ngIf="user?.roleId == '1' || user?.roleId == '2'">
+          <a href="#" class="nav-link" (click)="toggleMenu('scheme', $event)">
+            <i class="nav-icon fas fa-bug"></i>
+            <p>
+              Schemes
+              <i class="right fas fa-angle-left"></i>
+            </p>
+          </a>
+
+          <ul
+            class="nav nav-treeview"
+            [style.display]="menuState.scheme ? 'block' : 'none'"
+          >
+            <li class="nav-item">
+              <a
+                routerLink="/admin/schemes/add"
+                routerLinkActive="menu-open"
+                class="nav-link"
+                [class.active]="isMenuActive('/admin/schemes/add')"
+              >
+                <i class="nav-icon fas fa-plus-circle"></i>
+                <p>Add Scheme</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a
+                routerLink="/admin/schemes/list"
+                routerLinkActive="menu-open"
+                class="nav-link"
+                [class.active]="isMenuActive('/admin/schemes/list')"
+                [routerLinkActiveOptions]="{ exact: false }"
+              >
+                <i class="nav-icon fas fa-user-circle"></i>
+                <p>View Schemes</p>
+              </a>
+            </li>            
+          </ul>
+        </li>
+
+        <!-- About Us -->
+        <li class="nav-item" *ngIf="user?.roleId == '1' || user?.roleId == '2'">
+          <a
+            routerLink="/admin/aboutUs/add"
+            routerLinkActive="menu-open"
+            class="nav-link"
+            [class.active]="isMenuActive('/admin/aboutUs/add')"
+          >
+            <i class="nav-icon fas fa-user-cog"></i>
+            <p>About Us</p>
+          </a>
+        </li>
+
         <!-- Reports -->
         <li class="nav-item has-treeview" [class.menu-open]="menuState.reports">
           <a href="#" class="nav-link" (click)="toggleMenu('reports', $event)">
