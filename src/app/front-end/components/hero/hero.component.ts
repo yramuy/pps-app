@@ -6,6 +6,8 @@ import {
   OnDestroy,
   ViewChild
 } from '@angular/core';
+import { ApiService } from 'src/app/services/api.service';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-hero',
@@ -15,6 +17,41 @@ import {
 export class HeroComponent implements AfterViewInit, OnDestroy {
 
   @ViewChild('sliderTrack') sliderTrack!: ElementRef<HTMLDivElement>;
+
+  advertisements: any = [];
+  message: any = '';
+
+  constructor(
+    private authService: AuthService,
+    private apiService: ApiService,
+  ) {
+    this.loadAdvertisements();
+  }
+
+  loadAdvertisements() {
+
+    let payload = {
+      mode: 0
+    };
+
+    this.apiService.request('POST', '/allAdvertisements', payload).subscribe({
+      next: (res: any) => {
+        this.advertisements = res.advertisements || [];
+      },
+
+      error: (err: any) => {
+        if (err.status === 401) {
+          this.message = 'Token expired';
+        } else if (err.status === 400) {
+          this.message = 'Invalid request data';
+        } else if (err.status === 500) {
+          this.message = 'Server error. Please try again later';
+        } else {
+          this.message = 'Something went wrong. Please try again later';
+        }
+      },
+    });
+  }
 
   currentIndex = 0;
   autoplay: any;

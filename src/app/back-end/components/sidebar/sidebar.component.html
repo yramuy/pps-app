@@ -255,6 +255,46 @@
           </ul>
         </li>
 
+                <!-- Schemes -->
+        <li class="nav-item has-treeview" [class.menu-open]="menuState.advertisement" *ngIf="user?.roleId == '1' || user?.roleId == '2'">
+          <a href="#" class="nav-link" (click)="toggleMenu('advertisement', $event)">
+            <i class="nav-icon fas fa-bug"></i>
+            <p>
+              Advertisement
+              <i class="right fas fa-angle-left"></i>
+            </p>
+          </a>
+
+          <ul
+            class="nav nav-treeview"
+            [style.display]="menuState.advertisement ? 'block' : 'none'"
+          >
+            <li class="nav-item">
+              <a
+                routerLink="/admin/advertisement/add"
+                routerLinkActive="menu-open"
+                class="nav-link"
+                [class.active]="isMenuActive('/admin/advertisement/add')"
+              >
+                <i class="nav-icon fas fa-plus-circle"></i>
+                <p>Add Advertisement</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a
+                routerLink="/admin/advertisement/list"
+                routerLinkActive="menu-open"
+                class="nav-link"
+                [class.active]="isMenuActive('/admin/advertisement/list')"
+                [routerLinkActiveOptions]="{ exact: false }"
+              >
+                <i class="nav-icon fas fa-user-circle"></i>
+                <p>View Advertisements</p>
+              </a>
+            </li>            
+          </ul>
+        </li>
+
         <!-- About Us -->
         <li class="nav-item" *ngIf="user?.roleId == '1' || user?.roleId == '2'">
           <a

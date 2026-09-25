@@ -119,12 +119,12 @@ hr{color:#af9cc3;}
 .c-images{height:80px;display:flex;align-items:center;}
 
  
-.form-control, .form-select {padding: 10px 30px !important;} 
+/* .form-control, .form-select {padding: 10px 30px !important;}  */
  
 .footer a {color:#222 !important;}
 .footer a:hover{color:#6ab0fb !important;}
  
-.form-control, .form-select{padding:15px 20px;border-radius:12px;}
+/* .form-control, .form-select{padding:15px 20px;border-radius:12px;} */
 
 
 

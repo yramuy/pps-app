@@ -231,8 +231,20 @@
     </div>
 
     <div class="card-footer d-flex align-items-center">
-      <button class="btn btn-primary mr-2">
-        {{ isEdit ? "Update" : "Save" }}
+      <button
+        type="submit"
+        class="btn btn-primary mr-2"
+        [disabled]="isSaving">
+
+        <span *ngIf="isSaving">
+          <i class="fas fa-spinner fa-spin mr-2"></i>
+          {{ isEdit ? "Updating..." : "Saving..." }}
+        </span>
+
+        <span *ngIf="!isSaving">
+          {{ isEdit ? "Update" : "Save" }}
+        </span>
+
       </button>
 
       <button type="button" class="btn btn-dark" (click)="handleBackBtn()">

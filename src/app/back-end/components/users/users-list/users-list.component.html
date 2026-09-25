@@ -2,7 +2,7 @@
   <div class="container-fluid">
     <div class="card">
       <div class="card-header">
-        <h3 class="card-title">User List</h3>
+        <h3 class="card-title text-white">User List</h3>
       </div>
 
       <div id="pageLoader" *ngIf="loader.loading$ | async">
@@ -10,11 +10,49 @@
       </div>
 
       <div class="card-body">
+        <!-- ================================================= -->
+        <!-- FILTERS -->
+        <!-- ================================================= -->
+
+        <div class="row mb-3">
+          <!-- ================================================= -->
+          <!-- CATEGORY -->
+          <!-- ================================================= -->
+
+          <div class="col-md-3 mb-3">
+            <label for="roleFilter" class="form-label"> Roles </label>
+
+            <select
+              id="roleFilter"
+              class="form-control"
+              [value]="selectedRoleId"
+              (change)="onRoleChange($event)">
+              <option value>All Roles</option>
+
+              <option *ngFor="let role of roles" [value]="role.id">
+                {{ role.name }}
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <!-- ================================================= -->
+        <!-- RESET -->
+        <!-- ================================================= -->
+
+        <div class="mb-3">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            (click)="resetFilters()">
+            Reset Filters
+          </button>
+        </div>
+
         <div
           *ngIf="isMessage === true"
           class="alert alert-info alert-dismissible fade show"
-          role="alert"
-        >
+          role="alert">
           {{ message }}
         </div>
 
@@ -27,6 +65,7 @@
           <thead>
             <tr>
               <th>Sno</th>
+              <th>Profile Pic</th>
               <th>Role</th>
               <th>User Name</th>
               <th>Full Name</th>
@@ -34,14 +73,27 @@
               <th>District</th>
               <th>Assembly</th>
               <th>Mandal</th>
-              <th>Village</th>              
+              <th>Village</th>
               <th>Actions</th>
             </tr>
           </thead>
 
           <tbody>
+            <!-- Users found -->
             <tr *ngFor="let user of users; let i = index">
               <td>{{ i + 1 }}</td>
+              <!-- Profile Picture -->
+              <td class="text-center">
+                <img
+                  *ngIf="user.profile_pic_url"
+                  [src]="user.profile_pic_url"
+                  alt="Profile"
+                  class="user-profile-img" />
+
+                <span *ngIf="!user.profile_pic_url" class="text-muted">
+                  No Image
+                </span>
+              </td>
               <td>{{ user.role }}</td>
               <td>{{ user.user_name }}</td>
               <td>{{ user.full_name }}</td>
@@ -53,19 +105,25 @@
               <td>
                 <div class="d-flex">
                   <button
+                    type="button"
                     class="btn btn-success mr-2"
-                    (click)="handleEdit(user)"
-                  >
+                    (click)="handleEdit(user)">
                     <i class="fas fa-edit"></i>
                   </button>
+
                   <button
+                    type="button"
                     class="btn btn-danger"
-                    (click)="confirmDelete(user.id)"
-                  >
+                    (click)="confirmDelete(user.id)">
                     <i class="fas fa-trash"></i>
                   </button>
                 </div>
               </td>
+            </tr>
+
+            <!-- No users found -->
+            <tr *ngIf="users.length === 0">
+              <td colspan="10" class="text-center">No Records Found</td>
             </tr>
           </tbody>
         </table>

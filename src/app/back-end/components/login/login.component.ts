@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { finalize } from 'rxjs/operators';
 import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
@@ -22,9 +23,20 @@ export class LoginComponent {
     this.showPassword = !this.showPassword;
   }
 
+  goToWebsite(): void {
+    this.authService.logout();
+    localStorage.clear();
+    this.router.navigate(['/']);
+  }
+
   login() {
     if (!this.username || !this.password) {
       alert('Username and Password are required');
+      return;
+    }
+
+    // Prevent multiple clicks
+    if (this.loading) {
       return;
     }
 
@@ -35,34 +47,34 @@ export class LoginComponent {
       password: this.password,
     };
 
-    this.authService.login(payload).subscribe({
-      next: (res: any) => {
-        // ✅ Check API response
-        if (res.status === true) {
-          this.authService.saveToken(res.token);
-          this.authService.saveUserData(res);
+    this.authService
+      .login(payload)
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+        }),
+      )
+      .subscribe({
+        next: (res: any) => {
+          if (res.status === true) {
+            this.authService.saveToken(res.token);
+            this.authService.saveUserData(res);
 
-          this.router.navigate(['/admin/dashboard']);
-        } else {
-          // ❌ Invalid credentials case
-          alert(res.message || 'Invalid username or password');
-          this.authService.logout();
-        }
+            this.router.navigate(['/admin/dashboard']);
+          } else {
+            alert(res.message || 'Invalid username or password');
+            this.authService.logout();
+          }
+        },
 
-        this.loading = false;
-      },
-
-      error: (err) => {
-        if (err.status === 401) {
-          alert('Session expired');
-          this.authService.logout();
-        } else {
-          alert('Something went wrong. Please try again');
-        }
-
-        
-        this.loading = false;
-      },
-    });
+        error: (err) => {
+          if (err.status === 401) {
+            alert('Session expired');
+            this.authService.logout();
+          } else {
+            alert('Something went wrong. Please try again');
+          }
+        },
+      });
   }
 }

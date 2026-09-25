@@ -1,0 +1,68 @@
+<section class="content">
+  <div class="container-fluid">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title text-white">All Advertisements</h3>
+      </div>
+
+      <div id="pageLoader" *ngIf="loader.loading$ | async">
+        <div class="spinner-border text-primary"></div>
+      </div>
+
+      <div class="card-body">
+        <!-- <div
+          *ngIf="loading()"
+          class="alert alert-info alert-dismissible fade show"
+          role="alert"
+        >
+          {{ message() }}
+        </div> -->
+
+        <div class="table-responsive">
+          <table id="myAdvertisementsTable" class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th>Sno</th>
+                <th>Advertisement Title</th>
+                <th>Description</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr *ngFor="let advertisement of myAdvertisements(); let i = index">
+                <td>{{ i + 1 }}</td>
+                <td class="description-cell">{{ advertisement.advertisement_title }}</td>
+                <td class="description-cell">{{ advertisement.advertisement_description
+                  }}</td>
+                <td>
+
+                  <div class="action-buttons">
+                    <button
+                      type="button"
+                      class="btn btn-success btn-sm"
+                      (click)="handleEdit(advertisement)"
+                      title="Edit">
+                      <i class="fas fa-edit"></i>
+                    </button>
+
+                    <button
+                      type="button"
+                      class="btn btn-danger btn-sm"
+                      (click)="confirmDelete(advertisement.id)"
+                      title="Delete">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr *ngIf="myAdvertisements().length === 0">
+                <td colspan="5">No Advertisements found</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

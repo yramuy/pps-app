@@ -49,6 +49,8 @@ import { AddSchemeComponent } from './back-end/components/schemes/add-scheme/add
 import { ViewSchemesComponent } from './back-end/components/schemes/view-schemes/view-schemes.component';
 import { AboutUsComponent } from './back-end/components/about-us/about-us.component';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
+import { ViewAdvertisementComponent } from './back-end/components/advertisement/view-advertisement/view-advertisement.component';
+import { AddAdvertisementComponent } from './back-end/components/advertisement/add-advertisement/add-advertisement.component';
 
 @NgModule({
   declarations: [
@@ -93,7 +95,9 @@ import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
     BrandMarqueeComponent,
     AddSchemeComponent,
     ViewSchemesComponent,
-    AboutUsComponent
+    AboutUsComponent,
+    ViewAdvertisementComponent,
+    AddAdvertisementComponent
 
   ],
   imports: [

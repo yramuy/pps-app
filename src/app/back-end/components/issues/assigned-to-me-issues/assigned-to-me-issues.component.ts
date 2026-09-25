@@ -1,9 +1,4 @@
-
-import {
-  Component,
-  OnDestroy,
-  signal
-} from '@angular/core';
+import { Component, OnDestroy, signal } from '@angular/core';
 
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
@@ -11,6 +6,7 @@ import { Router } from '@angular/router';
 import { ApiService } from 'src/app/services/api.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { LoaderService } from 'src/app/services/loader.service';
+import { NotificationService } from '../../../../services/notification.service';
 
 declare const $: any;
 
@@ -20,7 +16,6 @@ declare const $: any;
   styleUrls: ['./assigned-to-me-issues.component.scss'],
 })
 export class AssignedToMeIssuesComponent implements OnDestroy {
-
   // =========================================================
   // Signals
   // =========================================================
@@ -74,105 +69,68 @@ export class AssignedToMeIssuesComponent implements OnDestroy {
     private authService: AuthService,
     private apiService: ApiService,
     public loader: LoaderService,
-    private router: Router
+    private router: Router,
+    private notificationService: NotificationService,
   ) {
-
     // =======================================================
     // Get logged-in user
     // =======================================================
 
-    this.userSubscription =
-      this.authService.user$.subscribe({
+    this.userSubscription = this.authService.user$.subscribe({
+      next: (user: any) => {
+        console.log('LOGIN USER:', user);
 
-        next: (user: any) => {
+        this.loginUser.set(user);
 
-          console.log(
-            'LOGIN USER:',
-            user
-          );
-
-          this.loginUser.set(user);
-
-          if (!user) {
-            return;
-          }
-
-          // -------------------------------------------------
-          // Set login user's location
-          // -------------------------------------------------
-
-          this.setLoginLocationFilters(user);
-
-          // -------------------------------------------------
-          // Load Categories
-          // -------------------------------------------------
-
-          this.loadCategories();
-
-          // -------------------------------------------------
-          // Load Assemblies based on District
-          // -------------------------------------------------
-
-          if (user.districtID) {
-
-            this.loadAssemblies(
-              user.districtID
-            );
-
-          } else {
-
-            this.loadAssignedToMeIssues(
-              user
-            );
-
-          }
-
-        },
-
-        error: (err: any) => {
-
-          console.error(
-            'User subscription error:',
-            err
-          );
-
+        if (!user) {
+          return;
         }
 
-      });
+        // -------------------------------------------------
+        // Set login user's location
+        // -------------------------------------------------
 
+        this.setLoginLocationFilters(user);
+
+        // -------------------------------------------------
+        // Load Categories
+        // -------------------------------------------------
+
+        this.loadCategories();
+
+        // -------------------------------------------------
+        // Load Assemblies based on District
+        // -------------------------------------------------
+
+        if (user.districtID) {
+          this.loadAssemblies(user.districtID);
+        } else {
+          this.loadAssignedToMeIssues(user);
+        }
+      },
+
+      error: (err: any) => {
+        console.error('User subscription error:', err);
+      },
+    });
   }
 
   // =========================================================
   // Set Login Location Filters
   // =========================================================
 
-  private setLoginLocationFilters(
-    user: any
-  ): void {
+  private setLoginLocationFilters(user: any): void {
+    this.selectedAssemblyId = user?.assemblyID ? String(user.assemblyID) : '';
 
-    this.selectedAssemblyId =
-      user?.assemblyID
-        ? String(user.assemblyID)
-        : '';
+    this.selectedMandalId = user?.mandalID ? String(user.mandalID) : '';
 
-    this.selectedMandalId =
-      user?.mandalID
-        ? String(user.mandalID)
-        : '';
+    this.selectedVillageId = user?.villageID ? String(user.villageID) : '';
 
-    this.selectedVillageId =
-      user?.villageID
-        ? String(user.villageID)
-        : '';
-
-    console.log(
-      'LOGIN LOCATION FILTERS:',
-      {
-        assemblyID: this.selectedAssemblyId,
-        mandalID: this.selectedMandalId,
-        villageID: this.selectedVillageId
-      }
-    );
+    console.log('LOGIN LOCATION FILTERS:', {
+      assemblyID: this.selectedAssemblyId,
+      mandalID: this.selectedMandalId,
+      villageID: this.selectedVillageId,
+    });
   }
 
   // =========================================================
@@ -180,51 +138,27 @@ export class AssignedToMeIssuesComponent implements OnDestroy {
   // =========================================================
 
   isSuperAdmin(): boolean {
-
-    return Number(
-      this.loginUser()?.roleId
-    ) === this.SUPER_ADMIN_ROLE_ID;
-
+    return Number(this.loginUser()?.roleId) === this.SUPER_ADMIN_ROLE_ID;
   }
 
   isAdmin(): boolean {
-
-    return Number(
-      this.loginUser()?.roleId
-    ) === this.ADMIN_ROLE_ID;
-
+    return Number(this.loginUser()?.roleId) === this.ADMIN_ROLE_ID;
   }
 
   isMP(): boolean {
-
-    return Number(
-      this.loginUser()?.roleId
-    ) === this.MP_ROLE_ID;
-
+    return Number(this.loginUser()?.roleId) === this.MP_ROLE_ID;
   }
 
   isMLA(): boolean {
-
-    return Number(
-      this.loginUser()?.roleId
-    ) === this.MLA_ROLE_ID;
-
+    return Number(this.loginUser()?.roleId) === this.MLA_ROLE_ID;
   }
 
   isSarpanch(): boolean {
-
-    return Number(
-      this.loginUser()?.roleId
-    ) === this.SARPANCH_ROLE_ID;
-
+    return Number(this.loginUser()?.roleId) === this.SARPANCH_ROLE_ID;
   }
 
   isGuest(): boolean {
-
-    return Number(
-      this.loginUser()?.roleId
-    ) === this.GUEST_ROLE_ID;
-
+    return Number(this.loginUser()?.roleId) === this.GUEST_ROLE_ID;
   }
 
   // =========================================================
@@ -233,9 +167,7 @@ export class AssignedToMeIssuesComponent implements OnDestroy {
 
   // Category is always enabled
   isCategoryDisabled(): boolean {
-
     return false;
-
   }
 
   // ---------------------------------------------------------
@@ -250,13 +182,7 @@ export class AssignedToMeIssuesComponent implements OnDestroy {
   // ---------------------------------------------------------
 
   isAssemblyDisabled(): boolean {
-
-    return (
-      this.isMLA() ||
-      this.isSarpanch() ||
-      this.isGuest()
-    );
-
+    return this.isMLA() || this.isSarpanch() || this.isGuest();
   }
 
   // ---------------------------------------------------------
@@ -271,12 +197,7 @@ export class AssignedToMeIssuesComponent implements OnDestroy {
   // ---------------------------------------------------------
 
   isMandalDisabled(): boolean {
-
-    return (
-      this.isSarpanch() ||
-      this.isGuest()
-    );
-
+    return this.isSarpanch() || this.isGuest();
   }
 
   // ---------------------------------------------------------
@@ -291,9 +212,7 @@ export class AssignedToMeIssuesComponent implements OnDestroy {
   // ---------------------------------------------------------
 
   isVillageDisabled(): boolean {
-
     return this.isGuest();
-
   }
 
   // =========================================================
@@ -303,38 +222,26 @@ export class AssignedToMeIssuesComponent implements OnDestroy {
   // =========================================================
 
   loadCategories(): void {
-
     this.apiService
       .request(
         'POST',
         '/masterData',
         JSON.stringify({
           master_id: 1,
-          mode: 'web'
-        })
+          mode: 'web',
+        }),
       )
       .subscribe({
-
         next: (res: any) => {
-
-          this.categories =
-            res.master_data || [];
-
+          this.categories = res.master_data || [];
         },
 
         error: (err: any) => {
-
-          console.error(
-            'Category loading failed:',
-            err
-          );
+          console.error('Category loading failed:', err);
 
           this.categories = [];
-
-        }
-
+        },
       });
-
   }
 
   // =========================================================
@@ -343,10 +250,7 @@ export class AssignedToMeIssuesComponent implements OnDestroy {
   // master_id = 4
   // =========================================================
 
-  loadAssemblies(
-    districtId: any
-  ): void {
-
+  loadAssemblies(districtId: any): void {
     // -------------------------------------------------------
     // Clear dropdown arrays.
     //
@@ -358,9 +262,7 @@ export class AssignedToMeIssuesComponent implements OnDestroy {
     this.villages = [];
 
     if (!districtId) {
-
       return;
-
     }
 
     this.apiService
@@ -370,68 +272,44 @@ export class AssignedToMeIssuesComponent implements OnDestroy {
         JSON.stringify({
           master_id: 4,
           dropdown_id: districtId,
-          mode: 'web'
-        })
+          mode: 'web',
+        }),
       )
       .subscribe({
-
         next: (res: any) => {
+          this.assemblies = res.dependance_master_data || [];
 
-          this.assemblies =
-            res.dependance_master_data || [];
-
-          const user =
-            this.loginUser();
+          const user = this.loginUser();
 
           // -------------------------------------------------
           // Restore login user's Assembly
           // -------------------------------------------------
 
           if (user?.assemblyID) {
+            this.selectedAssemblyId = String(user.assemblyID);
 
-            this.selectedAssemblyId =
-              String(user.assemblyID);
-
-            console.log(
-              'Login Assembly:',
-              this.selectedAssemblyId
-            );
+            console.log('Login Assembly:', this.selectedAssemblyId);
 
             // ------------------------------------------------
             // Load Mandals
             // ------------------------------------------------
 
-            this.loadMandals(
-              this.selectedAssemblyId
-            );
-
+            this.loadMandals(this.selectedAssemblyId);
           } else {
-
             this.selectedAssemblyId = '';
             this.selectedMandalId = '';
             this.selectedVillageId = '';
 
-            this.loadAssignedToMeIssues(
-              user
-            );
-
+            this.loadAssignedToMeIssues(user);
           }
-
         },
 
         error: (err: any) => {
-
-          console.error(
-            'Assembly loading failed:',
-            err
-          );
+          console.error('Assembly loading failed:', err);
 
           this.assemblies = [];
-
-        }
-
+        },
       });
-
   }
 
   // =========================================================
@@ -440,20 +318,15 @@ export class AssignedToMeIssuesComponent implements OnDestroy {
   // master_id = 5
   // =========================================================
 
-  loadMandals(
-    assemblyId: any
-  ): void {
-
+  loadMandals(assemblyId: any): void {
     this.mandals = [];
     this.villages = [];
 
     if (!assemblyId) {
-
       this.selectedMandalId = '';
       this.selectedVillageId = '';
 
       return;
-
     }
 
     this.apiService
@@ -463,67 +336,43 @@ export class AssignedToMeIssuesComponent implements OnDestroy {
         JSON.stringify({
           master_id: 5,
           dropdown_id: assemblyId,
-          mode: 'web'
-        })
+          mode: 'web',
+        }),
       )
       .subscribe({
-
         next: (res: any) => {
+          this.mandals = res.dependance_master_data || [];
 
-          this.mandals =
-            res.dependance_master_data || [];
-
-          const user =
-            this.loginUser();
+          const user = this.loginUser();
 
           // -------------------------------------------------
           // Restore login user's Mandal
           // -------------------------------------------------
 
           if (user?.mandalID) {
+            this.selectedMandalId = String(user.mandalID);
 
-            this.selectedMandalId =
-              String(user.mandalID);
-
-            console.log(
-              'Login Mandal:',
-              this.selectedMandalId
-            );
+            console.log('Login Mandal:', this.selectedMandalId);
 
             // ------------------------------------------------
             // Load Villages
             // ------------------------------------------------
 
-            this.loadVillages(
-              this.selectedMandalId
-            );
-
+            this.loadVillages(this.selectedMandalId);
           } else {
-
             this.selectedMandalId = '';
             this.selectedVillageId = '';
 
-            this.loadAssignedToMeIssues(
-              user
-            );
-
+            this.loadAssignedToMeIssues(user);
           }
-
         },
 
         error: (err: any) => {
-
-          console.error(
-            'Mandal loading failed:',
-            err
-          );
+          console.error('Mandal loading failed:', err);
 
           this.mandals = [];
-
-        }
-
+        },
       });
-
   }
 
   // =========================================================
@@ -532,18 +381,13 @@ export class AssignedToMeIssuesComponent implements OnDestroy {
   // master_id = 6
   // =========================================================
 
-  loadVillages(
-    mandalId: any
-  ): void {
-
+  loadVillages(mandalId: any): void {
     this.villages = [];
 
     if (!mandalId) {
-
       this.selectedVillageId = '';
 
       return;
-
     }
 
     this.apiService
@@ -553,37 +397,25 @@ export class AssignedToMeIssuesComponent implements OnDestroy {
         JSON.stringify({
           master_id: 6,
           dropdown_id: mandalId,
-          mode: 'web'
-        })
+          mode: 'web',
+        }),
       )
       .subscribe({
-
         next: (res: any) => {
+          this.villages = res.dependance_master_data || [];
 
-          this.villages =
-            res.dependance_master_data || [];
-
-          const user =
-            this.loginUser();
+          const user = this.loginUser();
 
           // -------------------------------------------------
           // Restore login user's Village
           // -------------------------------------------------
 
           if (user?.villageID) {
+            this.selectedVillageId = String(user.villageID);
 
-            this.selectedVillageId =
-              String(user.villageID);
-
-            console.log(
-              'Login Village:',
-              this.selectedVillageId
-            );
-
+            console.log('Login Village:', this.selectedVillageId);
           } else {
-
             this.selectedVillageId = '';
-
           }
 
           // -------------------------------------------------
@@ -591,77 +423,45 @@ export class AssignedToMeIssuesComponent implements OnDestroy {
           // Now load issues.
           // -------------------------------------------------
 
-          this.loadAssignedToMeIssues(
-            user
-          );
-
+          this.loadAssignedToMeIssues(user);
         },
 
         error: (err: any) => {
-
-          console.error(
-            'Village loading failed:',
-            err
-          );
+          console.error('Village loading failed:', err);
 
           this.villages = [];
 
-          this.loadAssignedToMeIssues(
-            this.loginUser()
-          );
-
-        }
-
+          this.loadAssignedToMeIssues(this.loginUser());
+        },
       });
-
   }
 
   // =========================================================
   // Category Filter
   // =========================================================
 
-  onCategoryChange(
-    event: Event
-  ): void {
+  onCategoryChange(event: Event): void {
+    this.selectedCategoryId = (event.target as HTMLSelectElement).value;
 
-    this.selectedCategoryId =
-      (
-        event.target as HTMLSelectElement
-      ).value;
+    console.log('Selected Category:', this.selectedCategoryId);
 
-    console.log(
-      'Selected Category:',
-      this.selectedCategoryId
-    );
-
-    this.loadAssignedToMeIssues(
-      this.loginUser()
-    );
-
+    this.loadAssignedToMeIssues(this.loginUser());
   }
 
   // =========================================================
   // Assembly Filter
   // =========================================================
 
-  onAssemblyChange(
-    event: Event
-  ): void {
-
+  onAssemblyChange(event: Event): void {
     // -------------------------------------------------------
     // Role protection
     // -------------------------------------------------------
 
     if (this.isAssemblyDisabled()) {
-
       // Restore login value
-      const user =
-        this.loginUser();
+      const user = this.loginUser();
 
-      this.selectedAssemblyId =
-        user?.assemblyID
-          ? String(user.assemblyID)
-          : '';
+      this.selectedAssemblyId = user?.assemblyID ? String(user.assemblyID) : '';
 
       return;
     }
@@ -670,10 +470,7 @@ export class AssignedToMeIssuesComponent implements OnDestroy {
     // Selected Assembly
     // -------------------------------------------------------
 
-    this.selectedAssemblyId =
-      (
-        event.target as HTMLSelectElement
-      ).value;
+    this.selectedAssemblyId = (event.target as HTMLSelectElement).value;
 
     // -------------------------------------------------------
     // Reset dependent filters
@@ -685,52 +482,32 @@ export class AssignedToMeIssuesComponent implements OnDestroy {
     this.mandals = [];
     this.villages = [];
 
-    console.log(
-      'Selected Assembly:',
-      this.selectedAssemblyId
-    );
+    console.log('Selected Assembly:', this.selectedAssemblyId);
 
     // -------------------------------------------------------
     // Load Mandals
     // -------------------------------------------------------
 
     if (this.selectedAssemblyId) {
-
-      this.loadMandals(
-        this.selectedAssemblyId
-      );
-
+      this.loadMandals(this.selectedAssemblyId);
     } else {
-
-      this.loadAssignedToMeIssues(
-        this.loginUser()
-      );
-
+      this.loadAssignedToMeIssues(this.loginUser());
     }
-
   }
 
   // =========================================================
   // Mandal Filter
   // =========================================================
 
-  onMandalChange(
-    event: Event
-  ): void {
-
+  onMandalChange(event: Event): void {
     // -------------------------------------------------------
     // Role protection
     // -------------------------------------------------------
 
     if (this.isMandalDisabled()) {
+      const user = this.loginUser();
 
-      const user =
-        this.loginUser();
-
-      this.selectedMandalId =
-        user?.mandalID
-          ? String(user.mandalID)
-          : '';
+      this.selectedMandalId = user?.mandalID ? String(user.mandalID) : '';
 
       return;
     }
@@ -739,10 +516,7 @@ export class AssignedToMeIssuesComponent implements OnDestroy {
     // Selected Mandal
     // -------------------------------------------------------
 
-    this.selectedMandalId =
-      (
-        event.target as HTMLSelectElement
-      ).value;
+    this.selectedMandalId = (event.target as HTMLSelectElement).value;
 
     // -------------------------------------------------------
     // Reset Village
@@ -752,52 +526,32 @@ export class AssignedToMeIssuesComponent implements OnDestroy {
 
     this.villages = [];
 
-    console.log(
-      'Selected Mandal:',
-      this.selectedMandalId
-    );
+    console.log('Selected Mandal:', this.selectedMandalId);
 
     // -------------------------------------------------------
     // Load Villages
     // -------------------------------------------------------
 
     if (this.selectedMandalId) {
-
-      this.loadVillages(
-        this.selectedMandalId
-      );
-
+      this.loadVillages(this.selectedMandalId);
     } else {
-
-      this.loadAssignedToMeIssues(
-        this.loginUser()
-      );
-
+      this.loadAssignedToMeIssues(this.loginUser());
     }
-
   }
 
   // =========================================================
   // Village Filter
   // =========================================================
 
-  onVillageChange(
-    event: Event
-  ): void {
-
+  onVillageChange(event: Event): void {
     // -------------------------------------------------------
     // Role protection
     // -------------------------------------------------------
 
     if (this.isVillageDisabled()) {
+      const user = this.loginUser();
 
-      const user =
-        this.loginUser();
-
-      this.selectedVillageId =
-        user?.villageID
-          ? String(user.villageID)
-          : '';
+      this.selectedVillageId = user?.villageID ? String(user.villageID) : '';
 
       return;
     }
@@ -806,20 +560,11 @@ export class AssignedToMeIssuesComponent implements OnDestroy {
     // Selected Village
     // -------------------------------------------------------
 
-    this.selectedVillageId =
-      (
-        event.target as HTMLSelectElement
-      ).value;
+    this.selectedVillageId = (event.target as HTMLSelectElement).value;
 
-    console.log(
-      'Selected Village:',
-      this.selectedVillageId
-    );
+    console.log('Selected Village:', this.selectedVillageId);
 
-    this.loadAssignedToMeIssues(
-      this.loginUser()
-    );
-
+    this.loadAssignedToMeIssues(this.loginUser());
   }
 
   // =========================================================
@@ -827,9 +572,7 @@ export class AssignedToMeIssuesComponent implements OnDestroy {
   // =========================================================
 
   resetFilters(): void {
-
-    const user =
-      this.loginUser();
+    const user = this.loginUser();
 
     // -------------------------------------------------------
     // Category = All
@@ -842,20 +585,11 @@ export class AssignedToMeIssuesComponent implements OnDestroy {
     // Always restore login location.
     // -------------------------------------------------------
 
-    this.selectedAssemblyId =
-      user?.assemblyID
-        ? String(user.assemblyID)
-        : '';
+    this.selectedAssemblyId = user?.assemblyID ? String(user.assemblyID) : '';
 
-    this.selectedMandalId =
-      user?.mandalID
-        ? String(user.mandalID)
-        : '';
+    this.selectedMandalId = user?.mandalID ? String(user.mandalID) : '';
 
-    this.selectedVillageId =
-      user?.villageID
-        ? String(user.villageID)
-        : '';
+    this.selectedVillageId = user?.villageID ? String(user.villageID) : '';
 
     // -------------------------------------------------------
     // Clear dropdown arrays
@@ -865,34 +599,22 @@ export class AssignedToMeIssuesComponent implements OnDestroy {
     this.mandals = [];
     this.villages = [];
 
-    console.log(
-      'RESET FILTERS:',
-      {
-        category: this.selectedCategoryId,
-        assembly: this.selectedAssemblyId,
-        mandal: this.selectedMandalId,
-        village: this.selectedVillageId
-      }
-    );
+    console.log('RESET FILTERS:', {
+      category: this.selectedCategoryId,
+      assembly: this.selectedAssemblyId,
+      mandal: this.selectedMandalId,
+      village: this.selectedVillageId,
+    });
 
     // -------------------------------------------------------
     // Reload hierarchy
     // -------------------------------------------------------
 
     if (user?.districtID) {
-
-      this.loadAssemblies(
-        user.districtID
-      );
-
+      this.loadAssemblies(user.districtID);
     } else {
-
-      this.loadAssignedToMeIssues(
-        user
-      );
-
+      this.loadAssignedToMeIssues(user);
     }
-
   }
 
   // =========================================================
@@ -900,14 +622,9 @@ export class AssignedToMeIssuesComponent implements OnDestroy {
   // API: /assignedToMeIssues
   // =========================================================
 
-  loadAssignedToMeIssues(
-    user: any
-  ): void {
-
+  loadAssignedToMeIssues(user: any): void {
     if (!user) {
-
       return;
-
     }
 
     this.loading.set(true);
@@ -926,28 +643,21 @@ export class AssignedToMeIssuesComponent implements OnDestroy {
     // -------------------------------------------------------
 
     if (user?.userId) {
-
-      payloadObj.assigned_to =
-        user.userId;
-
+      payloadObj.assigned_to = user.userId;
     }
 
     // -------------------------------------------------------
     // Category
     // -------------------------------------------------------
 
-    payloadObj.category_id =
-      this.selectedCategoryId || '';
+    payloadObj.category_id = this.selectedCategoryId || '';
 
     // =======================================================
     // State
     // =======================================================
 
     if (user?.stateID) {
-
-      payloadObj.state_id =
-        user.stateID;
-
+      payloadObj.state_id = user.stateID;
     }
 
     // =======================================================
@@ -955,10 +665,7 @@ export class AssignedToMeIssuesComponent implements OnDestroy {
     // =======================================================
 
     if (user?.districtID) {
-
-      payloadObj.district_id =
-        user.districtID;
-
+      payloadObj.district_id = user.districtID;
     }
 
     // =======================================================
@@ -966,15 +673,9 @@ export class AssignedToMeIssuesComponent implements OnDestroy {
     // =======================================================
 
     if (this.selectedAssemblyId) {
-
-      payloadObj.assembly_id =
-        this.selectedAssemblyId;
-
+      payloadObj.assembly_id = this.selectedAssemblyId;
     } else if (user?.assemblyID) {
-
-      payloadObj.assembly_id =
-        user.assemblyID;
-
+      payloadObj.assembly_id = user.assemblyID;
     }
 
     // =======================================================
@@ -982,15 +683,9 @@ export class AssignedToMeIssuesComponent implements OnDestroy {
     // =======================================================
 
     if (this.selectedMandalId) {
-
-      payloadObj.mandal_id =
-        this.selectedMandalId;
-
+      payloadObj.mandal_id = this.selectedMandalId;
     } else if (user?.mandalID) {
-
-      payloadObj.mandal_id =
-        user.mandalID;
-
+      payloadObj.mandal_id = user.mandalID;
     }
 
     // =======================================================
@@ -998,113 +693,68 @@ export class AssignedToMeIssuesComponent implements OnDestroy {
     // =======================================================
 
     if (this.selectedVillageId) {
-
-      payloadObj.village_id =
-        this.selectedVillageId;
-
+      payloadObj.village_id = this.selectedVillageId;
     } else if (user?.villageID) {
-
-      payloadObj.village_id =
-        user.villageID;
-
+      payloadObj.village_id = user.villageID;
     }
 
     // =======================================================
     // JSON Payload
     // =======================================================
 
-    const payload =
-      JSON.stringify(payloadObj);
+    const payload = JSON.stringify(payloadObj);
 
-    console.log(
-      'Assigned To Me Payload:',
-      payload
-    );
+    console.log('Assigned To Me Payload:', payload);
 
     // =======================================================
     // API Request
     // =======================================================
 
-    this.apiService
-      .request(
-        'POST',
-        '/assignedToMeIssues',
-        payload
-      )
-      .subscribe({
+    this.apiService.request('POST', '/assignedToMeIssues', payload).subscribe({
+      // ===================================================
+      // Success
+      // ===================================================
 
-        // ===================================================
-        // Success
-        // ===================================================
+      next: (res: any) => {
+        this.assignedToMeIssues.set(res.assignedToMe_issues || []);
 
-        next: (res: any) => {
+        this.notificationService.setNotificationCount(res.assignedToMe_issues);
 
-          this.assignedToMeIssues.set(
-            res.assignedToMe_issues || []
-          );
+        console.log('assignedToMeIssues:', this.assignedToMeIssues());
 
-          console.log(
-            'assignedToMeIssues:',
-            this.assignedToMeIssues()
-          );
+        this.loading.set(false);
 
-          this.loading.set(false);
+        this.loader.hide();
 
-          this.loader.hide();
+        this.refreshDataTable();
+      },
 
-          this.refreshDataTable();
+      // ===================================================
+      // Error
+      // ===================================================
 
-        },
+      error: (err: any) => {
+        console.error('Assigned issues loading failed:', err);
 
-        // ===================================================
-        // Error
-        // ===================================================
+        if (err.status === 401) {
+          this.message.set('Token expired');
 
-        error: (err: any) => {
-
-          console.error(
-            'Assigned issues loading failed:',
-            err
-          );
-
-          if (err.status === 401) {
-
-            this.message.set(
-              'Token expired'
-            );
-
-            this.authService.logout();
-
-          } else if (err.status === 400) {
-
-            this.message.set(
-              'Invalid request data'
-            );
-
-          } else if (err.status === 500) {
-
-            this.message.set(
-              'Server error. Please try again later'
-            );
-
-          } else {
-
-            this.message.set(
-              'Something went wrong. Please try again later'
-            );
-
-          }
-
-          this.loading.set(false);
-
-          this.loader.hide();
-
-          this.destroyDataTable();
-
+          this.authService.logout();
+        } else if (err.status === 400) {
+          this.message.set('Invalid request data');
+        } else if (err.status === 500) {
+          this.message.set('Server error. Please try again later');
+        } else {
+          this.message.set('Something went wrong. Please try again later');
         }
 
-      });
+        this.loading.set(false);
 
+        this.loader.hide();
+
+        this.destroyDataTable();
+      },
+    });
   }
 
   // =========================================================
@@ -1112,38 +762,24 @@ export class AssignedToMeIssuesComponent implements OnDestroy {
   // =========================================================
 
   private refreshDataTable(): void {
-
     this.destroyDataTable();
 
     setTimeout(() => {
-
       if (
         this.assignedToMeIssues().length > 0 &&
         typeof $ !== 'undefined' &&
         $.fn.DataTable &&
-        !$.fn.DataTable.isDataTable(
-          '#assignedToMeIssuesTable'
-        )
+        !$.fn.DataTable.isDataTable('#assignedToMeIssuesTable')
       ) {
+        ($('#assignedToMeIssuesTable') as any).DataTable({
+          dom: 'Bfrtip',
 
-        ($('#assignedToMeIssuesTable') as any)
-          .DataTable({
+          buttons: ['excel', 'pdf'],
 
-            dom: 'Bfrtip',
-
-            buttons: [
-              'excel',
-              'pdf'
-            ],
-
-            responsive: true
-
-          });
-
+          responsive: true,
+        });
       }
-
     }, 0);
-
   }
 
   // =========================================================
@@ -1151,42 +787,25 @@ export class AssignedToMeIssuesComponent implements OnDestroy {
   // =========================================================
 
   private destroyDataTable(): void {
-
     if (
       typeof $ !== 'undefined' &&
       $.fn.DataTable &&
-      $.fn.DataTable.isDataTable(
-        '#assignedToMeIssuesTable'
-      )
+      $.fn.DataTable.isDataTable('#assignedToMeIssuesTable')
     ) {
-
-      ($('#assignedToMeIssuesTable') as any)
-        .DataTable()
-        .destroy();
-
+      ($('#assignedToMeIssuesTable') as any).DataTable().destroy();
     }
-
   }
 
   // =========================================================
   // View Issue
   // =========================================================
 
-  handleView(
-    id: any
-  ): void {
-
-    this.router.navigate(
-      [
-        '/admin/issues/view-issue'
-      ],
-      {
-        state: {
-          issueID: id
-        }
-      }
-    );
-
+  handleView(id: any): void {
+    this.router.navigate(['/admin/issues/view-issue'], {
+      state: {
+        issueID: id,
+      },
+    });
   }
 
   // =========================================================
@@ -1194,11 +813,8 @@ export class AssignedToMeIssuesComponent implements OnDestroy {
   // =========================================================
 
   ngOnDestroy(): void {
-
     this.userSubscription?.unsubscribe();
 
     this.destroyDataTable();
-
   }
-
 }

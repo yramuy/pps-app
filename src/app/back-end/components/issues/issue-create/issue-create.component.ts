@@ -45,6 +45,7 @@ export class IssueCreateComponent {
   imagePreviews: string[] = [];
   existingImages: string[] = [];
   issue_images: string[] = [];
+  isSaving: boolean = false;
 
   @ViewChild('fileInput') fileInput!: ElementRef;
 
@@ -268,57 +269,79 @@ export class IssueCreateComponent {
   }
 
   saveIssue(form: NgForm) {
-    if (form.invalid) return;
+  if (form.invalid) {
+    return;
+  }
 
-    if (this.selectedFiles.length === 0 && this.existingImages.length === 0) {
-      this.showMessage('At least one issue picture is required');
-      return;
+  if (
+    this.selectedFiles.length === 0 &&
+    this.existingImages.length === 0
+  ) {
+    this.showMessage('At least one issue picture is required');
+    return;
+  }
+
+  // Prevent multiple submissions
+  if (this.isSaving) {
+    return;
+  }
+
+  this.isSaving = true;
+
+  const formData = new FormData();
+
+  Object.keys(this.issue).forEach((key) => {
+    if (key !== 'issue_pic') {
+      formData.append(key, this.issue[key] ?? '');
     }
+  });
 
-    const formData = new FormData();
+  formData.append('id', this.issue.id ?? '');
+  formData.append('master_id', '9');
+  formData.append('status_id', '1');
+  formData.append('comment', 'New issue created');
+  formData.append('created_by', this.loginUser?.userId ?? '');
 
-    Object.keys(this.issue).forEach((key) => {
-      if (key !== 'issue_pic') {
-        formData.append(key, this.issue[key] ?? '');
-      }
-    });
+  // Existing images in edit mode
+  this.existingImages.forEach((img) => {
+    formData.append('existing_images[]', img);
+  });
 
-    formData.append('id', this.issue.id ?? '');
-    formData.append('master_id', '9');
-    formData.append('status_id', '1');
-    formData.append('comment', 'New issue created');
-    formData.append('created_by', this.loginUser?.userId);
+  // New uploaded images
+  this.selectedFiles.forEach((file) => {
+    formData.append('images[]', file);
+  });
 
-    // Existing images in edit mode
-    this.existingImages.forEach((img) => {
-      formData.append('existing_images[]', img);
-    });
+  console.log('FormData values:');
 
-    // New uploaded images
-    this.selectedFiles.forEach((file) => {
-      formData.append('images[]', file);
-    });
+  formData.forEach((value, key) => {
+    console.log(key, value);
+  });
 
-    console.log('FormData values:');
-    formData.forEach((value, key) => {
-      console.log(key, value);
-    });
-
-    this.apiService.request('POST', '/saveAndUpdateIssue', formData).subscribe({
+  this.apiService
+    .request('POST', '/saveAndUpdateIssue', formData)
+    .subscribe({
       next: (res: any) => {
         if (res.status) {
           this.router.navigate(['/admin/issues/my-issues'], {
-            state: { message: res.message || 'Success' },
+            state: {
+              message: res.message || 'Success',
+            },
           });
         } else {
-          this.showMessage(res.message);
+          this.isSaving = false;
+          this.showMessage(res.message || 'Unable to save issue');
         }
       },
-      error: () => {
+
+      error: (err) => {
+        console.error('Save issue error:', err);
+
+        this.isSaving = false;
         this.showMessage('Something went wrong');
       },
     });
-  }
+}
 
   handleBackBtn() {
     this.router.navigate(['/admin/issues/my-issues']);

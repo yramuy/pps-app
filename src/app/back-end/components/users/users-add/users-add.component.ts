@@ -55,6 +55,9 @@ export class UsersAddComponent {
     password: '',
     email: '',
     mobile: '',
+    registration_date: '',
+    aadhar_card_number: '',
+    aadhar_document: '',
     state_id: '',
     district_id: '',
     assembly_id: '',
@@ -64,11 +67,17 @@ export class UsersAddComponent {
     mode: 'web',
     bio_graphy: '',
   };
+  isSaving = false;
 
   isEdit: boolean = false;
   selectedFile: File | null = null;
   imagePreview: string | ArrayBuffer | null = null;
-  baseUrl = 'https://civsp.in/pps'; // change to your server URL
+  baseUrl = 'https://civsp.in/pps';
+  // change to your server URL
+  selectedAadharFile: File | null = null;
+  aadharDocumentPreview: string | null = null;
+
+  @ViewChild('aadharFileInput') aadharFileInput!: ElementRef;
 
   @ViewChild('fileInput') fileInput!: ElementRef;
 
@@ -135,6 +144,43 @@ export class UsersAddComponent {
     // if edit mode and user clicks remove
     if (removeExisting) {
       this.user.profile_pic = '';
+    }
+  }
+
+  onAadharFileChange(event: any) {
+    const file = event.target.files[0];
+
+    if (!file) {
+      return;
+    }
+
+    const allowedTypes = [
+      'application/pdf',
+      'image/jpeg',
+      'image/jpg',
+      'image/png',
+    ];
+
+    if (!allowedTypes.includes(file.type)) {
+      alert('Only PDF, JPG, JPEG and PNG files are allowed');
+
+      event.target.value = '';
+      this.selectedAadharFile = null;
+      return;
+    }
+
+    this.selectedAadharFile = file;
+  }
+
+  resetAadharDocument(removeExisting: boolean = false) {
+    this.selectedAadharFile = null;
+
+    if (this.aadharFileInput) {
+      this.aadharFileInput.nativeElement.value = '';
+    }
+
+    if (removeExisting) {
+      this.user.aadhar_document = '';
     }
   }
 
@@ -310,43 +356,49 @@ export class UsersAddComponent {
 
   // ✅ Save function
   saveUser(form: NgForm) {
-    if (form.invalid) return;
+    if (form.invalid || this.isSaving) {
+      return;
+    }
+
+    this.isSaving = true;
 
     const formData = new FormData();
 
-    // ✅ 1. Append form fields
     Object.entries(form.value).forEach(([key, value]) => {
       formData.append(key, value as any);
     });
 
-    // ✅ 2. Add extra required keys
-
     formData.append('id', this.user.id ?? '');
     formData.append('master_id', '8');
     formData.append('mode', 'web');
-    formData.append('created_by', this.loginUser?.userId);
+    formData.append('created_by', this.loginUser?.userId ?? '');
 
-    // ✅ 3. Append file
     if (this.selectedFile) {
       formData.append('profile_pic', this.selectedFile);
     }
 
-    // ✅ Debug
-    formData.forEach((value, key) => {
-      console.log(key, value);
-    });
+    if (this.selectedAadharFile) {
+      formData.append('aadhar_document', this.selectedAadharFile);
+    }
 
     this.apiService.request('POST', '/saveAndUpdateUser', formData).subscribe({
       next: (res: any) => {
+        this.isSaving = false;
+
         if (res.status) {
           this.router.navigate(['/admin/users/list'], {
-            state: { message: res?.message || 'User saved successfully' },
+            state: {
+              message: res?.message || 'User saved successfully',
+            },
           });
         } else {
-          this.showMessage(res?.message);
+          this.showMessage(res?.message || 'Unable to save user');
         }
       },
+
       error: (err: any) => {
+        this.isSaving = false;
+
         if (err.status === 401) {
           this.showMessage('Token expired');
           this.authService.logout();

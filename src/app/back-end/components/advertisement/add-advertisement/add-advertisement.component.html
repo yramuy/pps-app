@@ -1,0 +1,148 @@
+<div class="card">
+  <div class="card-header">
+    <h5 class="text-white">
+      {{ isEdit ? 'Update Advertisement' : 'Add Advertisement' }}
+    </h5>
+  </div>
+
+  <form
+    #advertisementForm="ngForm"
+    (ngSubmit)="saveAdvertisement(advertisementForm)"
+    enctype="multipart/form-data"
+    novalidate
+  >
+    <div class="card-body">
+      <div *ngIf="isMessage" class="alert alert-danger">
+        {{ message }}
+      </div>
+
+      <div class="row">
+        <div class="col-6 mb-3">
+          <label for="advertisement_title">
+            Advertisement Title *
+          </label>
+
+          <input
+            id="advertisement_title"
+            type="text"
+            class="form-control"
+            name="advertisement_title"
+            [(ngModel)]="advertisement.advertisement_title"
+            #advertisement_title="ngModel"
+            required
+          />
+
+          <small
+            class="text-danger"
+            *ngIf="
+              advertisementForm.submitted &&
+              advertisement_title.invalid
+            "
+          >
+            Advertisement Title is required
+          </small>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-12 mb-3">
+          <label for="advertisement_description">
+            Advertisement Description *
+          </label>
+
+          <textarea
+            id="advertisement_description"
+            class="form-control"
+            name="advertisement_description"
+            [(ngModel)]="advertisement.advertisement_description"
+            #advertisement_description="ngModel"
+            rows="4"
+            required
+          ></textarea>
+
+          <small
+            class="text-danger"
+            *ngIf="
+              advertisementForm.submitted &&
+              advertisement_description.invalid
+            "
+          >
+            Advertisement Description is required
+          </small>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-6 mb-3">
+          <label for="advertisement_image">
+            Advertisement Image *
+          </label>
+
+          <input
+            id="advertisement_image"
+            type="file"
+            #fileInput
+            class="form-control"
+            accept="image/*"
+            (change)="onFileChange($event)"
+          />
+
+          <small
+            class="text-danger"
+            *ngIf="
+              advertisementForm.submitted &&
+              !selectedFile &&
+              !existingImage
+            "
+          >
+            At least one advertisement picture is required
+          </small>
+
+          <div
+            *ngIf="existingImage || imagePreview"
+            class="mt-3"
+          >
+            <div class="text-center" style="width: 150px">
+              <img
+                [src]="imagePreview || existingImage"
+                alt="Advertisement image"
+                class="img-thumbnail"
+                style="
+                  width: 120px;
+                  height: 120px;
+                  object-fit: cover;
+                "
+              />
+
+              <button
+                type="button"
+                class="btn btn-danger btn-sm mt-2 w-100"
+                (click)="
+                  imagePreview
+                    ? removeSelectedImage()
+                    : removeExistingImage()
+                "
+              >
+                Remove
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-footer d-flex align-items-center">
+      <button type="submit" class="btn btn-primary mr-2">
+        {{ isEdit ? 'Update' : 'Save' }}
+      </button>
+
+      <button
+        type="button"
+        class="btn btn-dark"
+        (click)="handleBackBtn()"
+      >
+        Back
+      </button>
+    </div>
+  </form>
+</div>

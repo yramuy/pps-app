@@ -1,8 +1,8 @@
 <nav class="main-header navbar navbar-expand navbar-white navbar-light">
   <!-- Left navbar links -->
   <ul class="navbar-nav">
-    <li class="nav-item" style="background-color: darkblue;">
-      <a class="nav-link" data-widget="pushmenu" href="#">
+    <li class="nav-item" style="background-color: darkblue">
+      <a class="nav-link" data-widget="pushmenu" href="#" role="button">
         <i class="fas fa-bars"></i>
       </a>
     </li>
@@ -10,26 +10,693 @@
 
   <!-- Right navbar links -->
   <ul class="navbar-nav ml-auto">
+    <!-- Notifications -->
+    <li class="nav-item dropdown">
+
+      <a
+        class="nav-link notification-btn"
+        href="#"
+        id="notificationDropdown"
+        role="button"
+        data-toggle="dropdown"
+        aria-haspopup="true"
+        aria-expanded="false"
+        title="Notifications">
+        <i class="fas fa-bell"></i>
+
+        <span
+          *ngIf="notificationCount > 0"
+          class="notification-badge">
+          {{ notificationCount > 99 ? '99+' : notificationCount }}
+        </span>
+      </a>
+
+      <!-- Notification Dropdown -->
+      <div
+        class="dropdown-menu dropdown-menu-right notification-dropdown"
+        aria-labelledby="notificationDropdown">
+
+        <!-- Header -->
+        <div class="notification-header">
+          <strong>Notifications</strong>
+
+          <span
+            class="notification-count"
+            *ngIf="notificationCount > 0">
+            {{ notificationCount }}
+          </span>
+        </div>
+
+        <!-- Notification List -->
+        <div
+          class="notification-list"
+          *ngIf="notificationList.length > 0">
+
+          <div
+            class="dropdown-item notification-item"
+            *ngFor="let notification of notificationList"
+            (click)="handleNotificationClick($event, notification.id)">
+
+            <div class="notification-icon">
+              <i class="fas fa-bell"></i>
+            </div>
+
+            <div class="notification-content">
+
+              <div class="notification-title">
+                {{ notification.issue_title }}
+              </div>
+
+              <div class="notification-message">
+                {{ notification.category }}
+              </div>
+
+              <div class="notification-time">
+                {{ notification.created_on }}
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- No Notifications -->
+        <div
+          class="no-notifications"
+          *ngIf="notificationList.length === 0">
+          <i class="far fa-bell-slash"></i>
+          <p>No new notifications</p>
+        </div>
+
+      </div>
+
+    </li>
+
     <!-- Settings -->
     <li class="nav-item dropdown">
-      <a class="nav-link" data-toggle="dropdown" href="#">
+      <a
+        class="nav-link settings-btn"
+        href="#"
+        id="settingsDropdown"
+        role="button"
+        data-toggle="dropdown"
+        aria-haspopup="true"
+        aria-expanded="false">
         <i class="fas fa-cog"></i>
       </a>
-      <div class="dropdown-menu dropdown-menu-right">
-        <a class="dropdown-item" (click)="goToSettings()">Settings</a>
-        <a class="dropdown-item" (click)="goToProfile()">Profile</a>
+
+      <div
+        class="dropdown-menu dropdown-menu-right settings-dropdown"
+        aria-labelledby="settingsDropdown">
+        <!-- Settings -->
+        <a
+          class="dropdown-item"
+          href="javascript:void(0)"
+          (click)="goToSettings()">
+          <i class="fas fa-cog mr-2"></i>
+          <span>Settings</span>
+        </a>
+
+        <!-- Profile -->
+        <a
+          class="dropdown-item"
+          href="javascript:void(0)"
+          data-toggle="modal"
+          data-target="#profileModel">
+          <i class="fas fa-user mr-2"></i>
+          <span>Profile</span>
+        </a>
+
+        <!-- Profile -->
+        <a
+          class="dropdown-item"
+          href="javascript:void(0)"
+          data-toggle="modal"
+          data-target="#bioGraphyModel">
+          <i class="fas fa-user mr-2"></i>
+          <span>Biography</span>
+        </a>
+
+        <!-- Website -->
+        <a
+          class="dropdown-item"
+          href="javascript:void(0)"
+          (click)="goToWebsite()">
+          <i class="fas fa-user mr-2"></i>
+          <span>Go To Website</span>
+        </a>
+
+        <!-- Logout -->
+        <a
+          class="dropdown-item logout-item"
+          href="javascript:void(0)"
+          (click)="logout()">
+          <i class="fas fa-sign-out-alt mr-2"></i>
+          <span>Logout</span>
+        </a>
       </div>
     </li>
 
-    <!-- Logout -->
-    <li class="nav-item">
-      <a class="nav-link text-danger" (click)="logout()">
-        <i class="fas fa-sign-out-alt"></i> Logout
-      </a>
-    </li>
-
+    <!-- Logo -->
     <li class="nav-item text-center">
-      <img src="assets/images/pps-main-logo@2x.png" class="logo-img" />
+      <img
+        src="assets/images/pps-main-logo@2x.png"
+        class="logo-img"
+        alt="PPS Logo" />
     </li>
   </ul>
 </nav>
+
+<!-- ========================= Biography Modal ========================= -->
+<!-- =========================
+     Biography Modal
+========================= -->
+<div
+  class="modal fade"
+  id="bioGraphyModel"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="bioGraphyModelLabel"
+  aria-hidden="true">
+  <div
+    class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable"
+    role="document">
+    <div class="modal-content biography-modal">
+
+      <!-- =========================
+           Header
+      ========================= -->
+      <div class="modal-header biography-header">
+
+        <div class="biography-header-content">
+
+          <!-- Profile Image -->
+          <div class="biography-avatar">
+
+            <img
+              *ngIf="biography.profilePic"
+              [src]="biography.profilePic"
+              [alt]="biography.fullName" />
+
+            <i
+              *ngIf="!biography.profilePic"
+              class="fas fa-user"></i>
+
+          </div>
+
+          <!-- Name -->
+          <div>
+
+            <h5
+              class="modal-title mb-1"
+              id="bioGraphyModelLabel">
+              {{ biography.fullName || 'Biography' }}
+            </h5>
+
+            <small>
+              {{ biography.roleName || 'Public Representative' }} - Biography
+            </small>
+
+          </div>
+
+        </div>
+
+        <button
+          type="button"
+          class="close text-white"
+          data-dismiss="modal"
+          aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+
+      </div>
+
+      <!-- =========================
+           Body
+      ========================= -->
+      <div class="modal-body biography-body">
+
+        <!-- =========================
+             Personal Information
+        ========================= -->
+        <div class="biography-section">
+
+          <h5 class="section-title">
+            <i class="fas fa-id-card"></i>
+            Personal Information
+          </h5>
+
+          <div class="row">
+
+            <!-- Full Name -->
+            <div class="col-md-6 mb-3">
+              <div class="info-card">
+
+                <span class="info-label">
+                  <i class="fas fa-user"></i>
+                  Full Name
+                </span>
+
+                <span class="info-value">
+                  {{ biography.fullName || '-' }}
+                </span>
+
+              </div>
+            </div>
+
+            <!-- Role -->
+            <div class="col-md-6 mb-3">
+              <div class="info-card">
+
+                <span class="info-label">
+                  <i class="fas fa-user-tie"></i>
+                  Role
+                </span>
+
+                <span class="info-value">
+                  {{ biography.roleName || '-' }}
+                </span>
+
+              </div>
+            </div>
+
+            <!-- State -->
+            <div class="col-md-6 mb-3">
+              <div class="info-card">
+
+                <span class="info-label">
+                  <i class="fas fa-map-marker-alt"></i>
+                  State
+                </span>
+
+                <span class="info-value">
+                  {{ biography.state || '-' }}
+                </span>
+
+              </div>
+            </div>
+
+            <!-- District -->
+            <div class="col-md-6 mb-3">
+              <div class="info-card">
+
+                <span class="info-label">
+                  <i class="fas fa-map-marker-alt"></i>
+                  District
+                </span>
+
+                <span class="info-value">
+                  {{ biography.district || '-' }}
+                </span>
+
+              </div>
+            </div>
+
+            <!-- Assembly -->
+            <div class="col-md-6 mb-3">
+              <div class="info-card">
+
+                <span class="info-label">
+                  <i class="fas fa-landmark"></i>
+                  Assembly
+                </span>
+
+                <span class="info-value">
+                  {{ biography.assembly || '-' }}
+                </span>
+
+              </div>
+            </div>
+
+            <!-- Mandal -->
+            <div class="col-md-6 mb-3">
+              <div class="info-card">
+
+                <span class="info-label">
+                  <i class="fas fa-map"></i>
+                  Mandal
+                </span>
+
+                <span class="info-value">
+                  {{ biography.mandal || '-' }}
+                </span>
+
+              </div>
+            </div>
+
+            <!-- Village -->
+            <div class="col-md-6 mb-3">
+              <div class="info-card">
+
+                <span class="info-label">
+                  <i class="fas fa-home"></i>
+                  Village
+                </span>
+
+                <span class="info-value">
+                  {{ biography.village || '-' }}
+                </span>
+
+              </div>
+            </div>
+
+            <!-- Email -->
+            <div class="col-md-6 mb-3">
+              <div class="info-card">
+
+                <span class="info-label">
+                  <i class="fas fa-envelope"></i>
+                  Email
+                </span>
+
+                <span class="info-value">
+                  {{ biography.email || '-' }}
+                </span>
+
+              </div>
+            </div>
+
+            <!-- Mobile -->
+            <div class="col-md-6 mb-3">
+              <div class="info-card">
+
+                <span class="info-label">
+                  <i class="fas fa-phone"></i>
+                  Mobile
+                </span>
+
+                <span class="info-value">
+                  {{ biography.mobile || '-' }}
+                </span>
+
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- =========================
+             Biography Content
+        ========================= -->
+        <div
+          class="biography-section"
+          *ngIf="biography.bio_graphy">
+
+          <h5 class="section-title">
+            <i class="fas fa-book-open"></i>
+            Biography
+          </h5>
+
+          <div
+            class="biography-content"
+            [innerHTML]="biography.bio_graphy"></div>
+
+        </div>
+
+        <!-- =========================
+             No Biography
+        ========================= -->
+        <div
+          class="empty-biography"
+          *ngIf="!biography.bio_graphy">
+
+          <i class="fas fa-user-edit"></i>
+
+          <h5>Biography Not Available</h5>
+
+          <p>
+            Biography information has not been added yet.
+          </p>
+
+        </div>
+
+      </div>
+
+      <!-- =========================
+           Footer
+      ========================= -->
+      <div class="modal-footer biography-footer">
+
+        <button
+          type="button"
+          class="btn btn-secondary"
+          data-dismiss="modal">
+          <i class="fas fa-times mr-1"></i>
+          Close
+        </button>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ========================= Profile Modal ========================= -->
+<!-- ========== Profile Modal ========================= -->
+<div
+  class="modal fade"
+  id="profileModel"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="profileModelLabel"
+  aria-hidden="true">
+  <div
+    class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable"
+    role="document">
+    <div class="modal-content biography-modal">
+
+      <!-- =========================
+           Header
+      ========================= -->
+      <div class="modal-header biography-header">
+
+        <div class="biography-header-content">
+
+          <!-- Profile Image -->
+          <div class="biography-avatar">
+
+            <img
+              *ngIf="biography.profilePic"
+              [src]="biography.profilePic"
+              [alt]="biography.fullName" />
+
+            <i
+              *ngIf="!biography.profilePic"
+              class="fas fa-user"></i>
+
+          </div>
+
+          <!-- Name -->
+          <div>
+
+            <h5
+              class="modal-title mb-1"
+              id="profileModelLabel">
+              {{ biography.fullName || 'Biography' }}
+            </h5>
+
+            <small>
+              {{ biography.roleName || 'Public Representative' }} - Profile
+            </small>
+
+          </div>
+
+        </div>
+
+        <button
+          type="button"
+          class="close text-white"
+          data-dismiss="modal"
+          aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+
+      </div>
+
+      <!-- =========================
+           Body
+      ========================= -->
+      <div class="modal-body biography-body">
+
+        <!-- =========================
+             Personal Information
+        ========================= -->
+        <div class="biography-section">
+
+          <h5 class="section-title">
+            <i class="fas fa-id-card"></i>
+            Personal Information
+          </h5>
+
+          <div class="row">
+
+            <!-- Full Name -->
+            <div class="col-md-6 mb-3">
+              <div class="info-card">
+
+                <span class="info-label">
+                  <i class="fas fa-user"></i>
+                  Full Name
+                </span>
+
+                <span class="info-value">
+                  {{ biography.fullName || '-' }}
+                </span>
+
+              </div>
+            </div>
+
+            <!-- Role -->
+            <div class="col-md-6 mb-3">
+              <div class="info-card">
+
+                <span class="info-label">
+                  <i class="fas fa-user-tie"></i>
+                  Role
+                </span>
+
+                <span class="info-value">
+                  {{ biography.roleName || '-' }}
+                </span>
+
+              </div>
+            </div>
+
+            <!-- State -->
+            <div class="col-md-6 mb-3">
+              <div class="info-card">
+
+                <span class="info-label">
+                  <i class="fas fa-map-marker-alt"></i>
+                  State
+                </span>
+
+                <span class="info-value">
+                  {{ biography.state || '-' }}
+                </span>
+
+              </div>
+            </div>
+
+            <!-- District -->
+            <div class="col-md-6 mb-3">
+              <div class="info-card">
+
+                <span class="info-label">
+                  <i class="fas fa-map-marker-alt"></i>
+                  District
+                </span>
+
+                <span class="info-value">
+                  {{ biography.district || '-' }}
+                </span>
+
+              </div>
+            </div>
+
+            <!-- Assembly -->
+            <div class="col-md-6 mb-3">
+              <div class="info-card">
+
+                <span class="info-label">
+                  <i class="fas fa-landmark"></i>
+                  Assembly
+                </span>
+
+                <span class="info-value">
+                  {{ biography.assembly || '-' }}
+                </span>
+
+              </div>
+            </div>
+
+            <!-- Mandal -->
+            <div class="col-md-6 mb-3">
+              <div class="info-card">
+
+                <span class="info-label">
+                  <i class="fas fa-map"></i>
+                  Mandal
+                </span>
+
+                <span class="info-value">
+                  {{ biography.mandal || '-' }}
+                </span>
+
+              </div>
+            </div>
+
+            <!-- Village -->
+            <div class="col-md-6 mb-3">
+              <div class="info-card">
+
+                <span class="info-label">
+                  <i class="fas fa-home"></i>
+                  Village
+                </span>
+
+                <span class="info-value">
+                  {{ biography.village || '-' }}
+                </span>
+
+              </div>
+            </div>
+
+            <!-- Email -->
+            <div class="col-md-6 mb-3">
+              <div class="info-card">
+
+                <span class="info-label">
+                  <i class="fas fa-envelope"></i>
+                  Email
+                </span>
+
+                <span class="info-value">
+                  {{ biography.email || '-' }}
+                </span>
+
+              </div>
+            </div>
+
+            <!-- Mobile -->
+            <div class="col-md-6 mb-3">
+              <div class="info-card">
+
+                <span class="info-label">
+                  <i class="fas fa-phone"></i>
+                  Mobile
+                </span>
+
+                <span class="info-value">
+                  {{ biography.mobile || '-' }}
+                </span>
+
+              </div>
+            </div>
+
+          </div>
+
+        </div>       
+
+      </div>
+
+      <!-- =========================
+           Footer
+      ========================= -->
+      <div class="modal-footer biography-footer">
+
+        <button
+          type="button"
+          class="btn btn-secondary"
+          data-dismiss="modal">
+          <i class="fas fa-times mr-1"></i>
+          Close
+        </button>
+
+      </div>
+
+    </div>
+  </div>
+</div>

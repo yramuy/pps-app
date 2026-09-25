@@ -3,7 +3,7 @@
         <div class="pt-lg-3 pt-5 pb-lg-3 pb-3">
             <div class="row align-items-center justify-content-end">
 
-                <div class="col-lg-6">
+                <div class="col-lg-8">
 
                     <div class="ads-slider"
                         (mouseenter)="stopAutoPlay()"
@@ -16,45 +16,10 @@
 
                         <div class="slider-track" #sliderTrack>
 
-                            <div class="ad-item">
+                            <div class="ad-item" *ngFor="let advertisement of advertisements">
                                 <div class="ad-box">
                                     <img
-                                        src="https://picsum.photos/id/1018/600/300">
-                                </div>
-                            </div>
-
-                            <div class="ad-item">
-                                <div class="ad-box">
-                                    <img
-                                        src="https://picsum.photos/id/1015/600/300">
-                                </div>
-                            </div>
-
-                            <div class="ad-item">
-                                <div class="ad-box">
-                                    <img
-                                        src="https://picsum.photos/id/1016/600/300">
-                                </div>
-                            </div>
-
-                            <div class="ad-item">
-                                <div class="ad-box">
-                                    <img
-                                        src="https://picsum.photos/id/1019/600/300">
-                                </div>
-                            </div>
-
-                            <div class="ad-item">
-                                <div class="ad-box">
-                                    <img
-                                        src="https://picsum.photos/id/1020/600/300">
-                                </div>
-                            </div>
-
-                            <div class="ad-item">
-                                <div class="ad-box">
-                                    <img
-                                        src="https://picsum.photos/id/1024/600/300">
+                                        [src]="advertisement.imageUrl">
                                 </div>
                             </div>
 
@@ -68,13 +33,13 @@
                     </div>
                 </div>
 
-                <div class="col-lg-6">
+                <div class="col-lg-4">
                     <div class="pt-lg-5 pb-lg-3 pt-2 pb-2">
                         <div class="row pt-3">
                             <div class="col-lg-11 p-3 rounded-20">
-                                <h1 class="display-4 fw-bold text-white">
+                                <h5 class="display-4 fw-bold text-white">
                                     Sustainable Farming for a Thriving Future
-                                </h1>
+                                </h5>
                                 <p class="text-white">
                                     We empower farmers with sustainable
                                     practices, quality seeds,

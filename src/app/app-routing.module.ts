@@ -39,6 +39,8 @@ import { AddSchemeComponent } from './back-end/components/schemes/add-scheme/add
 import { RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { AboutUsComponent } from './back-end/components/about-us/about-us.component';
+import { ViewAdvertisementComponent } from './back-end/components/advertisement/view-advertisement/view-advertisement.component';
+import { AddAdvertisementComponent } from './back-end/components/advertisement/add-advertisement/add-advertisement.component';
 
 const routes: Routes = [
 
@@ -89,6 +91,9 @@ const routes: Routes = [
       { path: 'schemes/list', component: ViewSchemesComponent },
       { path: 'schemes/add', component: AddSchemeComponent },
 
+      { path: 'advertisement/list', component: ViewAdvertisementComponent },
+      { path: 'advertisement/add', component: AddAdvertisementComponent },
+
       { path: 'aboutUs/add', component: AboutUsComponent },
 
       { path: 'reports', component: ReportsComponent }
@@ -117,7 +122,11 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [
+    RouterModule.forRoot(routes, {
+      onSameUrlNavigation: 'reload'
+    })
+  ],
   exports: [RouterModule]
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

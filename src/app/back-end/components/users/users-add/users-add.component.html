@@ -1,14 +1,15 @@
 <div class="card">
   <div class="card-header">
-    <h5>{{ isEdit ? "Update User" : "Add User" }}</h5>
+    <h5 class="card-title text-white">
+      {{ isEdit ? "Update User" : "Add User" }}
+    </h5>
   </div>
 
   <form
     #userForm="ngForm"
     (ngSubmit)="saveUser(userForm)"
     enctype="multipart/form-data"
-    novalidate
-  >
+    novalidate>
     <div class="card-body">
       <!-- Alert -->
       <div *ngIf="isMessage" class="alert alert-danger">
@@ -24,9 +25,8 @@
             name="user_role_id"
             [(ngModel)]="user.user_role_id"
             #user_role_id="ngModel"
-            required
-          >
-            <option value="">-- Select --</option>
+            required>
+            <option value>-- Select --</option>
             <option *ngFor="let r of userRoles" [value]="r.id">
               {{ r.name }}
             </option>
@@ -34,8 +34,7 @@
 
           <small
             class="text-danger"
-            *ngIf="userForm.submitted && user_role_id.invalid"
-          >
+            *ngIf="userForm.submitted && user_role_id.invalid">
             User Role is required
           </small>
         </div>
@@ -49,13 +48,11 @@
             name="full_name"
             [(ngModel)]="user.full_name"
             #full_name="ngModel"
-            required
-          />
+            required />
 
           <small
             class="text-danger"
-            *ngIf="userForm.submitted && full_name.invalid"
-          >
+            *ngIf="userForm.submitted && full_name.invalid">
             Full Name is required
           </small>
         </div>
@@ -71,13 +68,11 @@
             name="user_name"
             [(ngModel)]="user.user_name"
             #user_name="ngModel"
-            required
-          />
+            required />
 
           <small
             class="text-danger"
-            *ngIf="userForm.submitted && user_name.invalid"
-          >
+            *ngIf="userForm.submitted && user_name.invalid">
             Username is required
           </small>
         </div>
@@ -91,13 +86,11 @@
             name="password"
             [(ngModel)]="user.password"
             #password="ngModel"
-            [required]="!isEdit"
-          />
+            [required]="!isEdit" />
 
           <small
             class="text-danger"
-            *ngIf="userForm.submitted && password.invalid"
-          >
+            *ngIf="userForm.submitted && password.invalid">
             Password is required
           </small>
         </div>
@@ -114,13 +107,11 @@
             [(ngModel)]="user.email"
             #email="ngModel"
             required
-            email
-          />
+            email />
 
           <small
             class="text-danger"
-            *ngIf="userForm.submitted && email.invalid"
-          >
+            *ngIf="userForm.submitted && email.invalid">
             Valid Email is required
           </small>
         </div>
@@ -134,14 +125,125 @@
             name="mobile"
             [(ngModel)]="user.mobile"
             pattern="^[0-9]{10}$"
-            #mobile="ngModel"
-          />
+            #mobile="ngModel" />
 
           <small
             class="text-danger"
-            *ngIf="userForm.submitted && mobile.invalid"
-          >
+            *ngIf="userForm.submitted && mobile.invalid">
             Enter valid 10-digit mobile number
+          </small>
+        </div>
+      </div>
+
+      <div class="row">
+        <!-- Registration Date -->
+        <div class="col-6 mb-3">
+          <label>Registration Date *</label>
+
+          <input
+            type="date"
+            class="form-control"
+            name="registration_date"
+            [(ngModel)]="user.registration_date"
+            #registration_date="ngModel"
+            required />
+
+          <small
+            class="text-danger"
+            *ngIf="userForm.submitted && registration_date.invalid">
+            Registration Date is required
+          </small>
+        </div>
+
+        <!-- Aadhaar Card Number -->
+        <div class="col-6 mb-3">
+          <label>Aadhaar Card Number *</label>
+
+          <input
+            type="text"
+            class="form-control"
+            name="aadhar_card_number"
+            [(ngModel)]="user.aadhar_card_number"
+            #aadhar_card_number="ngModel"
+            maxlength="12"
+            pattern="^[0-9]{12}$"
+            inputmode="numeric"
+            required />
+
+          <small
+            class="text-danger"
+            *ngIf="userForm.submitted && aadhar_card_number.invalid">
+            Enter a valid 12-digit Aadhaar number
+          </small>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-6 mb-3">
+          <label>Aadhaar Document *</label>
+
+          <input
+            type="file"
+            #aadharFileInput
+            class="form-control"
+            name="aadhar_document"
+            accept=".pdf,image/*"
+            (change)="onAadharFileChange($event)" />
+
+          <small
+            class="text-muted">
+            PDF, JPG, JPEG or PNG
+          </small>
+
+          <!-- Existing / Selected Document -->
+          <div
+            *ngIf="selectedAadharFile || (isEdit && user.aadhar_document)"
+            class="mt-2">
+
+            <!-- Selected File -->
+            <div *ngIf="selectedAadharFile" class="alert alert-light">
+              <i class="fas fa-file mr-2"></i>
+              {{ selectedAadharFile.name }}
+
+              <button
+                type="button"
+                class="btn btn-danger btn-sm ml-2"
+                (click)="resetAadharDocument(true)">
+                Remove
+              </button>
+            </div>
+
+            <!-- Existing File -->
+            <div
+              *ngIf="!selectedAadharFile && isEdit && user.aadhar_document"
+              class="alert alert-light">
+              <i class="fas fa-file-pdf mr-2"></i>
+
+              <a
+                [href]="baseUrl + '/uploads/aadhar/' + user.aadhar_document"
+                target="_blank"
+                rel="noopener noreferrer">
+                View Existing Aadhaar Document
+              </a>
+
+              <button
+                type="button"
+                class="btn btn-danger btn-sm ml-2"
+                (click)="resetAadharDocument(true)">
+                Remove
+              </button>
+            </div>
+
+          </div>
+
+          <small
+            class="text-danger"
+            *ngIf="
+        userForm.submitted &&
+        !selectedAadharFile &&
+        (!isEdit || !user.aadhar_document)
+      ">
+            Aadhaar document is required
           </small>
         </div>
       </div>
@@ -156,9 +258,8 @@
             [(ngModel)]="user.state_id"
             #state_id="ngModel"
             (change)="loadDistricts(user.state_id)"
-            required
-          >
-            <option value="">-- Select --</option>
+            required>
+            <option value>-- Select --</option>
             <option *ngFor="let s of states" [value]="s.id">
               {{ s.name }}
             </option>
@@ -166,8 +267,7 @@
 
           <small
             class="text-danger"
-            *ngIf="userForm.submitted && state_id.invalid"
-          >
+            *ngIf="userForm.submitted && state_id.invalid">
             State is required
           </small>
         </div>
@@ -180,9 +280,8 @@
             [(ngModel)]="user.district_id"
             #district_id="ngModel"
             (change)="loadAssemblies(user.district_id)"
-            required
-          >
-            <option value="">-- Select --</option>
+            required>
+            <option value>-- Select --</option>
             <option *ngFor="let d of districts" [value]="d.id">
               {{ d.name }}
             </option>
@@ -190,8 +289,7 @@
 
           <small
             class="text-danger"
-            *ngIf="userForm.submitted && district_id.invalid"
-          >
+            *ngIf="userForm.submitted && district_id.invalid">
             District is required
           </small>
         </div>
@@ -205,9 +303,8 @@
             name="assembly_id"
             [(ngModel)]="user.assembly_id"
             #assembly_id="ngModel"
-            (change)="loadMandals(user.assembly_id)"
-          >
-            <option value="">-- Select --</option>
+            (change)="loadMandals(user.assembly_id)">
+            <option value>-- Select --</option>
             <option *ngFor="let a of assemblies" [value]="a.id">
               {{ a.name }}
             </option>
@@ -226,9 +323,8 @@
             name="mandal_id"
             [(ngModel)]="user.mandal_id"
             #mandal_id="ngModel"
-            (change)="loadVillages(user.mandal_id)"
-          >
-            <option value="">-- Select --</option>
+            (change)="loadVillages(user.mandal_id)">
+            <option value>-- Select --</option>
             <option *ngFor="let m of mandals" [value]="m.id">
               {{ m.name }}
             </option>
@@ -248,9 +344,8 @@
             class="form-control"
             name="village_id"
             [(ngModel)]="user.village_id"
-            #village_id="ngModel"
-          >
-            <option value="">-- Select --</option>
+            #village_id="ngModel">
+            <option value>-- Select --</option>
             <option *ngFor="let v of villages" [value]="v.id">
               {{ v.name }}
             </option>
@@ -272,13 +367,11 @@
             class="form-control"
             name="profile_pic"
             accept="image/*"
-            (change)="onFileChange($event)"
-          />
+            (change)="onFileChange($event)" />
 
           <div
             *ngIf="imagePreview || (isEdit && user.profile_pic)"
-            class="mt-2 d-flex align-items-center"
-          >
+            class="mt-2 d-flex align-items-center">
             <img
               [src]="
                 imagePreview
@@ -287,14 +380,12 @@
               "
               width="100"
               height="100"
-              style="object-fit: cover; border-radius: 5px"
-            />
+              style="object-fit: cover; border-radius: 5px" />
 
             <button
               type="button"
               class="btn btn-danger btn-sm ml-2"
-              (click)="resetImage(true)"
-            >
+              (click)="resetImage(true)">
               Reset
             </button>
           </div>
@@ -312,8 +403,7 @@
               [(ngModel)]="user.bio_graphy"
               [config]="editorConfig"
               #description="ngModel"
-              required
-            >
+              required>
             </ckeditor>
           </div>
         </div>
@@ -321,8 +411,18 @@
     </div>
 
     <div class="card-footer d-flex align-items-center">
-      <button class="btn btn-primary mr-2">
-        {{ isEdit ? "Update" : "Save" }}
+      <button
+        type="submit"
+        class="btn btn-primary mr-2"
+        [disabled]="isSaving">
+        <span *ngIf="isSaving">
+          <i class="fas fa-spinner fa-spin mr-2"></i>
+          {{ isEdit ? 'Updating...' : 'Saving...' }}
+        </span>
+
+        <span *ngIf="!isSaving">
+          {{ isEdit ? 'Update' : 'Save' }}
+        </span>
       </button>
 
       <button type="button" class="btn btn-dark" (click)="handleBackBtn()">
