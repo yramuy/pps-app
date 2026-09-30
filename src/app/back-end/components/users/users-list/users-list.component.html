@@ -88,10 +88,12 @@
                   *ngIf="user.profile_pic_url"
                   [src]="user.profile_pic_url"
                   alt="Profile"
-                  class="user-profile-img" />
+                  width="50"
+                  height="50"
+                  style="object-fit: cover; border-radius: 50%;" />
 
                 <span *ngIf="!user.profile_pic_url" class="text-muted">
-                  No Image
+                  {{user.profile_pic_url}}
                 </span>
               </td>
               <td>{{ user.role }}</td>

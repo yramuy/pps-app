@@ -1,38 +1,201 @@
 <section class="about-section" id="about">
+  <div class="about-bg-shape shape-one"></div>
+  <div class="about-bg-shape shape-two"></div>
+
   <div class="container">
-    <div class="row align-items-center">
 
-      <!-- Circular Image -->
-      <div class="col-lg-6 col-md-6">
-        <div class="about-image-wrapper">
-          <img
-            [src]="aboutUs.image || 'assets/images/no-image.jpg'"
-            [alt]="aboutUs.title || 'About Us'"
-            class="about-image"
-          >
-        </div>
-      </div>
+    <!-- Section Heading -->
+    <div class="about-top-heading text-center">
+      <span class="section-tag">
+        <span></span>
+        ABOUT US
+        <span></span>
+      </span>
 
-      <!-- Description -->
-      <div class="col-lg-6 col-md-6">
-        <div class="about-content">
+      <h2>
+        {{ aboutUs.title }}
+      </h2>
 
-          <span class="about-label">ABOUT US</span>
+      <p *ngIf="aboutUs.sub_title">
+        {{ aboutUs.sub_title }}
+      </p>
+    </div>
 
-          <h2 class="about-title">
-            {{ aboutUs.title }}
-          </h2>
 
-          <div class="about-line"></div>
+    <div class="row align-items-center about-row">
 
+      <!-- =====================================
+           LEFT IMAGE SECTION
+      ====================================== -->
+      <div class="col-lg-6 col-md-12">
+
+        <div class="about-visual">
+
+          <!-- Decorative background -->
+          <div class="visual-decoration"></div>
+
+          <!-- Main Image -->
+          <div class="main-image-card">
+
+            <img
+              [src]="aboutUs.image || 'assets/images/no-image.jpg'"
+              [alt]="aboutUs.title || 'About Us'"
+              class="main-about-image"
+            >
+
+            <div class="image-overlay"></div>
+
+          </div>
+
+
+          <!-- Secondary Image -->
           <div
-            class="about-description"
-            [innerHTML]="aboutUs.description">
+            class="secondary-image-card"
+            *ngIf="aboutUs.image1"
+          >
+
+            <img
+              [src]="aboutUs.image1"
+              alt="About Us"
+              class="secondary-about-image"
+            >
+
+          </div>
+
+
+          <!-- Floating Icon -->
+          <div class="floating-icon">
+            <i class="fas fa-users"></i>
+          </div>
+
+
+          <!-- Small Info Card -->
+          <div class="floating-info">
+
+            <div class="info-icon">
+              <i class="fas fa-check"></i>
+            </div>
+
+            <div>
+              <strong>Our Commitment</strong>
+              <span>Serving with dedication</span>
+            </div>
+
           </div>
 
         </div>
+
+      </div>
+
+
+      <!-- =====================================
+           RIGHT CONTENT SECTION
+      ====================================== -->
+      <div class="col-lg-6 col-md-12">
+
+        <div class="about-content">
+
+          <!-- Label -->
+          <div class="content-label">
+            <span class="label-line"></span>
+            WHO WE ARE
+          </div>
+
+
+          <!-- Title -->
+          <h2 class="content-title">
+            {{ aboutUs.title }}
+          </h2>
+
+
+          <!-- Accent -->
+          <div class="title-accent">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+
+
+          <!-- Subtitle -->
+          <h4
+            class="content-subtitle"
+            *ngIf="aboutUs.sub_title"
+          >
+            {{ aboutUs.sub_title }}
+          </h4>
+
+
+          <!-- Description -->
+          <div
+            class="content-description"
+            [innerHTML]="aboutUs.description">
+          </div>
+
+
+          <!-- Features -->
+          <div class="about-features">
+
+            <div class="feature-item">
+
+              <div class="feature-icon">
+                <i class="fas fa-bullseye"></i>
+              </div>
+
+              <div class="feature-content">
+                <h5>Our Vision</h5>
+                <p>
+                  Creating meaningful opportunities and positive
+                  change for our community.
+                </p>
+              </div>
+
+            </div>
+
+
+            <div class="feature-item">
+
+              <div class="feature-icon">
+                <i class="fas fa-handshake"></i>
+              </div>
+
+              <div class="feature-content">
+                <h5>Our Mission</h5>
+                <p>
+                  Working together with people to build a
+                  better and stronger community.
+                </p>
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <!-- Bottom Line -->
+          <div class="content-bottom">
+
+            <div class="bottom-item">
+              <i class="fas fa-check-circle"></i>
+              <span>Transparent</span>
+            </div>
+
+            <div class="bottom-item">
+              <i class="fas fa-check-circle"></i>
+              <span>People Focused</span>
+            </div>
+
+            <div class="bottom-item">
+              <i class="fas fa-check-circle"></i>
+              <span>Committed</span>
+            </div>
+
+          </div>
+
+        </div>
+
       </div>
 
     </div>
+
   </div>
 </section>

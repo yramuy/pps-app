@@ -1,6 +1,7 @@
 <section class="content">
   <div class="container-fluid">
     <div class="card">
+
       <div class="card-header">
         <h3 class="card-title text-white">All Advertisements</h3>
       </div>
@@ -10,19 +11,54 @@
       </div>
 
       <div class="card-body">
-        <!-- <div
-          *ngIf="loading()"
-          class="alert alert-info alert-dismissible fade show"
-          role="alert"
-        >
-          {{ message() }}
-        </div> -->
+
+        <!-- ================= FILTERS ================= -->
+        <div class="row mb-3">
+
+          <!-- Advertisement Type -->
+          <div class="col-md-4">
+            <label for="advertisementType">
+              Advertisement Type
+            </label>
+
+            <select
+              id="advertisementType"
+              class="form-control"
+              [(ngModel)]="advertisementType"
+              (ngModelChange)="onFilterChange()"
+            >
+              <option value="">All Advertisement Types</option>
+              <option value="banner">Banner Advertisement</option>
+              <option value="manual">Manual Advertisement</option>
+            </select>
+          </div>
+
+          <!-- Clear Filters -->
+          <div class="col-md-2 d-flex align-items-end">
+            <button
+              type="button"
+              class="btn btn-dark"
+              (click)="clearFilters()"
+            >
+              Clear
+            </button>
+          </div>
+
+        </div>
+
+        <!-- ================= TABLE ================= -->
 
         <div class="table-responsive">
-          <table id="myAdvertisementsTable" class="table table-bordered table-striped">
+
+          <table
+            id="myAdvertisementsTable"
+            class="table table-bordered table-striped"
+          >
+
             <thead>
               <tr>
                 <th>Sno</th>
+                <th>Advertisement Type</th>
                 <th>Advertisement Title</th>
                 <th>Description</th>
                 <th>Actions</th>
@@ -30,19 +66,61 @@
             </thead>
 
             <tbody>
-              <tr *ngFor="let advertisement of myAdvertisements(); let i = index">
+
+              <tr
+                *ngFor="
+                  let advertisement of myAdvertisements();
+                  let i = index
+                "
+              >
+
                 <td>{{ i + 1 }}</td>
-                <td class="description-cell">{{ advertisement.advertisement_title }}</td>
-                <td class="description-cell">{{ advertisement.advertisement_description
-                  }}</td>
+
+                <!-- Advertisement Type -->
+                <td>
+                  <span
+                    *ngIf="advertisement.advertisement_type === 'banner'"
+                  >
+                    Banner Advertisement
+                  </span>
+
+                  <span
+                    *ngIf="advertisement.advertisement_type === 'manual'"
+                  >
+                    Manual Advertisement
+                  </span>
+
+                  <span
+                    *ngIf="
+                      advertisement.advertisement_type !== 'banner' &&
+                      advertisement.advertisement_type !== 'manual'
+                    "
+                  >
+                    -
+                  </span>
+                </td>
+
+                <!-- Title -->
+                <td class="description-cell">
+                  {{ advertisement.advertisement_title }}
+                </td>
+
+                <!-- Description -->
+                <td class="description-cell">
+                  {{ advertisement.advertisement_description }}
+                </td>
+
+                <!-- Actions -->
                 <td>
 
                   <div class="action-buttons">
+
                     <button
                       type="button"
                       class="btn btn-success btn-sm"
                       (click)="handleEdit(advertisement)"
-                      title="Edit">
+                      title="Edit"
+                    >
                       <i class="fas fa-edit"></i>
                     </button>
 
@@ -50,19 +128,36 @@
                       type="button"
                       class="btn btn-danger btn-sm"
                       (click)="confirmDelete(advertisement.id)"
-                      title="Delete">
+                      title="Delete"
+                    >
                       <i class="fas fa-trash"></i>
                     </button>
+
                   </div>
+
                 </td>
+
               </tr>
+
               <tr *ngIf="myAdvertisements().length === 0">
-                <td colspan="5">No Advertisements found</td>
+
+                <td
+                  colspan="5"
+                  class="text-center"
+                >
+                  No Advertisements found
+                </td>
+
               </tr>
+
             </tbody>
+
           </table>
+
         </div>
+
       </div>
+
     </div>
   </div>
 </section>

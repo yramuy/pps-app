@@ -1,227 +1,657 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  ViewChild
+} from '@angular/core';
+
 import { NgForm } from '@angular/forms';
+
 import { Router } from '@angular/router';
+
 import { ApiService } from 'src/app/services/api.service';
+
 import { AuthService } from 'src/app/services/auth.service';
+
 
 @Component({
   selector: 'app-add-advertisement',
-  templateUrl: './add-advertisement.component.html',
-  styleUrls: ['./add-advertisement.component.scss'],
+
+  templateUrl:
+    './add-advertisement.component.html',
+
+  styleUrls: [
+    './add-advertisement.component.scss'
+  ],
 })
 export class AddAdvertisementComponent {
+
+  // ============================================================
+  // MESSAGE
+  // ============================================================
+
   message: string = '';
+
   isMessage: boolean = false;
+
+
+  // ============================================================
+  // LOGIN USER
+  // ============================================================
 
   loginUser: any;
 
+
+  // ============================================================
+  // ADVERTISEMENT
+  // ============================================================
+
   advertisement: any = {
+
     id: '0',
+
     advertisement_title: '',
+
+    advertisement_type: '',
+
     advertisement_description: '',
-    master_id: '10',
+
+    master_id: '15',
+
     mode: 'web',
+
   };
+
+
+  // ============================================================
+  // EDIT MODE
+  // ============================================================
 
   isEdit: boolean = false;
 
+
+  // ============================================================
+  // IMAGE
+  // ============================================================
+
   selectedFile: File | null = null;
+
   imagePreview: string = '';
+
   existingImage: string = '';
+
 
   advertisement_images: any[] = [];
 
-  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
+
+  // ============================================================
+  // FILE INPUT
+  // ============================================================
+
+  @ViewChild('fileInput')
+  fileInput!: ElementRef<HTMLInputElement>;
+
+
+  // ============================================================
+  // CONSTRUCTOR
+  // ============================================================
 
   constructor(
+
     private apiService: ApiService,
+
     private authService: AuthService,
+
     private router: Router,
+
   ) {}
 
+
+  // ============================================================
+  // NG ON INIT
+  // ============================================================
+
   ngOnInit(): void {
+
     const state: any = history.state;
 
+
+    // ==========================================================
+    // EDIT ADVERTISEMENT
+    // ==========================================================
+
     if (state.advertisement) {
-      this.advertisement = state.advertisement;
+
+      this.advertisement =
+        state.advertisement;
+
       this.isEdit = true;
 
-      if (this.advertisement.imageUrl) {
-        if (Array.isArray(this.advertisement.imageUrl)) {
-          this.existingImage =
-            this.advertisement.imageUrl || '';
-        } else if (
-          typeof this.advertisement.imageUrl === 'string'
+
+      // --------------------------------------------------------
+      // Existing image
+      // --------------------------------------------------------
+
+      if (
+        this.advertisement.imageUrl
+      ) {
+
+        if (
+          Array.isArray(
+            this.advertisement.imageUrl
+          )
         ) {
-          this.existingImage = this.advertisement.imageUrl;
+
+          this.existingImage =
+            this.advertisement.imageUrl[0] || '';
+
         }
+        else if (
+          typeof this.advertisement.imageUrl ===
+          'string'
+        ) {
+
+          this.existingImage =
+            this.advertisement.imageUrl;
+
+        }
+
       }
 
-      // this.loadViewAdvertisementData(this.advertisement.id);
     }
 
-    this.authService.user$.subscribe((user: any) => {
-      this.loginUser = user;
-    });
+
+    // ==========================================================
+    // LOGIN USER
+    // ==========================================================
+
+    this.authService.user$
+      .subscribe(
+        (user: any) => {
+
+          this.loginUser = user;
+
+        }
+      );
+
   }
 
-  // loadViewAdvertisementData(advertisementId: any): void {
-  //   this.apiService
-  //     .request('GET', `/advertisementDataById/${advertisementId}`)
-  //     .subscribe({
-  //       next: (res: any) => {
-  //         this.advertisement_images = res.advertisement_images || [];
 
-  //         const firstImage = this.advertisement_images[0];
-
-  //         this.existingImage = firstImage?.img_url || '';
-  //       },
-  //       error: () => {
-  //         this.showMessage('Unable to load advertisement image');
-  //       },
-  //     });
-  // }
+  // ============================================================
+  // FILE CHANGE
+  // ============================================================
 
   onFileChange(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    const file = input.files?.[0];
+
+    const input =
+      event.target as HTMLInputElement;
+
+    const file =
+      input.files?.[0];
+
 
     if (!file) {
+
       return;
+
     }
 
-    if (!file.type.startsWith('image/')) {
-      this.showMessage('Only image files are allowed');
+
+    // ----------------------------------------------------------
+    // Validate image
+    // ----------------------------------------------------------
+
+    if (
+      !file.type.startsWith('image/')
+    ) {
+
+      this.showMessage(
+        'Only image files are allowed'
+      );
+
       this.clearFileInput();
+
       return;
+
     }
 
-    this.selectedFile = file;
 
-    const reader = new FileReader();
+    // ----------------------------------------------------------
+    // Set selected file
+    // ----------------------------------------------------------
+
+    this.selectedFile =
+      file;
+
+
+    // ----------------------------------------------------------
+    // Preview
+    // ----------------------------------------------------------
+
+    const reader =
+      new FileReader();
+
 
     reader.onload = () => {
-      this.imagePreview = reader.result as string;
 
-      // A newly selected image replaces the existing image visually.
-      this.existingImage = '';
+      this.imagePreview =
+        reader.result as string;
+
+
+      // New image replaces existing image
+      this.existingImage =
+        '';
+
     };
+
 
     reader.readAsDataURL(file);
 
-    // Allows selecting the same file again after removing it.
+
+    // Allows same file to be selected again
     this.clearFileInput(false);
+
   }
+
+
+  // ============================================================
+  // REMOVE SELECTED IMAGE
+  // ============================================================
 
   removeSelectedImage(): void {
-    this.selectedFile = null;
-    this.imagePreview = '';
+
+    this.selectedFile =
+      null;
+
+    this.imagePreview =
+      '';
 
     this.clearFileInput();
+
   }
+
+
+  // ============================================================
+  // REMOVE EXISTING IMAGE
+  // ============================================================
 
   removeExistingImage(): void {
-    this.existingImage = '';
-    this.advertisement.advertisement_image = '';
+
+    this.existingImage =
+      '';
+
+    this.advertisement.advertisement_image =
+      '';
+
   }
 
-  resetImages(removeExisting: boolean = false): void {
-    this.selectedFile = null;
-    this.imagePreview = '';
+
+  // ============================================================
+  // RESET IMAGES
+  // ============================================================
+
+  resetImages(
+    removeExisting: boolean = false
+  ): void {
+
+    this.selectedFile =
+      null;
+
+    this.imagePreview =
+      '';
+
 
     if (removeExisting) {
-      this.existingImage = '';
-      this.advertisement.advertisement_image = '';
+
+      this.existingImage =
+        '';
+
+      this.advertisement.advertisement_image =
+        '';
+
     }
+
 
     this.clearFileInput();
+
   }
 
-  saveAdvertisement(form: NgForm): void {
+
+  // ============================================================
+  // SAVE / UPDATE
+  // ============================================================
+
+  saveAdvertisement(
+    form: NgForm
+  ): void {
+
+    // ----------------------------------------------------------
+    // Form validation
+    // ----------------------------------------------------------
+
     if (form.invalid) {
+
       return;
+
     }
 
-    if (!this.selectedFile && !this.existingImage) {
-      this.showMessage('At least one advertisement picture is required');
+
+    // ----------------------------------------------------------
+    // Image validation
+    // ----------------------------------------------------------
+
+    if (
+      !this.selectedFile &&
+      !this.existingImage
+    ) {
+
+      this.showMessage(
+        'At least one advertisement picture is required'
+      );
+
       return;
+
     }
 
-    const formData = new FormData();
 
-    Object.keys(this.advertisement).forEach((key: string) => {
-      if (key !== 'advertisement_image') {
-        formData.append(
-          key,
-          this.advertisement[key] !== null &&
+    // ==========================================================
+    // FORM DATA
+    // ==========================================================
+
+    const formData =
+      new FormData();
+
+
+    // ----------------------------------------------------------
+    // Advertisement fields
+    // ----------------------------------------------------------
+
+    Object.keys(
+      this.advertisement
+    ).forEach(
+      (key: string) => {
+
+        if (
+          key !== 'advertisement_image'
+        ) {
+
+          formData.append(
+
+            key,
+
+            this.advertisement[key] !== null &&
             this.advertisement[key] !== undefined
-            ? this.advertisement[key]
-            : '',
-        );
+
+              ? this.advertisement[key]
+
+              : ''
+
+          );
+
+        }
+
       }
-    });
+    );
 
-    formData.append('id', this.advertisement.id ?? '');
-    formData.append('master_id', '15');
-    formData.append('created_by', this.loginUser?.userId ?? '');
 
-    // Existing image is sent only when the user has not selected a new image.
-    if (!this.selectedFile && this.existingImage) {
-      formData.append('existing_image', this.existingImage);
+    // ==========================================================
+    // REQUIRED FIELDS
+    // ==========================================================
+
+    formData.append(
+      'id',
+      this.advertisement.id ?? ''
+    );
+
+
+    formData.append(
+      'master_id',
+      '15'
+    );
+
+
+    formData.append(
+      'created_by',
+      this.loginUser?.userId ?? ''
+    );
+
+
+    // ==========================================================
+    // EXISTING IMAGE
+    // ==========================================================
+
+    if (
+      !this.selectedFile &&
+      this.existingImage
+    ) {
+
+      formData.append(
+        'existing_image',
+        this.existingImage
+      );
+
     }
 
-    // Send only one new image.
-    if (this.selectedFile) {
-      formData.append('image', this.selectedFile);
+
+    // ==========================================================
+    // NEW IMAGE
+    // ==========================================================
+
+    if (
+      this.selectedFile
+    ) {
+
+      formData.append(
+        'image',
+        this.selectedFile
+      );
+
     }
 
-    console.log('FormData values:');
 
-    formData.forEach((value: FormDataEntryValue, key: string) => {
-      console.log(key, value);
-    });
+    // ==========================================================
+    // DEBUG
+    // ==========================================================
+
+    console.log(
+      'Advertisement FormData:'
+    );
+
+
+    formData.forEach(
+      (
+        value: FormDataEntryValue,
+        key: string
+      ) => {
+
+        console.log(
+          key,
+          value
+        );
+
+      }
+    );
+
+
+    // ==========================================================
+    // API
+    // ==========================================================
 
     this.apiService
-      .request('POST', '/saveAndUpdateAdvertisement', formData)
+
+      .request(
+        'POST',
+        '/saveAndUpdateAdvertisement',
+        formData
+      )
+
       .subscribe({
+
+        // ======================================================
+        // SUCCESS
+        // ======================================================
+
         next: (res: any) => {
+
+          console.log(
+            'Advertisement response:',
+            res
+          );
+
+
           if (res.status) {
-            this.router.navigate(['/admin/advertisement/list'], {
-              state: {
-                message: res.message || 'Advertisement saved successfully',
-              },
-            });
-          } else {
-            this.showMessage(res.message || 'Unable to save advertisement');
+
+            this.router.navigate(
+              [
+                '/admin/advertisement/list'
+              ],
+              {
+                state: {
+
+                  message:
+                    res.message ||
+                    'Advertisement saved successfully',
+
+                },
+              }
+            );
+
           }
+          else {
+
+            this.showMessage(
+
+              res.message ||
+              'Unable to save advertisement'
+
+            );
+
+          }
+
         },
-        error: () => {
-          this.showMessage('Something went wrong');
-        },
+
+
+        // ======================================================
+        // ERROR
+        // ======================================================
+
+        error: (err: any) => {
+
+          console.error(
+            'Advertisement error:',
+            err
+          );
+
+
+          if (err.status === 401) {
+
+            this.showMessage(
+              'Token expired'
+            );
+
+            this.authService.logout();
+
+          }
+          else if (err.status === 400) {
+
+            this.showMessage(
+              'Invalid request data'
+            );
+
+          }
+          else if (err.status === 500) {
+
+            this.showMessage(
+              'Server error. Please try again later'
+            );
+
+          }
+          else {
+
+            this.showMessage(
+              'Something went wrong'
+            );
+
+          }
+
+        }
+
       });
+
   }
+
+
+  // ============================================================
+  // BACK
+  // ============================================================
 
   handleBackBtn(): void {
-    this.router.navigate(['/admin/advertisement/list']);
+
+    this.router.navigate(
+      [
+        '/admin/advertisement/list'
+      ]
+    );
+
   }
 
-  showMessage(msg: string): void {
-    this.message = msg;
-    this.isMessage = true;
 
-    setTimeout(() => {
-      this.isMessage = false;
-    }, 3000);
+  // ============================================================
+  // MESSAGE
+  // ============================================================
+
+  showMessage(
+    msg: string
+  ): void {
+
+    this.message =
+      msg;
+
+    this.isMessage =
+      true;
+
+
+    setTimeout(
+      () => {
+
+        this.isMessage =
+          false;
+
+      },
+      3000
+    );
+
   }
 
-  private clearFileInput(clearPreview: boolean = true): void {
-    if (this.fileInput) {
-      this.fileInput.nativeElement.value = '';
+
+  // ============================================================
+  // CLEAR FILE INPUT
+  // ============================================================
+
+  private clearFileInput(
+    clearPreview: boolean = true
+  ): void {
+
+    if (
+      this.fileInput
+    ) {
+
+      this.fileInput
+        .nativeElement
+        .value = '';
+
     }
+
 
     if (clearPreview) {
-      this.selectedFile = null;
-      this.imagePreview = '';
+
+      this.selectedFile =
+        null;
+
+      this.imagePreview =
+        '';
+
     }
+
   }
+
 }

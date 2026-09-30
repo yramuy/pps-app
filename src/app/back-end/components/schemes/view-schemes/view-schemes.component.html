@@ -10,19 +10,58 @@
       </div>
 
       <div class="card-body">
-        <!-- <div
-          *ngIf="loading()"
-          class="alert alert-info alert-dismissible fade show"
-          role="alert"
-        >
-          {{ message() }}
-        </div> -->
+        <!-- ================= FILTERS ================= -->
+        <div class="row mb-3">
+          <!-- Post Date -->
+          <div class="col-md-4 mb-2">
+            <label class="form-label">Post Date</label>
 
+            <input
+              type="date"
+              class="form-control"
+              [(ngModel)]="postDate"
+              (ngModelChange)="onFilterChange()"
+            />
+          </div>
+
+          <!-- Scheme Type -->
+          <div class="col-md-4 mb-2">
+            <label class="form-label">Scheme Type</label>
+
+            <select
+              class="form-control"
+              [(ngModel)]="schemeType"
+              (ngModelChange)="onFilterChange()"
+            >
+              <option value="">All Scheme Types</option>
+
+              <option value="state">State Government Schemes</option>
+
+              <option value="central">Central Government Schemes</option>
+            </select>
+          </div>
+
+          <!-- Clear -->
+          <div class="col-md-4 mb-2 d-flex align-items-end">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              (click)="clearFilters()"
+            >
+              <i class="fas fa-sync"></i>
+              Clear
+            </button>
+          </div>
+        </div>
+
+        <!-- ================= TABLE ================= -->
         <div class="table-responsive">
           <table id="mySchemesTable" class="table table-bordered table-striped">
             <thead>
               <tr>
                 <th>Sno</th>
+                <th>Post Date</th>
+                <th>Scheme Type</th>
                 <th>Scheme Title</th>
                 <th>Description</th>
                 <th>Actions</th>
@@ -32,32 +71,50 @@
             <tbody>
               <tr *ngFor="let scheme of mySchemes(); let i = index">
                 <td>{{ i + 1 }}</td>
-                <td class="description-cell">{{ scheme.scheme_title }}</td>
-                <td class="description-cell">{{ scheme.scheme_description
-                  }}</td>
-                <td>
 
+                <td>
+                  {{ scheme.post_date | date: "dd-MM-yyyy" }}
+                </td>
+
+                <td>
+                  {{ scheme.scheme_type_name }}
+                </td>
+
+                <td class="description-cell">
+                  {{ scheme.scheme_title }}
+                </td>
+
+                <td class="description-cell">
+                  {{ scheme.scheme_description }}
+                </td>
+
+                <td>
                   <div class="action-buttons">
+                    <!-- Edit -->
                     <button
                       type="button"
                       class="btn btn-success btn-sm"
                       (click)="handleEdit(scheme)"
-                      title="Edit">
+                      title="Edit"
+                    >
                       <i class="fas fa-edit"></i>
                     </button>
 
+                    <!-- Delete -->
                     <button
                       type="button"
                       class="btn btn-danger btn-sm"
                       (click)="confirmDelete(scheme.id)"
-                      title="Delete">
+                      title="Delete"
+                    >
                       <i class="fas fa-trash"></i>
                     </button>
                   </div>
                 </td>
               </tr>
+
               <tr *ngIf="mySchemes().length === 0">
-                <td colspan="5">No Schemes found</td>
+                <td colspan="6" class="text-center">No Schemes found</td>
               </tr>
             </tbody>
           </table>

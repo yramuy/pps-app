@@ -1,176 +1,479 @@
-import { Component, signal } from '@angular/core';
+import {
+  Component,
+  signal
+} from '@angular/core';
+
 import { Router } from '@angular/router';
+
 import { ApiService } from 'src/app/services/api.service';
+
 import { AuthService } from 'src/app/services/auth.service';
+
 import { LoaderService } from 'src/app/services/loader.service';
+
 
 @Component({
   selector: 'app-view-advertisement',
+
   templateUrl: './view-advertisement.component.html',
+
   styleUrls: ['./view-advertisement.component.scss']
 })
 export class ViewAdvertisementComponent {
 
-  // Signals (state)
+  // ================================
+  // Signals
+  // ================================
 
   myAdvertisements = signal<any[]>([]);
+
   loginUser = signal<any>(null);
+
   loading = signal(false);
+
   message = signal('');
+
   isMessage: boolean = false;
+
+
+  // ================================
+  // Filters
+  // ================================
+
+  advertisementType: string = '';
+
 
   constructor(
     private authService: AuthService,
+
     private apiService: ApiService,
+
     public loader: LoaderService,
-    private router: Router,
+
+    private router: Router
   ) {
 
     this.loadAdvertisements();
 
   }
 
+
+  // ================================
+  // On Init
+  // ================================
+
   ngOnInit() {
+
     const state = history.state;
 
     if (state.message) {
+
       this.message.set(state.message);
+
       this.isMessage = true;
 
-      // Clear History
+      // Clear history
       history.replaceState({}, '');
 
       setTimeout(() => {
+
         this.isMessage = false;
+
       }, 3000);
+
     }
+
   }
 
-  // API call
-  loadAdvertisements() {
-    // this.loading.set(true);
+
+  // ================================
+  // Filter Change
+  // ================================
+
+  onFilterChange(): void {
+
+    this.loadAdvertisements();
+
+  }
+
+
+  // ================================
+  // Clear Filters
+  // ================================
+
+  clearFilters(): void {
+
+    this.advertisementType = '';
+
+    this.loadAdvertisements();
+
+  }
+
+
+  // ================================
+  // Load Advertisements
+  // ================================
+
+  loadAdvertisements(): void {
+
     this.loader.show();
 
 
-    let payload = {
-      mode: 1
+    const payload = {
+
+      mode: 1,
+
+      advertisement_type:
+        this.advertisementType || ''
+
     };
 
-    this.apiService.request('POST', '/allAdvertisements', payload).subscribe({
-      next: (res: any) => {
-        this.myAdvertisements.set(res.advertisements || []);
-        console.log('myAdvertisements : ', this.myAdvertisements()); // ✅ correct place
-        // this.loading.set(false);
-        this.loader.hide();
 
-        setTimeout(() => {
-          if (this.myAdvertisements().length > 0) {
-            if ($.fn.DataTable.isDataTable('#myAdvertisementsTable')) {
-              ($('#myAdvertisementsTable') as any).DataTable().destroy();
-            }
+    this.apiService
+      .request(
+        'POST',
+        '/allAdvertisements',
+        payload
+      )
+      .subscribe({
 
-            ($('#myAdvertisementsTable') as any).DataTable({
-              dom: 'Bfrtip',
-              buttons: ['excel', 'pdf'],
-              responsive: true,
-            });
+        next: (res: any) => {
+
+          /*
+           * Destroy existing DataTable
+           * before changing Angular data.
+           */
+          if (
+            $.fn.DataTable.isDataTable(
+              '#myAdvertisementsTable'
+            )
+          ) {
+
+            ($('#myAdvertisementsTable') as any)
+              .DataTable()
+              .clear()
+              .destroy();
+
           }
-        }, 0);
-      },
 
-      error: (err: any) => {
-        if (err.status === 401) {
-          this.message.set('Token expired');
-          this.authService.logout();
-        } else if (err.status === 400) {
-          this.message.set('Invalid request data');
-        } else if (err.status === 500) {
-          this.message.set('Server error. Please try again later');
-        } else {
-          this.message.set('Something went wrong. Please try again later');
+
+          /*
+           * Set API response.
+           */
+          this.myAdvertisements.set(
+            res.advertisements || []
+          );
+
+
+          console.log(
+            'myAdvertisements:',
+            this.myAdvertisements()
+          );
+
+
+          this.loader.hide();
+
+
+          /*
+           * Reinitialize DataTable after
+           * Angular updates the DOM.
+           */
+          setTimeout(() => {
+
+            this.initializeDataTable();
+
+          }, 0);
+
+        },
+
+
+        error: (err: any) => {
+
+          if (err.status === 401) {
+
+            this.message.set(
+              'Token expired'
+            );
+
+            this.authService.logout();
+
+          }
+
+          else if (err.status === 400) {
+
+            this.message.set(
+              'Invalid request data'
+            );
+
+          }
+
+          else if (err.status === 500) {
+
+            this.message.set(
+              'Server error. Please try again later'
+            );
+
+          }
+
+          else {
+
+            this.message.set(
+              'Something went wrong. Please try again later'
+            );
+
+          }
+
+
+          this.loader.hide();
+
         }
 
-        // this.loading.set(false);
-        this.loader.hide();
-      },
-    });
+      });
+
   }
 
-  handleEdit(advertisementObj: any) {
-    this.router.navigate(['/admin/advertisement/add'], {
-      state: {
-        advertisement: advertisementObj,
-        isEdit: true,
-      },
-    });
-  }
 
-  confirmDelete(id: string) {
-    if (confirm('Are you sure you want to delete this record?')) {
-      this.deleteAdvertisement(id);
+  // ================================
+  // Initialize DataTable
+  // ================================
+
+  initializeDataTable(): void {
+
+    if (
+      this.myAdvertisements().length === 0
+    ) {
+
+      return;
+
     }
+
+
+    if (
+      $.fn.DataTable.isDataTable(
+        '#myAdvertisementsTable'
+      )
+    ) {
+
+      ($('#myAdvertisementsTable') as any)
+        .DataTable()
+        .destroy();
+
+    }
+
+
+    ($('#myAdvertisementsTable') as any)
+      .DataTable({
+
+        dom: 'Bfrtip',
+
+        buttons: [
+          'excel',
+          'pdf'
+        ],
+
+        responsive: true,
+
+        pageLength: 10,
+
+        ordering: true,
+
+        searching: true,
+
+        lengthChange: true,
+
+        autoWidth: false
+
+      });
+
   }
 
-  handleView(id: any) {
 
-    this.router.navigate(['/admin/advertisement/view-advertisement'], {
-      state: {
-        advertisementID: id
-      },
-    });
+  // ================================
+  // Edit
+  // ================================
+
+  handleEdit(
+    advertisementObj: any
+  ): void {
+
+    this.router.navigate(
+      ['/admin/advertisement/add'],
+      {
+        state: {
+
+          advertisement:
+            advertisementObj,
+
+          isEdit: true
+
+        }
+      }
+    );
 
   }
 
-  deleteAdvertisement(id: string) {
+
+  // ================================
+  // Delete Confirmation
+  // ================================
+
+  confirmDelete(
+    id: string
+  ): void {
+
+    if (
+      confirm(
+        'Are you sure you want to delete this record?'
+      )
+    ) {
+
+      this.deleteAdvertisement(id);
+
+    }
+
+  }
+
+
+  // ================================
+  // Delete Advertisement
+  // ================================
+
+  deleteAdvertisement(
+    id: string
+  ): void {
 
     const payload = JSON.stringify({
+
       id: id,
-      master_id: '15',
+
+      master_id: '15'
+
     });
 
-    this.apiService.request('POST', '/deleteRecord', payload).subscribe({
-      next: (res: any) => {
-        this.showMessage(res.message);
 
-        // ✅ Update signal correctly
-        this.myAdvertisements.update((advertisements) =>
-          advertisements.filter((c: any) => c.id !== id),
-        );
+    this.loader.show();
 
-        // ✅ Reload DataTable
-        this.reloadDataTable();
-      },
-      error: (err) => {
-        console.error(err);
-      },
-    });
+
+    this.apiService
+      .request(
+        'POST',
+        '/deleteRecord',
+        payload
+      )
+      .subscribe({
+
+        next: (res: any) => {
+
+          this.loader.hide();
+
+
+          if (res.status) {
+
+            this.showMessage(
+              res.message ||
+              'Advertisement deleted successfully'
+            );
+
+
+            /*
+             * Remove from signal.
+             */
+            this.myAdvertisements.update(
+              (advertisements) =>
+                advertisements.filter(
+                  (advertisement: any) =>
+                    advertisement.id !== id
+                )
+            );
+
+
+            /*
+             * Reload DataTable.
+             */
+            this.reloadDataTable();
+
+          }
+
+          else {
+
+            this.showMessage(
+              res.message ||
+              'Unable to delete advertisement'
+            );
+
+          }
+
+        },
+
+
+        error: (err: any) => {
+
+          this.loader.hide();
+
+          console.error(
+            'Delete advertisement error:',
+            err
+          );
+
+          this.showMessage(
+            'Something went wrong'
+          );
+
+        }
+
+      });
+
   }
 
-  reloadDataTable() {
-    
-    // ✅ Destroy first
-    if ($.fn.DataTable.isDataTable('#myAdvertisementsTable')) {
-      ($('#myAdvertisementsTable') as any).DataTable().destroy();
+
+  // ================================
+  // Reload DataTable
+  // ================================
+
+  reloadDataTable(): void {
+
+    if (
+      $.fn.DataTable.isDataTable(
+        '#myAdvertisementsTable'
+      )
+    ) {
+
+      ($('#myAdvertisementsTable') as any)
+        .DataTable()
+        .clear()
+        .destroy();
+
     }
 
-    // ✅ Wait for Angular DOM update
+
     setTimeout(() => {
-      ($('#myAdvertisementsTable') as any).DataTable({
-        dom: 'Bfrtip',
-        buttons: ['excel', 'pdf'],
-        responsive: true,
-      });
+
+      this.initializeDataTable();
+
     }, 100);
 
   }
 
-  showMessage(msg: string) {
+
+  // ================================
+  // Message
+  // ================================
+
+  showMessage(
+    msg: string
+  ): void {
+
     this.message.set(msg);
+
     this.isMessage = true;
 
+
     setTimeout(() => {
+
       this.isMessage = false;
+
     }, 3000);
+
   }
 
 }

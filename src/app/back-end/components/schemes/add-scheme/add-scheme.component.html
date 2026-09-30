@@ -1,108 +1,249 @@
+
 <div class="card">
   <div class="card-header">
-    <h5 class="text-white">{{ isEdit ? "Update Scheme" : "Add Scheme" }}</h5>
+    <h5 class="text-white">
+      {{ isEdit ? "Update Scheme" : "Add Scheme" }}
+    </h5>
   </div>
 
-  <form #schemeForm="ngForm" (ngSubmit)="saveScheme(schemeForm)"
-    enctype="multipart/form-data" novalidate>
+  <form
+    #schemeForm="ngForm"
+    (ngSubmit)="saveScheme(schemeForm)"
+    enctype="multipart/form-data"
+    novalidate
+  >
     <div class="card-body">
+
+      <!-- Message -->
       <div *ngIf="isMessage" class="alert alert-danger">
         {{ message }}
       </div>
 
+      <!-- Post Date + Scheme Type -->
+      <div class="row">
+
+        <!-- Post Date -->
+        <div class="col-md-6 mb-3">
+          <label>
+            Post Date <span class="text-danger">*</span>
+          </label>
+
+          <input
+            type="date"
+            class="form-control"
+            name="post_date"
+            [(ngModel)]="scheme.post_date"
+            #post_date="ngModel"
+            required
+          />
+
+          <small
+            class="text-danger"
+            *ngIf="schemeForm.submitted && post_date.invalid"
+          >
+            Post Date is required
+          </small>
+        </div>
+
+        <!-- Scheme Type -->
+        <div class="col-md-6 mb-3">
+          <label>
+            Scheme Type <span class="text-danger">*</span>
+          </label>
+
+          <select
+            class="form-control"
+            name="scheme_type"
+            [(ngModel)]="scheme.scheme_type"
+            #scheme_type="ngModel"
+            required
+          >
+            <option value="">Select Scheme Type</option>
+            <option value="state">
+              State Government Schemes
+            </option>
+            <option value="central">
+              Central Government Schemes
+            </option>
+          </select>
+
+          <small
+            class="text-danger"
+            *ngIf="schemeForm.submitted && scheme_type.invalid"
+          >
+            Scheme Type is required
+          </small>
+        </div>
+
+      </div>
+
+      <!-- Scheme Title -->
       <div class="row">
         <div class="col-6 mb-3">
-          <label>Scheme Title *</label>
+          <label>
+            Scheme Title <span class="text-danger">*</span>
+          </label>
+
           <input
             type="text"
             class="form-control"
             name="scheme_title"
             [(ngModel)]="scheme.scheme_title"
             #scheme_title="ngModel"
-            required />
-          <small class="text-danger"
-            *ngIf="schemeForm.submitted && scheme_title.invalid">
+            required
+          />
+
+          <small
+            class="text-danger"
+            *ngIf="schemeForm.submitted && scheme_title.invalid"
+          >
             Scheme Title is required
           </small>
         </div>
       </div>
 
+      <!-- Scheme Description -->
       <div class="row">
         <div class="col-12 mb-3">
-          <label>Scheme Description *</label>
+          <label>
+            Scheme Description <span class="text-danger">*</span>
+          </label>
+
           <textarea
             class="form-control"
             name="scheme_description"
             [(ngModel)]="scheme.scheme_description"
             #scheme_description="ngModel"
             rows="4"
-            required></textarea>
-          <small class="text-danger"
-            *ngIf="schemeForm.submitted && scheme_description.invalid">
+            required
+          ></textarea>
+
+          <small
+            class="text-danger"
+            *ngIf="schemeForm.submitted && scheme_description.invalid"
+          >
             Scheme Description is required
           </small>
         </div>
       </div>
 
+      <!-- Scheme Images -->
       <div class="row">
-        <div class="col-6 mb-3">
-          <label>Scheme Images *</label>
+        <div class="col-12 mb-3">
+
+          <label>
+            Scheme Images <span class="text-danger">*</span>
+          </label>
+
           <input
             type="file"
             #fileInput
             class="form-control"
             accept="image/*"
             multiple
-            (change)="onFileChange($event)" />
+            (change)="onFileChange($event)"
+          />
 
           <small
             class="text-danger"
-            *ngIf="scheme.submitted && imagePreviews.length === 0 && existingImages.length === 0">
-            At least one issue picture is required
+            *ngIf="
+              schemeForm.submitted &&
+              imagePreviews.length === 0 &&
+              existingImages.length === 0
+            "
+          >
+            At least one scheme picture is required
           </small>
 
-          <div *ngIf="existingImages.length || imagePreviews.length"
-            class="mt-2">
+          <!-- Image Preview -->
+          <div
+            *ngIf="existingImages.length || imagePreviews.length"
+            class="mt-3"
+          >
+
             <div class="d-flex flex-wrap align-items-start gap-3">
 
               <!-- Existing Images -->
-              <div *ngFor="let img of existingImages" class="text-center">
-                <img
-                  [src]="img"
-                  class="img-thumbnail"
-                  style="width:120px; height:120px; object-fit:cover;">
-              </div>
+              <div
+                *ngFor="let img of existingImages; let i = index"
+                class="text-center"
+              >
 
-              <!-- Uploaded Images -->
-              <div *ngFor="let img of imagePreviews; let i = index"
-                class="text-center">
                 <img
                   [src]="img"
                   class="img-thumbnail"
-                  style="width:120px; height:120px; object-fit:cover;">
+                  style="
+                    width: 120px;
+                    height: 120px;
+                    object-fit: cover;
+                  "
+                />
 
                 <button
                   type="button"
                   class="btn btn-danger btn-sm mt-2 w-100"
-                  (click)="removeSelectedImage(i)">
+                  (click)="removeExistingImage(i)"
+                >
                   Remove
                 </button>
+
+              </div>
+
+              <!-- Newly Uploaded Images -->
+              <div
+                *ngFor="let img of imagePreviews; let i = index"
+                class="text-center"
+              >
+
+                <img
+                  [src]="img"
+                  class="img-thumbnail"
+                  style="
+                    width: 120px;
+                    height: 120px;
+                    object-fit: cover;
+                  "
+                />
+
+                <button
+                  type="button"
+                  class="btn btn-danger btn-sm mt-2 w-100"
+                  (click)="removeSelectedImage(i)"
+                >
+                  Remove
+                </button>
+
               </div>
 
             </div>
+
           </div>
+
         </div>
       </div>
+
     </div>
 
+    <!-- Footer -->
     <div class="card-footer d-flex align-items-center">
-      <button class="btn btn-primary mr-2">
+
+      <button
+        type="submit"
+        class="btn btn-primary mr-2"
+      >
         {{ isEdit ? "Update" : "Save" }}
       </button>
 
-      <button type="button" class="btn btn-dark" (click)="handleBackBtn()">
+      <button
+        type="button"
+        class="btn btn-dark"
+        (click)="handleBackBtn()"
+      >
         Back
       </button>
+
     </div>
+
   </form>
 </div>
+

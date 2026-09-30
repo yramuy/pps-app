@@ -37,6 +37,7 @@ export class IssueCreateComponent {
     issue_pic: '',
     master_id: '9',
     mode: 'web',
+    post_date: '',
   };
 
   isEdit: boolean = false;

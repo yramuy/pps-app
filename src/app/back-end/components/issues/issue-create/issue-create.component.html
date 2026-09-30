@@ -47,6 +47,29 @@
       </div>
 
       <div class="row">
+        <!-- Registration Date -->
+        <div class="col-6 mb-3">
+          <label>Post Date *</label>
+
+          <input
+            type="date"
+            class="form-control"
+            name="post_date"
+            [(ngModel)]="issue.post_date"
+            #post_date="ngModel"
+            required />
+
+          <small
+            class="text-danger"
+            *ngIf="issueForm.submitted && post_date.invalid">
+            Post Date is required
+          </small>
+        </div>
+
+      </div>
+
+      <div class="row">
+ 
         <div class="col-12 mb-3">
           <label>Issue Description *</label>
           <textarea
@@ -61,6 +84,7 @@
             Issue Description is required
           </small>
         </div>
+
       </div>
 
       <div class="row">
