@@ -1,3 +1,4 @@
+
 import {
   Component,
   ElementRef,
@@ -7,6 +8,7 @@ import {
 
 import { Router } from '@angular/router';
 import { NgForm } from '@angular/forms';
+
 import { ApiService } from 'src/app/services/api.service';
 
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
@@ -17,9 +19,13 @@ import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
   templateUrl: './about-us.component.html',
 
-  styleUrls: ['./about-us.component.scss'],
+  styleUrls: ['./about-us.component.scss']
 })
 export class AboutUsComponent implements OnInit {
+
+  // =========================
+  // File Inputs
+  // =========================
 
   @ViewChild('fileInput')
   fileInput!: ElementRef;
@@ -27,6 +33,10 @@ export class AboutUsComponent implements OnInit {
   @ViewChild('fileInput1')
   fileInput1!: ElementRef;
 
+
+  // =========================
+  // CKEditor
+  // =========================
 
   public Editor: any = ClassicEditor;
 
@@ -49,17 +59,17 @@ export class AboutUsComponent implements OnInit {
       'insertTable',
       '|',
       'undo',
-      'redo',
+      'redo'
     ],
 
-    placeholder:
-      'Enter description here...',
+    placeholder: 'Enter content here...'
+
   };
 
 
-  // ======================
+  // =========================
   // About Object
-  // ======================
+  // =========================
 
   about: any = {
 
@@ -75,40 +85,59 @@ export class AboutUsComponent implements OnInit {
 
     mission: '',
 
+    aim: '',
+
     chairman_message: '',
 
     image: '',
 
-    image1: '',
+    image1: ''
+
   };
 
 
-  // ======================
-  // Image Variables
-  // ======================
+  // =========================
+  // Selected Files
+  // =========================
 
   selectedFile: File | null = null;
 
   selectedFile1: File | null = null;
 
 
-  imagePreview = '';
+  // =========================
+  // Image Preview
+  // =========================
 
-  image1Preview = '';
+  imagePreview: string = '';
+
+  image1Preview: string = '';
 
 
-  loading = false;
+  // =========================
+  // Loading / Message
+  // =========================
 
-  isMessage = false;
+  loading: boolean = false;
 
-  message = '';
+  isMessage: boolean = false;
 
+  message: string = '';
+
+
+  // =========================
+  // Constructor
+  // =========================
 
   constructor(
     private apiService: ApiService,
     private router: Router
   ) {}
 
+
+  // =========================
+  // On Init
+  // =========================
 
   ngOnInit(): void {
 
@@ -117,9 +146,9 @@ export class AboutUsComponent implements OnInit {
   }
 
 
-  // ======================
+  // =========================
   // Get About Us
-  // ======================
+  // =========================
 
   getAboutUs(): void {
 
@@ -153,36 +182,56 @@ export class AboutUsComponent implements OnInit {
             const data = res.data[0];
 
 
+            // =========================
+            // Set About Data
+            // =========================
+
             this.about = {
 
               id: data.id || '',
 
               title: data.title || '',
 
-              sub_title: data.sub_title || '',
+              sub_title:
+                data.sub_title || '',
 
-              description: data.description || '',
+              description:
+                data.description || '',
 
-              vision: data.vision || '',
 
-              mission: data.mission || '',
+              vision:
+                data.vision || '',
+
+              mission:
+                data.mission || '',
+
+              aim:
+                data.aim || '',
 
               chairman_message:
                 data.chairman_message || '',
 
-              image: data.image || '',
+              image:
+                data.image || '',
 
-              image1: data.image1 || ''
+              image1:
+                data.image1 || ''
 
             };
 
 
-            // Existing image
+            // =========================
+            // Existing Image
+            // =========================
+
             this.imagePreview =
               data.image || '';
 
 
-            // Existing image1
+            // =========================
+            // Existing Image 1
+            // =========================
+
             this.image1Preview =
               data.image1 || '';
 
@@ -197,12 +246,17 @@ export class AboutUsComponent implements OnInit {
         },
 
 
-        error: () => {
+        error: (error: any) => {
 
           this.loading = false;
 
+          console.error(
+            'Get About Us Error:',
+            error
+          );
+
           this.showMessage(
-            'Something went wrong'
+            'Something went wrong while loading About Us'
           );
 
         }
@@ -212,9 +266,9 @@ export class AboutUsComponent implements OnInit {
   }
 
 
-  // ======================
+  // =========================
   // Image Upload
-  // ======================
+  // =========================
 
   onFileChange(
     event: any,
@@ -232,12 +286,19 @@ export class AboutUsComponent implements OnInit {
     }
 
 
-    // Validate image
-    if (!file.type.startsWith('image/')) {
+    // =========================
+    // Validate Image
+    // =========================
+
+    if (
+      !file.type ||
+      !file.type.startsWith('image/')
+    ) {
 
       this.showMessage(
         'Only image files are allowed'
       );
+
 
       if (imageType === 'image') {
 
@@ -245,24 +306,26 @@ export class AboutUsComponent implements OnInit {
 
       }
 
-      else {
+      else if (imageType === 'image1') {
 
         this.fileInput1.nativeElement.value = '';
 
       }
+
 
       return;
 
     }
 
 
-    // ======================
-    // Image
-    // ======================
+    // =========================
+    // About Image
+    // =========================
 
     if (imageType === 'image') {
 
       this.selectedFile = file;
+
 
       const reader =
         new FileReader();
@@ -281,13 +344,14 @@ export class AboutUsComponent implements OnInit {
     }
 
 
-    // ======================
-    // Image 1
-    // ======================
+    // =========================
+    // About Image 1
+    // =========================
 
     else if (imageType === 'image1') {
 
       this.selectedFile1 = file;
+
 
       const reader =
         new FileReader();
@@ -308,11 +372,15 @@ export class AboutUsComponent implements OnInit {
   }
 
 
-  // ======================
+  // =========================
   // Save / Update
-  // ======================
+  // =========================
 
   saveAboutUs(form: NgForm): void {
+
+    // =========================
+    // Form Validation
+    // =========================
 
     if (form.invalid) {
 
@@ -324,9 +392,17 @@ export class AboutUsComponent implements OnInit {
     this.loading = true;
 
 
+    // =========================
+    // FormData
+    // =========================
+
     const formData =
       new FormData();
 
+
+    // =========================
+    // ID
+    // =========================
 
     formData.append(
       'id',
@@ -336,11 +412,19 @@ export class AboutUsComponent implements OnInit {
     );
 
 
+    // =========================
+    // Master ID
+    // =========================
+
     formData.append(
       'master_id',
       '13'
     );
 
+
+    // =========================
+    // Title
+    // =========================
 
     formData.append(
       'title',
@@ -348,11 +432,19 @@ export class AboutUsComponent implements OnInit {
     );
 
 
+    // =========================
+    // Sub Title
+    // =========================
+
     formData.append(
       'sub_title',
       this.about.sub_title || ''
     );
 
+
+    // =========================
+    // Description
+    // =========================
 
     formData.append(
       'description',
@@ -360,11 +452,19 @@ export class AboutUsComponent implements OnInit {
     );
 
 
+    // =========================
+    // Vision
+    // =========================
+
     formData.append(
       'vision',
       this.about.vision || ''
     );
 
+
+    // =========================
+    // Mission
+    // =========================
 
     formData.append(
       'mission',
@@ -372,15 +472,29 @@ export class AboutUsComponent implements OnInit {
     );
 
 
+    // =========================
+    // Aim
+    // =========================
+
+    formData.append(
+      'aim',
+      this.about.aim || ''
+    );
+
+
+    // =========================
+    // Chairman Message
+    // =========================
+
     formData.append(
       'chairman_message',
       this.about.chairman_message || ''
     );
 
 
-    // ======================
+    // =========================
     // Image
-    // ======================
+    // =========================
 
     if (this.selectedFile) {
 
@@ -393,9 +507,9 @@ export class AboutUsComponent implements OnInit {
     }
 
 
-    // ======================
+    // =========================
     // Image 1
-    // ======================
+    // =========================
 
     if (this.selectedFile1) {
 
@@ -408,7 +522,10 @@ export class AboutUsComponent implements OnInit {
     }
 
 
-    // Debug
+    // =========================
+    // Debug FormData
+    // =========================
+
     formData.forEach(
       (value, key) => {
 
@@ -420,6 +537,10 @@ export class AboutUsComponent implements OnInit {
       }
     );
 
+
+    // =========================
+    // API
+    // =========================
 
     this.apiService
       .request(
@@ -440,6 +561,10 @@ export class AboutUsComponent implements OnInit {
           );
 
 
+          // =========================
+          // Success
+          // =========================
+
           if (res.status) {
 
             this.showMessage(
@@ -448,9 +573,11 @@ export class AboutUsComponent implements OnInit {
             );
 
 
+            // Reload data
             this.getAboutUs();
 
 
+            // Clear selected files
             this.selectedFile = null;
 
             this.selectedFile1 = null;
@@ -477,6 +604,10 @@ export class AboutUsComponent implements OnInit {
 
           }
 
+          // =========================
+          // Failed
+          // =========================
+
           else {
 
             this.showMessage(
@@ -488,6 +619,10 @@ export class AboutUsComponent implements OnInit {
 
         },
 
+
+        // =========================
+        // API Error
+        // =========================
 
         error: (error: any) => {
 
@@ -524,9 +659,9 @@ export class AboutUsComponent implements OnInit {
   }
 
 
-  // ======================
-  // Message
-  // ======================
+  // =========================
+  // Show Message
+  // =========================
 
   showMessage(
     msg: string
@@ -546,9 +681,9 @@ export class AboutUsComponent implements OnInit {
   }
 
 
-  // ======================
-  // Reset
-  // ======================
+  // =========================
+  // Reset Form
+  // =========================
 
   resetForm(
     form: NgForm
@@ -570,6 +705,7 @@ export class AboutUsComponent implements OnInit {
     this.image1Preview = '';
 
 
+    // Clear image input
     if (this.fileInput) {
 
       this.fileInput
@@ -579,6 +715,7 @@ export class AboutUsComponent implements OnInit {
     }
 
 
+    // Clear image1 input
     if (this.fileInput1) {
 
       this.fileInput1
@@ -590,9 +727,9 @@ export class AboutUsComponent implements OnInit {
   }
 
 
-  // ======================
-  // Reset Object
-  // ======================
+  // =========================
+  // Reset About Object
+  // =========================
 
   resetAboutObject(): void {
 
@@ -605,10 +742,12 @@ export class AboutUsComponent implements OnInit {
       sub_title: '',
 
       description: '',
-
+      
       vision: '',
 
       mission: '',
+
+      aim: '',
 
       chairman_message: '',
 
@@ -626,9 +765,9 @@ export class AboutUsComponent implements OnInit {
   }
 
 
-  // ======================
+  // =========================
   // Back
-  // ======================
+  // =========================
 
   handleBackBtn(): void {
 
@@ -639,3 +778,4 @@ export class AboutUsComponent implements OnInit {
   }
 
 }
+

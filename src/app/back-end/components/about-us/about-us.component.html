@@ -1,10 +1,11 @@
+
 <div class="card">
 
     <!-- =========================
          Header
     ========================== -->
     <div class="card-header">
-        <h5 class="text-white">
+        <h5 class="text-white mb-0">
             About Us
         </h5>
     </div>
@@ -96,12 +97,9 @@
                 <div class="col-md-12 mb-3">
 
                     <label for="description">
-
-                        Description
+                        Section 1
                         <span class="text-danger">*</span>
-
                     </label>
-
 
                     <ckeditor
                         name="description"
@@ -111,7 +109,6 @@
                         #description="ngModel"
                         required>
                     </ckeditor>
-
 
                     <small
                         class="text-danger"
@@ -130,74 +127,90 @@
 
 
             <!-- =========================
-                 Vision / Mission
+                 Description 2
             ========================== -->
-
-            <!--
-            <div class="row">
-
-                <div class="col-md-6 mb-3">
-
-                    <label for="vision">
-                        Vision
-                    </label>
-
-                    <textarea
-                        id="vision"
-                        rows="5"
-                        class="form-control"
-                        name="vision"
-                        [(ngModel)]="about.vision">
-                    </textarea>
-
-                </div>
-
-
-                <div class="col-md-6 mb-3">
-
-                    <label for="mission">
-                        Mission
-                    </label>
-
-                    <textarea
-                        id="mission"
-                        rows="5"
-                        class="form-control"
-                        name="mission"
-                        [(ngModel)]="about.mission">
-                    </textarea>
-
-                </div>
-
-            </div>
-            -->
-
-
-            <!-- =========================
-                 Chairman Message
-            ========================== -->
-
-            <!--
             <div class="row">
 
                 <div class="col-md-12 mb-3">
 
                     <label for="chairman_message">
-                        Chairman Message
+                        Section 2
                     </label>
 
-                    <textarea
-                        id="chairman_message"
-                        rows="6"
-                        class="form-control"
+                    <ckeditor
                         name="chairman_message"
-                        [(ngModel)]="about.chairman_message">
-                    </textarea>
+                        [editor]="Editor"
+                        [(ngModel)]="about.chairman_message"
+                        [config]="editorConfig">
+                    </ckeditor>
 
                 </div>
 
             </div>
-            -->
+
+
+            <!-- =========================
+                 Vision / Mission
+            ========================== -->
+            <div class="row">
+
+                <!-- Vision -->
+                <div class="col-md-6 mb-3">
+
+                    <label for="vision">
+                        Our Vision
+                    </label>
+
+                    <ckeditor
+                        name="vision"
+                        [editor]="Editor"
+                        [(ngModel)]="about.vision"
+                        [config]="editorConfig">
+                    </ckeditor>
+
+                </div>
+
+
+                <!-- Mission -->
+                <div class="col-md-6 mb-3">
+
+                    <label for="mission">
+                        Our Mission
+                    </label>
+
+                    <ckeditor
+                        name="mission"
+                        [editor]="Editor"
+                        [(ngModel)]="about.mission"
+                        [config]="editorConfig">
+                    </ckeditor>
+
+                </div>
+
+            </div>
+
+
+            <!-- =========================
+                 Aim
+            ========================== -->
+            <div class="row">
+
+                <div class="col-md-12 mb-3">
+
+                    <label for="aim">
+                        Our Aim
+                    </label>
+
+                    <ckeditor
+                        name="aim"
+                        [editor]="Editor"
+                        [(ngModel)]="about.aim"
+                        [config]="editorConfig">
+                    </ckeditor>
+
+                </div>
+
+            </div>
 
 
             <!-- =========================
@@ -205,16 +218,14 @@
             ========================== -->
             <div class="row">
 
-
                 <!-- =========================
-                     Image
+                     About Image
                 ========================== -->
                 <div class="col-md-6 mb-3">
 
                     <label for="image">
-                        About Image
+                        Image 1
                     </label>
-
 
                     <input
                         #fileInput
@@ -264,9 +275,8 @@
                 <div class="col-md-6 mb-3">
 
                     <label for="image1">
-                        Upload Image
+                        Image 2
                     </label>
-
 
                     <input
                         #fileInput1
@@ -330,9 +340,7 @@
                 </span>
 
                 <span *ngIf="!loading">
-
                     {{ about.id ? 'Update' : 'Save' }}
-
                 </span>
 
             </button>
@@ -353,3 +361,4 @@
     </form>
 
 </div>
+

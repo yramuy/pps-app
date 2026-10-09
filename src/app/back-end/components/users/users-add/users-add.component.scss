@@ -1,0 +1,83 @@
+.form-section {
+  border: 1px solid #e2e6ea;
+  border-radius: 8px;
+  background: #fff;
+  overflow: hidden;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  background: #f7f8fa;
+  border-bottom: 1px solid #e2e6ea;
+}
+
+.section-icon {
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #007bff;
+  color: #fff;
+  font-size: 16px;
+}
+
+.section-header h5 {
+  font-weight: 600;
+  color: #343a40;
+}
+
+.section-header small {
+  font-size: 12px;
+}
+
+.section-body {
+  padding: 20px;
+}
+
+.section-body label {
+  font-weight: 500;
+  margin-bottom: 6px;
+}
+
+.biography-field {
+  margin-bottom: 24px;
+}
+
+.biography-field:last-child {
+  margin-bottom: 0;
+}
+
+.biography-label {
+  display: block;
+  font-weight: 600 !important;
+  color: #343a40;
+  margin-bottom: 8px !important;
+  font-size: 14px;
+}
+
+.biography-label i {
+  color: #007bff;
+  width: 18px;
+}
+
+.biography-field ckeditor {
+  display: block;
+}
+
+@media (max-width: 767px) {
+
+  .section-body {
+    padding: 15px;
+  }
+
+  .section-header {
+    padding: 12px 15px;
+  }
+
+}

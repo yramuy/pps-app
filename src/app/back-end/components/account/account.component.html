@@ -1,0 +1,328 @@
+<!-- Leader Profile Header -->
+<section class="leader-profile-header">
+  <div class="container">
+    <!-- My Account Card -->
+    <div class="my-account-card">
+      <div class="my-account-icon">
+        <i class="fas fa-user-circle"></i>
+      </div>
+
+      <div class="my-account-content">
+        <h2>My Account</h2>
+        <p>Manage your profile information and account details</p>
+      </div>
+    </div>
+    <!-- ================= PROFILE HEADER ================= -->
+    <div class="profile-header-card" style="margin-bottom: 15px">
+      <!-- Profile Image -->
+      <div class="profile-image-wrapper">
+        <img
+          [src]="biography.profile_pic || 'assets/images/political-pic.jpg'"
+          [alt]="biography.full_name"
+          class="leader-profile-image"
+        />
+      </div>
+      <!-- Profile Details -->
+      <div class="profile-header-content">
+        <h1 class="leader-name">{{ biography.full_name }}</h1>
+        <div class="leader-designation">
+          <i class="fas fa-user-tie"></i> <span>{{ biography.roleName }}</span>
+        </div>
+        <div class="leader-location" *ngIf="biography.location">
+          <i class="fas fa-map-marker-alt"></i>
+          <span>{{ biography.location }}</span>
+        </div>
+      </div>
+      <!-- Edit Profile Button -->
+      <div class="profile-edit-wrapper">
+        <button
+          type="button"
+          class="btn-edit-profile"
+          (click)="handleEdit(biography)"
+        >
+          <i class="fas fa-edit"></i> <span>Edit Profile</span>
+        </button>
+      </div>
+    </div>
+    <!-- END PROFILE HEADER -->
+    <!-- ================= PROFILE CONTENT ================= -->
+    <div class="row">
+      <!-- ================= ACHIEVEMENTS ================= -->
+      <div class="col-lg-12" style="margin-bottom: 10px">
+        <div class="profile-achievements-card">
+          <!-- Header -->
+          <div class="achievements-header">
+            <div class="achievements-icon"><i class="fas fa-trophy"></i></div>
+            <div>
+              <h3>Achievements</h3>
+              <p>Key milestones &amp; contributions</p>
+            </div>
+          </div>
+          <!-- Achievement Content -->
+          <div class="achievements-body">
+            <div
+              class="achievement-content"
+              [innerHTML]="biography.achievements"
+            ></div>
+          </div>
+        </div>
+      </div>
+      <!-- END ACHIEVEMENTS -->
+      <!-- ================= PROFILE DETAILS ================= -->
+      <div class="col-lg-12">
+        <div class="profile-details-card">
+          <!-- Tabs Header -->
+          <div class="profile-tabs-header">
+            <ul class="nav nav-tabs profile-tabs" id="myTab" role="tablist">
+              <!-- About -->
+              <li class="nav-item" role="presentation">
+                <a
+                  class="nav-link active"
+                  id="home-tab"
+                  data-toggle="tab"
+                  href="#home"
+                  role="tab"
+                  aria-controls="home"
+                  aria-selected="true"
+                >
+                  <i class="fas fa-user"></i> <span>About</span>
+                </a>
+              </li>
+              <!-- Timeline -->
+              <li class="nav-item" role="presentation">
+                <a
+                  class="nav-link"
+                  id="profile-tab"
+                  data-toggle="tab"
+                  href="#profile"
+                  role="tab"
+                  aria-controls="profile"
+                  aria-selected="false"
+                >
+                  <i class="fas fa-history"></i> <span>Timeline</span>
+                </a>
+              </li>
+              <!-- Issues -->
+              <li class="nav-item" role="presentation">
+                <a
+                  class="nav-link"
+                  id="issues-tab"
+                  data-toggle="tab"
+                  href="#issues"
+                  role="tab"
+                  aria-controls="issues"
+                  aria-selected="false"
+                >
+                  <i class="fas fa-tasks"></i> <span>Issues</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+          <!-- END TABS HEADER -->
+          <!-- ================= TAB CONTENT ================= -->
+          <div class="tab-content profile-tab-content" id="myTabContent">
+            <!-- ================= ABOUT ================= -->
+            <div
+              class="tab-pane fade show active"
+              id="home"
+              role="tabpanel"
+              aria-labelledby="home-tab"
+            >
+              <div class="profile-section">
+                <!-- Section Title -->
+                <div class="profile-section-title">
+                  <div class="profile-section-icon">
+                    <i class="fas fa-user"></i>
+                  </div>
+                  <div>
+                    <h3>About</h3>
+                    <p>Personal and professional information</p>
+                  </div>
+                </div>
+                <!-- Information Grid -->
+                <div class="profile-info-grid">
+                  <!-- User ID -->
+                  <div class="profile-info-item">
+                    <div class="info-icon"><i class="fas fa-id-card"></i></div>
+                    <div class="info-content">
+                      <span>User ID</span>
+                      <strong> {{ user?.userId || "-" }} </strong>
+                    </div>
+                  </div>
+                  <!-- Name -->
+                  <div class="profile-info-item">
+                    <div class="info-icon"><i class="fas fa-user"></i></div>
+                    <div class="info-content">
+                      <span>Name</span>
+                      <strong> {{ biography.fullName || "-" }} </strong>
+                    </div>
+                  </div>
+                  <!-- Email -->
+                  <div class="profile-info-item">
+                    <div class="info-icon"><i class="fas fa-envelope"></i></div>
+                    <div class="info-content">
+                      <span>Email</span>
+                      <strong> {{ biography.email || "-" }} </strong>
+                    </div>
+                  </div>
+                  <!-- Phone -->
+                  <div class="profile-info-item">
+                    <div class="info-icon"><i class="fas fa-phone"></i></div>
+                    <div class="info-content">
+                      <span>Phone</span>
+                      <strong> {{ biography.mobile || "-" }} </strong>
+                    </div>
+                  </div>
+                  <!-- Profession -->
+                  <div class="profile-info-item">
+                    <div class="info-icon"><i class="fas fa-user-tie"></i></div>
+                    <div class="info-content">
+                      <span>Profession</span>
+                      <strong> {{ biography.roleName || "-" }} </strong>
+                    </div>
+                  </div>
+                  <!-- Location -->
+                  <div class="profile-info-item">
+                    <div class="info-icon">
+                      <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <div class="info-content">
+                      <span>Location</span>
+                      <strong> {{ biography.location || "-" }} </strong>
+                    </div>
+                  </div>
+                </div>
+                <!-- END INFORMATION GRID -->
+                <!-- About Description -->
+                <div class="profile-about-description" *ngIf="biography.about">
+                  <div class="description-title">
+                    <i class="fas fa-align-left"></i>
+                    <span>Profile Description</span>
+                  </div>
+                  <div
+                    class="description-content"
+                    [innerHTML]="biography.about"
+                  ></div>
+                </div>
+              </div>
+            </div>
+            <!-- END ABOUT -->
+            <!-- ================= TIMELINE ================= -->
+            <div
+              class="tab-pane fade"
+              id="profile"
+              role="tabpanel"
+              aria-labelledby="profile-tab"
+            >
+              <div class="profile-section">
+                <!-- Section Title -->
+                <div class="profile-section-title">
+                  <div class="profile-section-icon">
+                    <i class="fas fa-history"></i>
+                  </div>
+                  <div>
+                    <h3>Timeline</h3>
+                    <p>Professional journey and public service</p>
+                  </div>
+                </div>
+                <!-- Timeline -->
+                <div class="profile-timeline">
+                  <!-- Timeline Item -->
+                  <div class="timeline-item">
+                    <div class="timeline-dot"><i class="fas fa-star"></i></div>
+                    <div class="timeline-content">
+                      <span class="timeline-date"> Public Service </span>
+                      <h4>Community Leadership</h4>
+                      <p>
+                        Actively participated in community development and
+                        public welfare activities.
+                      </p>
+                    </div>
+                  </div>
+                  <!-- Timeline Item -->
+                  <div class="timeline-item">
+                    <div class="timeline-dot"><i class="fas fa-users"></i></div>
+                    <div class="timeline-content">
+                      <span class="timeline-date"> Local Governance </span>
+                      <h4>Grassroots Development</h4>
+                      <p>
+                        Worked closely with residents to understand local
+                        requirements and support development initiatives.
+                      </p>
+                    </div>
+                  </div>
+                  <!-- Timeline Item -->
+                  <div class="timeline-item">
+                    <div class="timeline-dot">
+                      <i class="fas fa-trophy"></i>
+                    </div>
+                    <div class="timeline-content">
+                      <span class="timeline-date"> Leadership </span>
+                      <h4>Three Consecutive Terms as Sarpanch</h4>
+                      <p>
+                        Successfully served the community for three consecutive
+                        terms, demonstrating continued public support and
+                        commitment to local governance.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- END TIMELINE -->
+            <!-- ================= ISSUES ================= -->
+            <div
+              class="tab-pane fade"
+              id="issues"
+              role="tabpanel"
+              aria-labelledby="issues-tab"
+            >
+              <!-- Issues List -->
+              <ng-container
+                *ngIf="myIssues && myIssues.length > 0; else noIssues"
+              >
+                <div
+                  class="row align-items-center p-3 rounded-20"
+                  *ngFor="let myIssue of myIssues"
+                >
+                  <!-- Issue Image -->
+                  <div class="col-lg-4">
+                    <img
+                      [src]="myIssue.issue_pic"
+                      class="img-fluid rounded-20 zoom"
+                    />
+                  </div>
+                  <!-- Issue Content -->
+                  <div class="col-lg-8">
+                    <h2 class="fs-5">{{ myIssue.issue_title }}</h2>
+                    <p>{{ myIssue.issue_description }}</p>
+                    <div class="d-flex justify-content-between">
+                      <a href="javascript:void(0)">
+                        <div class="button fs-6 px-3 py-1 rounded">Edit</div>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+              <!-- No Issues Found -->
+              <ng-template #noIssues>
+                <div class="text-center py-5">
+                  <i class="fas fa-clipboard-list fa-3x text-muted mb-3"></i>
+                  <h5 class="mb-2">No Issues Found</h5>
+                  <p class="text-muted mb-0">
+                    You haven't added any issues yet.
+                  </p>
+                </div>
+              </ng-template>
+            </div>
+            <!-- END ISSUES -->
+          </div>
+          <!-- END TAB CONTENT -->
+        </div>
+      </div>
+      <!-- END PROFILE DETAILS -->
+    </div>
+    <!-- END PROFILE CONTENT -->
+  </div>
+  <!-- END CONTAINER -->
+</section>

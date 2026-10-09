@@ -9,4 +9,119 @@
     color: #fff !important;
 }
 
+/* Sidebar base */
+.responsive-sidebar {
+width: 250px;
+min-height: 100vh;
+}
+
+.responsive-sidebar .sidebar {
+height: calc(100vh - 1rem);
+overflow-y: auto;
+overflow-x: hidden;
+padding-bottom: 20px;
+}
+
+.responsive-sidebar .nav-sidebar {
+width: 100%;
+}
+
+.responsive-sidebar .nav-sidebar .nav-link {
+display: flex;
+align-items: center;
+width: 100%;
+min-height: 44px;
+padding: 10px 12px;
+white-space: normal;
+}
+
+.responsive-sidebar .nav-sidebar .nav-link p {
+flex: 1;
+min-width: 0;
+margin: 0;
+overflow-wrap: anywhere;
+}
+
+.responsive-sidebar .nav-sidebar .nav-icon {
+flex-shrink: 0;
+width: 1.6rem;
+margin-right: 8px;
+text-align: center;
+}
+
+.responsive-sidebar .nav-treeview {
+padding-left: 10px;
+}
+
+.responsive-sidebar .user-panel {
+align-items: center;
+min-width: 0;
+}
+
+.responsive-sidebar .user-panel .image img {
+width: 35px;
+height: 35px;
+object-fit: cover;
+}
+
+.responsive-sidebar .user-panel .info {
+min-width: 0;
+overflow-wrap: anywhere;
+}
+
+/* Tablet and mobile */
+@media (max-width: 991.98px) {
+.responsive-sidebar {
+max-width: 85vw;
+}
+
+.responsive-sidebar .sidebar {
+height: calc(100vh - 1rem);
+overflow-y: auto;
+-webkit-overflow-scrolling: touch;
+}
+
+.responsive-sidebar .nav-sidebar .nav-link {
+padding: 12px 10px;
+}
+
+.responsive-sidebar .nav-sidebar .nav-link p {
+font-size: 14px;
+}
+
+.responsive-sidebar .nav-treeview {
+padding-left: 8px;
+}
+}
+
+/* Small mobile screens */
+@media (max-width: 575.98px) {
+.responsive-sidebar {
+width: 250px;
+max-width: 85vw;
+}
+
+.responsive-sidebar .user-panel .info a {
+font-size: 14px;
+}
+
+.responsive-sidebar .nav-sidebar .nav-link {
+min-height: 46px;
+}
+}
+
+/* Menu hover and active states */
+.responsive-sidebar .nav-sidebar .nav-link,
+.responsive-sidebar .nav-sidebar .nav-link.active {
+background-color: #007bff;
+color: #fff !important;
+}
+
+.responsive-sidebar .nav-sidebar .nav-link p,
+.responsive-sidebar .nav-sidebar .nav-link i,
+.responsive-sidebar .nav-sidebar .nav-link.active p,
+.responsive-sidebar .nav-sidebar .nav-link.active i {
+color: #fff !important;
+}
+
 

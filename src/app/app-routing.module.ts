@@ -1,4 +1,3 @@
-
 import { loginGuard } from './guards/login.guard';
 import { authGuard } from './guards/auth.guard';
 
@@ -41,14 +40,21 @@ import { NgModule } from '@angular/core';
 import { AboutUsComponent } from './back-end/components/about-us/about-us.component';
 import { ViewAdvertisementComponent } from './back-end/components/advertisement/view-advertisement/view-advertisement.component';
 import { AddAdvertisementComponent } from './back-end/components/advertisement/add-advertisement/add-advertisement.component';
+import { VipProfilesComponent } from './front-end/components/vip-profiles/vip-profiles.component';
+import { LeaderProfileComponent } from './front-end/components/leader-profile/leader-profile.component';
+import { IssueDetailsComponent } from './front-end/components/issue-details/issue-details.component';
+import { SchemeDetailsComponent } from './front-end/components/scheme-details/scheme-details.component';
+import { LeaderBiographyComponent } from './back-end/components/leader-biography/leader-biography.component';
+import { AccountComponent } from './back-end/components/account/account.component';
+import { ContactUsComponent } from './front-end/components/contact-us/contact-us.component';
+import { ContactFormComponent } from './back-end/components/contact-form/contact-form.component';
 
 const routes: Routes = [
-
   // Admin Login
   {
     path: 'admin/login',
     component: LoginComponent,
-    canActivate: [loginGuard]
+    canActivate: [loginGuard],
   },
 
   // Admin Layout
@@ -85,7 +91,10 @@ const routes: Routes = [
       { path: 'issues/list', component: IssuesListComponent },
       { path: 'issues/create', component: IssueCreateComponent },
       { path: 'issues/my-issues', component: MyIssuesComponent },
-      { path: 'issues/assigned-to-me-issues', component: AssignedToMeIssuesComponent },
+      {
+        path: 'issues/assigned-to-me-issues',
+        component: AssignedToMeIssuesComponent,
+      },
       { path: 'issues/view-issue', component: ViewIssueComponent },
 
       { path: 'schemes/list', component: ViewSchemesComponent },
@@ -96,37 +105,47 @@ const routes: Routes = [
 
       { path: 'aboutUs/add', component: AboutUsComponent },
 
-      { path: 'reports', component: ReportsComponent }
-    ]
+      { path: 'contactUs/add', component: ContactFormComponent },
+
+      { path: 'account', component: AccountComponent },
+
+      { path: 'leader-bio', component: LeaderBiographyComponent },
+
+      { path: 'reports', component: ReportsComponent },
+    ],
   },
 
   // Website Layout
   {
-  path: '',
-  component: WebsiteLayoutComponent,
-  children: [
-    { path: '', component: HomeComponent },
-    { path: 'about', component: AboutComponent },
-    { path: 'issues', component: IssuesComponent },
-    { path: 'schemes', component: SchemesComponent },
-    { path: 'contact', component: ContactComponent }
-  ]
-},
+    path: '',
+    component: WebsiteLayoutComponent,
+    children: [
+      { path: '', component: HomeComponent },
+      { path: 'about', component: AboutComponent },
+      { path: 'issues', component: IssuesComponent },
+      { path: 'schemes', component: SchemesComponent },
+      // { path: 'contact', component: ContactComponent },
+      { path: 'contact-us', component: ContactUsComponent },
+      { path: 'leader-profile/:id', component: LeaderProfileComponent },
+      { path: 'vip-profiles', component: VipProfilesComponent },
+      { path: 'issue-details/:id', component: IssueDetailsComponent },
+      { path: 'scheme-details/:id', component: SchemeDetailsComponent },
+    ],
+  },
 
   // 404
   {
     path: '**',
-    redirectTo: ''
-  }
-
+    redirectTo: '',
+  },
 ];
 
 @NgModule({
   imports: [
     RouterModule.forRoot(routes, {
-      onSameUrlNavigation: 'reload'
-    })
+      onSameUrlNavigation: 'reload',
+    }),
   ],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
 export class AppRoutingModule {}

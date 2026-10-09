@@ -1,9 +1,27 @@
 .left-panel[_ngcontent-ng-c3532517134] img[_ngcontent-ng-c3532517134] {
-    width: 250px;
-    margin-bottom: 15px;
+  width: 250px;
+  margin-bottom: 15px;
 }
 
 .btn-primary:disabled {
   cursor: not-allowed;
   opacity: 0.7;
+}
+
+.password-wrapper {
+  position: relative;
+}
+
+.toggle-eye {
+  position: absolute;
+  right: 50px;
+  top: 13px;
+  color: #777;
+  cursor: pointer;
+  z-index: 20;
+  font-size: 16px;
+}
+
+.toggle-eye:hover {
+  color: #333;
 }

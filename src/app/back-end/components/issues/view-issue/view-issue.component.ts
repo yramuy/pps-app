@@ -243,7 +243,14 @@ export class ViewIssueComponent implements OnInit, OnDestroy {
 
     console.log('Calling issue API:', `/issueDataById/${issueID}`);
 
-    this.apiService.request('GET', `/issueDataById/${issueID}`).subscribe({
+    const payload = {
+      is_token: '1',
+      issue_id: issueID,
+    };
+
+    console.log('Issue API Payload:', payload);
+
+    this.apiService.request('POST', '/issueDataById', payload).subscribe({
       next: (res: any) => {
         console.log('Issue response:', res);
 

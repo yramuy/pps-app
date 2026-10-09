@@ -1,46 +1,90 @@
 <!-- Header -->
 <header id="header" [class.scrolled]="isScrolled">
+
   <div class="container">
-    <a routerLink="/" class="logo">
+
+    <!-- Logo -->
+    <a routerLink="/" class="logo" (click)="goHome()">
       <p class="fs-5 d-flex align-items-center mb-0 fw-bold text-white">
         <img
           src="assets/images/pps-main-logo.png"
           alt="Logo"
           width="80"
-          class="me-2"
-        />
-        <!-- Logo Here -->
+          class="me-2" />
       </p>
     </a>
 
+    <!-- Navigation -->
     <nav id="desktopNav" [class.active]="isMenuOpen">
+
       <a
-        routerLink="/"
-        routerLinkActive="active"
-        [routerLinkActiveOptions]="{ exact: true }"
-      (click)="closeMenu()">
+        href="javascript:void(0)"
+        [class.active]="activeSection === 'home'"
+        (click)="navigateToSection('home')">
         Home
       </a>
 
-      <a routerLink="/about" routerLinkActive="active" (click)="closeMenu()"> About Us </a>
+      <a
+        href="javascript:void(0)"
+        [class.active]="activeSection === 'about'"
+        (click)="navigateToSection('about')">
+        About Us
+      </a>
 
-      <a routerLink="/issues" routerLinkActive="active" (click)="closeMenu()"> Issues </a>
+      <a
+        href="javascript:void(0)"
+        [class.active]="activeSection === 'schemes'"
+        (click)="navigateToSection('schemes')">
+        Schemes
+      </a>
 
-      <a routerLink="/schemes" routerLinkActive="active" (click)="closeMenu()"> Schemes </a>
+      <a
+        href="javascript:void(0)"
+        [class.active]="activeSection === 'issues'"
+        (click)="navigateToSection('issues')">
+        Issues
+      </a>
 
-      <a routerLink="/contact" routerLinkActive="active" (click)="closeMenu()"> Contact </a>
+      <a
+        href="javascript:void(0)"
+        [class.active]="activeSection === 'vip-profiles'"
+        (click)="navigateToSection('vip-profiles')">
+        VIP Profiles
+      </a>
 
-      <a routerLink="/admin/login" class="button-login px-3 py-2"> Login </a>
+      <a
+        href="javascript:void(0)"
+        [class.active]="activeSection === 'contact-us'"
+        (click)="navigateToSection('contact')">
+        Contact Us
+      </a>
+
+      <a
+        routerLink="/admin/login"
+        class="button-login px-3 py-2"
+        (click)="closeMenu()">
+        Login
+      </a>
+
     </nav>
 
-    <button class="menu-btn" (click)="toggleMenu()">
+    <!-- Mobile Menu -->
+    <button
+      class="menu-btn"
+      type="button"
+      (click)="toggleMenu()">
+
       <span></span>
       <span></span>
       <span></span>
+
     </button>
+
   </div>
+
 </header>
-<app-hero></app-hero>
-<app-brand-marquee></app-brand-marquee>
 
+<!-- Header Components -->
+<!-- <app-hero></app-hero> -->
 
+<!-- <app-brand-marquee></app-brand-marquee> -->

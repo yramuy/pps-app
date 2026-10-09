@@ -1,176 +1,255 @@
-header {
+
+/* ==========================
+   Header
+========================== */
+
+#header {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
-    z-index: 500;
+    width: 100%;
+    z-index: 9999;
+
+    position: fixed;
+    background: #ffffff;
+
     padding: 0;
-    transition: background .4s ease, box-shadow .4s ease, backdrop-filter .4s ease, border-bottom .4s ease;
+    background: linear-gradient(45deg, #153770, #195cd7);
+
     border-bottom: 1px solid transparent;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+
+    transition:
+        background 0.4s ease,
+        box-shadow 0.4s ease,
+        backdrop-filter 0.4s ease;
 }
 
-header.scrolled {
+/* Scrolled Header */
+#header.scrolled {
     background: linear-gradient(45deg, #153770, #195cd7);
+
     backdrop-filter: blur(20px) saturate(1.6);
     -webkit-backdrop-filter: blur(20px) saturate(1.6);
-    border-bottom: 1px solid var(--border);
-    box-shadow: 0 4px 32px rgba(0, 0, 0, 0.06);
+
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 4px 32px rgba(0, 0, 0, 0.15);
+    position: fixed;
 }
 
-header .container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px;
+/* ==========================
+   Header Container
+========================== */
+
+#header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    min-height: 80px;
+    padding: 10px 15px;
 }
 
-.button-login {
-    padding: 0.8em 2em;
-    font-size: 14px;
-    text-transform: uppercase;
-    letter-spacing: 2.5px;
-    font-weight: 700;
-    color: #000 !important;
-    background-color: #f8ec03;
-    border: none;
-    border-radius: 45px;
-    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease 0s;
-    cursor: pointer;
-    outline: none;
-    display: inline-block;
-}
-.button-login:hover {
-    background-color: #90caff;
-    box-shadow: 0px 15px 20px rgba(139, 204, 254, 0.4);
-    color: #fff !important;
-    transform: translateY(-7px);
-}
+/* ==========================
+   Logo
+========================== */
 
 .logo {
-  text-decoration: none;
-  color: #fff;
+    text-decoration: none;
+    color: #fff;
 }
 
 .logo img {
-  height: 60px;
+    height: 60px;
+    width: auto;
+    display: block;
 }
 
+/* ==========================
+   Desktop Navigation
+========================== */
+
 #desktopNav {
-  display: flex;
-  align-items: center;
-  gap: 25px;
+    display: flex;
+    align-items: center;
+    gap: 25px;
 }
 
 #desktopNav a {
-  color: #fff;
-  text-decoration: none;
-  font-weight: 500;
-  transition: .3s;
+    color: #fff;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
 }
 
 #desktopNav a:hover,
 #desktopNav a.active {
-  color: #ffd54f;
-}
-
-.menu-btn {
-  display: none;
-  border: 0;
-  background: transparent;
-  cursor: pointer;
-}
-
-.menu-btn span {
-  display: block;
-  width: 28px;
-  height: 3px;
-  background: #fff;
-  margin: 5px 0;
-}
-
-/* Mobile Menu */
-
-.mobile-menu {
-  position: fixed;
-  inset: 0;
-  background: #0d6efd;
-  transform: translateX(-100%);
-  transition: .3s;
-  z-index: 9999;
-}
-
-.mobile-menu.open {
-  transform: translateX(0);
-}
-
-.mobile-menu-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px;
-}
-
-.mobile-nav {
-  display: flex;
-  flex-direction: column;
-  padding: 20px;
-}
-
-.mobile-nav a {
-  color: #fff;
-  text-decoration: none;
-  padding: 12px 0;
-  border-bottom: 1px solid rgba(255,255,255,.15);
+    color: #ffd54f;
 }
 
 /* ==========================
-      Responsive
+   Login Button
 ========================== */
 
-@media (max-width:991px) {
+.button-login {
+    padding: 0.8em 2em;
 
-    header .container {
-        padding: 12px 15px;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 2.5px;
+    font-weight: 700;
+
+    color: #000 !important;
+    background-color: #f8ec03;
+
+    border: none;
+    border-radius: 45px;
+
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+
+    transition: all 0.3s ease;
+    cursor: pointer;
+
+    outline: none;
+    display: inline-block;
+}
+
+.button-login:hover {
+    background-color: #90caff;
+
+    box-shadow: 0 15px 20px rgba(139, 204, 254, 0.4);
+
+    color: #fff !important;
+
+    transform: translateY(-4px);
+}
+
+/* ==========================
+   Mobile Menu Button
+========================== */
+
+.menu-btn {
+    display: none;
+
+    border: 0;
+    background: transparent;
+
+    cursor: pointer;
+
+    padding: 5px;
+}
+
+.menu-btn span {
+    display: block;
+
+    width: 28px;
+    height: 3px;
+
+    background: #fff;
+
+    margin: 5px 0;
+
+    border-radius: 3px;
+}
+
+/* ==========================
+   Mobile Navigation
+========================== */
+
+@media (max-width: 991px) {
+
+    #header .container {
+        min-height: 70px;
+        padding: 10px 15px;
     }
 
     .logo img {
         height: 50px;
     }
 
+    /* Hamburger */
     .menu-btn {
         display: block;
+        position: relative;
+        z-index: 10001;
     }
 
+    /* Mobile Navigation */
     #desktopNav {
         position: fixed;
+
         top: 0;
         right: -100%;
+
         width: 280px;
         height: 100vh;
-        background: linear-gradient(180deg, #153770, #195cd7);
+
+        display: flex;
         flex-direction: column;
+
         justify-content: center;
         align-items: center;
+
         gap: 28px;
-        transition: .35s ease;
-        box-shadow: -10px 0 30px rgba(0,0,0,.25);
-        z-index: 999;
+
+        background: linear-gradient(
+            180deg,
+            #153770,
+            #195cd7
+        );
+
+        box-shadow: -10px 0 30px rgba(0, 0, 0, 0.25);
+
+        transition: right 0.35s ease;
+
+        z-index: 10000;
     }
 
+    /* Open Mobile Menu */
     #desktopNav.active {
         right: 0;
     }
 
     #desktopNav a {
-        font-size: 18px;
+        display: block;
+
+        width: auto;
+
+        padding: 8px 15px;
+
         color: #fff;
+
+        font-size: 18px;
+
+        text-decoration: none;
     }
 
-    .button-login {
-        margin-top: 20px;
+    #desktopNav a:hover {
+        color: #ffd54f;
+    }
+
+    /* Login */
+    #desktopNav .button-login {
         width: 180px;
-        text-align: center;
-    }
 
+        margin-top: 10px;
+
+        text-align: center;
+
+        color: #000 !important;
+        background-color: #f8ec03;
+    }
+}
+
+/* ==========================
+   Smooth Scroll
+========================== */
+
+html {
+    scroll-behavior: smooth;
+}
+
+section[id] {
+    scroll-margin-top: 90px;
 }

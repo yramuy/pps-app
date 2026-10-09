@@ -550,3 +550,33 @@
   }
 
 }
+/* Rounded Logout Button */
+.logout-navbar-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 38px;
+  padding: 0 18px;
+  border: 1px solid #fecaca;
+  border-radius: 50px;
+  background: #dc2626;
+  color: #fff5f5;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+}
+
+.logout-navbar-btn i {
+  font-size: 15px;
+}
+
+.logout-navbar-btn:hover {
+  background: #dc2626;
+  border-color: #dc2626;
+  color: #fff;
+  box-shadow: 0 3px 8px rgba(220, 38, 38, 0.18);
+}

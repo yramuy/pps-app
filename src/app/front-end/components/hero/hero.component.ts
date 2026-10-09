@@ -1,3 +1,4 @@
+
 import {
   AfterViewInit,
   Component,
@@ -6,6 +7,7 @@ import {
   OnDestroy,
   ViewChild
 } from '@angular/core';
+
 import { ApiService } from 'src/app/services/api.service';
 import { AuthService } from 'src/app/services/auth.service';
 
@@ -16,119 +18,373 @@ import { AuthService } from 'src/app/services/auth.service';
 })
 export class HeroComponent implements AfterViewInit, OnDestroy {
 
-  @ViewChild('sliderTrack') sliderTrack!: ElementRef<HTMLDivElement>;
+  @ViewChild('sliderTrack')
+  sliderTrack!: ElementRef<HTMLDivElement>;
 
-  advertisements: any = [];
-  message: any = '';
+
+  // Advertisements
+  advertisements: any[] = [];
+
+  // Error message
+  message: string = '';
+
+  // Loader
+  loading: boolean = true;
+
+  // Slider
+  currentIndex: number = 0;
+
+  // Auto play
+  autoplay: any = null;
+
 
   constructor(
     private authService: AuthService,
-    private apiService: ApiService,
+    private apiService: ApiService
   ) {
-    this.loadAdvertisements();
   }
 
-  loadAdvertisements() {
 
-    let payload = {
+  // --------------------------------------------------
+  // Component Init
+  // --------------------------------------------------
+
+  ngAfterViewInit(): void {
+
+    this.loadAdvertisements();
+
+  }
+
+
+  // --------------------------------------------------
+  // Load Advertisements
+  // --------------------------------------------------
+
+  loadAdvertisements(): void {
+
+    this.loading = true;
+
+    const payload = {
       mode: 0
     };
 
-    this.apiService.request('POST', '/allAdvertisements', payload).subscribe({
+
+    this.apiService.request(
+      'POST',
+      '/allAdvertisements',
+      payload
+    ).subscribe({
+
       next: (res: any) => {
-        this.advertisements = res.advertisements || [];
+
+        console.log('Advertisement Response:', res);
+
+
+        // Set advertisements
+        this.advertisements =
+          res.advertisements || [];
+
+
+        // Hide loader
+        this.loading = false;
+
+
+        /*
+         * Angular needs a moment to render
+         * the *ngFor advertisement elements.
+         */
+        setTimeout(() => {
+
+          this.currentIndex = 0;
+
+          this.updateSlider();
+
+
+          // Start autoplay only if
+          // there are more advertisements
+          // than visible items.
+          if (
+            this.advertisements.length >
+            this.visibleItems()
+          ) {
+
+            this.startAutoPlay();
+
+          }
+
+        }, 100);
+
       },
+
 
       error: (err: any) => {
+
+        console.error(
+          'Advertisement API Error:',
+          err
+        );
+
+
+        // Hide loader
+        this.loading = false;
+
+
+        // Stop slider
+        this.stopAutoPlay();
+
+
+        // Error messages
         if (err.status === 401) {
+
           this.message = 'Token expired';
+
         } else if (err.status === 400) {
-          this.message = 'Invalid request data';
+
+          this.message =
+            'Invalid request data';
+
         } else if (err.status === 500) {
-          this.message = 'Server error. Please try again later';
+
+          this.message =
+            'Server error. Please try again later';
+
         } else {
-          this.message = 'Something went wrong. Please try again later';
+
+          this.message =
+            'Something went wrong. Please try again later';
+
         }
-      },
+
+      }
+
     });
+
   }
 
-  currentIndex = 0;
-  autoplay: any;
 
-  ngAfterViewInit(): void {
-    this.startAutoPlay();
-  }
+  // --------------------------------------------------
+  // Number of Visible Items
+  // --------------------------------------------------
 
   visibleItems(): number {
-    return window.innerWidth <= 768 ? 1 : 2;
+
+    return window.innerWidth <= 768
+      ? 1
+      : 2;
+
   }
 
+
+  // --------------------------------------------------
+  // Update Slider
+  // --------------------------------------------------
+
   updateSlider(): void {
-    const track = this.sliderTrack.nativeElement;
-    const items = track.querySelectorAll('.ad-item');
+
+    if (!this.sliderTrack) {
+      return;
+    }
+
+
+    const track =
+      this.sliderTrack.nativeElement;
+
+
+    const items =
+      track.querySelectorAll<HTMLElement>(
+        '.ad-item'
+      );
+
 
     if (!items.length) {
       return;
     }
 
-    const itemWidth = (items[0] as HTMLElement).offsetWidth;
 
-    track.style.transform = `translateX(-${this.currentIndex * itemWidth}px)`;
+    const itemWidth =
+      items[0].offsetWidth;
+
+
+    track.style.transform =
+      `translateX(-${this.currentIndex * itemWidth}px)`;
+
   }
+
+
+  // --------------------------------------------------
+  // Next Slide
+  // --------------------------------------------------
 
   nextSlide(): void {
 
-    const items = this.sliderTrack.nativeElement.querySelectorAll('.ad-item');
-    const maxIndex = items.length - this.visibleItems();
+    if (!this.sliderTrack) {
+      return;
+    }
+
+
+    const items =
+      this.sliderTrack.nativeElement
+        .querySelectorAll('.ad-item');
+
+
+    if (!items.length) {
+      return;
+    }
+
+
+    const visible =
+      this.visibleItems();
+
+
+    /*
+     * If all advertisements are
+     * already visible, do nothing.
+     */
+    if (items.length <= visible) {
+
+      return;
+
+    }
+
+
+    const maxIndex =
+      items.length - visible;
+
 
     this.currentIndex++;
 
+
     if (this.currentIndex > maxIndex) {
+
       this.currentIndex = 0;
+
     }
 
+
     this.updateSlider();
+
   }
+
+
+  // --------------------------------------------------
+  // Previous Slide
+  // --------------------------------------------------
 
   prevSlide(): void {
 
-    const items = this.sliderTrack.nativeElement.querySelectorAll('.ad-item');
-    const maxIndex = items.length - this.visibleItems();
+    if (!this.sliderTrack) {
+      return;
+    }
+
+
+    const items =
+      this.sliderTrack.nativeElement
+        .querySelectorAll('.ad-item');
+
+
+    if (!items.length) {
+      return;
+    }
+
+
+    const visible =
+      this.visibleItems();
+
+
+    /*
+     * If all advertisements are
+     * already visible, do nothing.
+     */
+    if (items.length <= visible) {
+
+      return;
+
+    }
+
+
+    const maxIndex =
+      items.length - visible;
+
 
     this.currentIndex--;
 
+
     if (this.currentIndex < 0) {
+
       this.currentIndex = maxIndex;
+
     }
 
+
     this.updateSlider();
+
   }
+
+
+  // --------------------------------------------------
+  // Start Auto Play
+  // --------------------------------------------------
 
   startAutoPlay(): void {
 
     this.stopAutoPlay();
 
-    this.autoplay = setInterval(() => {
-      this.nextSlide();
-    }, 3000);
+
+    this.autoplay =
+      setInterval(() => {
+
+        this.nextSlide();
+
+      }, 3000);
+
   }
+
+
+  // --------------------------------------------------
+  // Stop Auto Play
+  // --------------------------------------------------
 
   stopAutoPlay(): void {
 
     if (this.autoplay) {
+
       clearInterval(this.autoplay);
+
+      this.autoplay = null;
+
     }
+
   }
+
+
+  // --------------------------------------------------
+  // Window Resize
+  // --------------------------------------------------
 
   @HostListener('window:resize')
   onResize(): void {
 
     this.currentIndex = 0;
-    this.updateSlider();
+
+
+    setTimeout(() => {
+
+      this.updateSlider();
+
+    }, 100);
+
   }
 
+
+  // --------------------------------------------------
+  // Destroy
+  // --------------------------------------------------
+
   ngOnDestroy(): void {
+
     this.stopAutoPlay();
+
   }
+
 }
+

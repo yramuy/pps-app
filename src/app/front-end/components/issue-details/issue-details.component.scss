@@ -1,0 +1,616 @@
+
+/* =========================================================
+   ISSUE / BLOG DETAILS PAGE
+========================================================= */
+
+
+/* =========================================================
+   PAGE HEADER
+========================================================= */
+
+.inner-bg {
+    position: relative;
+
+    padding: 55px 0;
+
+    background: linear-gradient(45deg, #153770, #195cd7);
+
+    overflow: hidden;
+}
+
+
+/* Decorative background */
+
+.inner-bg::before {
+    content: "";
+
+    position: absolute;
+
+    width: 300px;
+    height: 300px;
+
+    border-radius: 50%;
+
+    background: rgba(255, 255, 255, 0.05);
+
+    top: -120px;
+    right: -80px;
+}
+
+.inner-bg::after {
+    content: "";
+
+    position: absolute;
+
+    width: 220px;
+    height: 220px;
+
+    border-radius: 50%;
+
+    background: rgba(255, 255, 255, 0.04);
+
+    bottom: -100px;
+    left: -60px;
+}
+
+
+/* Keep content above decorations */
+
+.inner-bg .container {
+    position: relative;
+    z-index: 2;
+    margin-top: 39px;
+}
+
+
+/* =========================================================
+   HEADER IMAGE
+========================================================= */
+
+.inner-bg .col-lg-5 img {
+    width: 100%;
+
+    height: 300px;
+
+    object-fit: cover;
+
+    border-radius: 20px !important;
+
+    border: 4px solid rgba(255, 255, 255, 0.15);
+
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.20);
+
+    transition: all 0.35s ease;
+}
+
+.inner-bg .col-lg-5 img:hover {
+    transform: translateY(-4px);
+
+    box-shadow: 0 18px 35px rgba(0, 0, 0, 0.25);
+}
+
+
+/* =========================================================
+   HEADER CONTENT
+========================================================= */
+
+.inner-bg .col-lg-7 {
+    display: flex;
+
+    align-items: center;
+}
+
+
+/* Category */
+
+.inner-bg .col-lg-7 p.fs-4 {
+    color: #ffffff;
+
+    font-size: 18px !important;
+
+    font-weight: 600;
+
+    margin-bottom: 10px !important;
+}
+
+
+/* Title */
+
+.inner-bg h1 {
+    color: #ffffff;
+
+    font-size: 48px;
+
+    line-height: 1.15;
+
+    font-weight: 700;
+
+    margin-bottom: 15px;
+
+    text-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
+}
+
+
+/* Posted date */
+
+.inner-bg .col-lg-7 p.border {
+    display: inline-flex;
+
+    align-items: center;
+
+    padding: 7px 16px !important;
+
+    border: 1px solid rgba(255, 255, 255, 0.45) !important;
+
+    border-radius: 20px !important;
+
+    background: rgba(255, 255, 255, 0.08);
+
+    color: #ffffff;
+
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   ARTICLE SECTION
+========================================================= */
+
+section.p-4 {
+    background: #f7f8fc;
+
+    padding-top: 45px !important;
+
+    padding-bottom: 45px !important;
+}
+
+
+/* =========================================================
+   ARTICLE CONTENT CARD
+========================================================= */
+
+section.p-4 > .container:first-child > .row {
+    background: #ffffff;
+
+    border: 1px solid #eeeeee;
+
+    border-radius: 20px !important;
+
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.07) !important;
+
+    padding: 35px !important;
+
+    margin-left: 0;
+
+    margin-right: 0;
+}
+
+
+/* =========================================================
+   ARTICLE HEADINGS
+========================================================= */
+
+section.p-4 h2 {
+    position: relative;
+
+    color: #292929;
+
+    font-size: 24px !important;
+
+    font-weight: 700;
+
+    line-height: 1.4;
+
+    padding-left: 15px;
+
+    margin-top: 25px;
+
+    margin-bottom: 15px;
+}
+
+
+/* First heading */
+
+section.p-4 h2:first-child {
+    margin-top: 0;
+}
+
+
+/* Purple vertical line */
+
+section.p-4 h2::before {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+
+    top: 3px;
+
+    bottom: 3px;
+
+    width: 4px;
+
+    border-radius: 10px;
+
+    background: #8e2790;
+}
+
+
+/* =========================================================
+   ARTICLE PARAGRAPHS
+========================================================= */
+
+section.p-4 .container:first-child p {
+    color: #666666;
+
+    font-size: 15px;
+
+    line-height: 1.9;
+
+    margin-bottom: 15px;
+}
+
+
+/* =========================================================
+   DIVIDER
+========================================================= */
+
+section.p-4 hr {
+    margin: 25px 0;
+
+    border: 0;
+
+    border-top: 1px solid #e5e5e5;
+
+    opacity: 1;
+}
+
+
+/* =========================================================
+   VOTE SECTION
+========================================================= */
+
+section.p-4 .row.justify-content-between {
+    padding-top: 5px !important;
+}
+
+
+/* Vote title */
+
+section.p-4 .row.justify-content-between b {
+    color: #292929;
+
+    font-size: 18px !important;
+}
+
+
+/* Vote boxes */
+
+section.p-4 .row.justify-content-between .d-flex.border {
+    min-width: 110px;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border: 1px solid #e5e5e5 !important;
+
+    border-radius: 12px !important;
+
+    background: #ffffff;
+
+    padding: 7px 12px !important;
+
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.04);
+
+    transition: all 0.3s ease;
+}
+
+
+section.p-4 .row.justify-content-between .d-flex.border:hover {
+    transform: translateY(-3px);
+
+    border-color: rgba(142, 39, 144, 0.25) !important;
+
+    box-shadow: 0 7px 16px rgba(0, 0, 0, 0.08);
+}
+
+
+/* Vote icons */
+
+section.p-4 .row.justify-content-between .d-flex.border img {
+    width: 25px;
+
+    height: 25px;
+
+    object-fit: contain;
+}
+
+
+/* Vote count */
+
+section.p-4 .row.justify-content-between .d-flex.border p {
+    margin: 0;
+
+    padding-left: 8px !important;
+
+    padding-right: 0 !important;
+
+    color: #555555;
+
+    font-size: 14px;
+
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   SHARE SECTION
+========================================================= */
+
+.entry-tags-list {
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+}
+
+
+.entry-tags-list strong {
+    color: #292929;
+
+    font-size: 15px;
+
+    margin-right: 5px;
+}
+
+
+.entry-tags-list a {
+    width: 34px;
+
+    height: 34px;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #f3f3f3;
+
+    text-decoration: none;
+
+    transition: all 0.3s ease;
+}
+
+
+.entry-tags-list a:hover {
+    background: #8e2790;
+
+    transform: translateY(-3px);
+}
+
+
+.entry-tags-list a img {
+    width: 15px;
+
+    height: 15px;
+
+    object-fit: contain;
+}
+
+
+/* =========================================================
+   BREADCRUMB
+========================================================= */
+
+section.p-4 .container.mt-4 {
+    margin-top: 25px !important;
+}
+
+
+section.p-4 .container.mt-4 .col-auto {
+    background: #ffffff !important;
+
+    border: 1px solid #eeeeee !important;
+
+    border-radius: 20px !important;
+
+    padding: 10px 30px !important;
+
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+
+.breadcrumb {
+    margin-bottom: 0 !important;
+
+    align-items: center;
+}
+
+
+.breadcrumb-item {
+    font-size: 13px;
+
+    color: #777777;
+}
+
+
+.breadcrumb-item a {
+    color: #8e2790;
+
+    text-decoration: none;
+
+    font-weight: 600;
+}
+
+
+.breadcrumb-item a:hover {
+    color: #742076;
+}
+
+
+.breadcrumb-item.active {
+    color: #777777;
+}
+
+
+/* =========================================================
+   MAIN CARD HOVER
+========================================================= */
+
+section.p-4 > .container:first-child > .row {
+    transition: all 0.3s ease;
+}
+
+section.p-4 > .container:first-child > .row:hover {
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.09) !important;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 991px) {
+
+    .inner-bg {
+        padding: 40px 0;
+    }
+
+    .inner-bg .col-lg-5 {
+        margin-bottom: 25px;
+    }
+
+    .inner-bg .col-lg-5 img {
+        height: 260px;
+    }
+
+    .inner-bg h1 {
+        font-size: 38px;
+    }
+
+    .inner-bg .col-lg-7 {
+        text-align: center;
+
+        justify-content: center;
+    }
+
+    .inner-bg .col-lg-7 .row {
+        width: 100%;
+    }
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 767px) {
+
+    .inner-bg {
+        padding: 30px 0;
+    }
+
+    .inner-bg .col-lg-5 img {
+        height: 230px;
+    }
+
+    .inner-bg h1 {
+        font-size: 32px;
+
+        padding-bottom: 10px !important;
+    }
+
+    .inner-bg .col-lg-7 p.fs-4 {
+        font-size: 16px !important;
+    }
+
+    section.p-4 {
+        padding: 20px 15px !important;
+    }
+
+    section.p-4 > .container:first-child > .row {
+        padding: 25px 20px !important;
+    }
+
+    section.p-4 h2 {
+        font-size: 21px !important;
+    }
+
+    section.p-4 .container:first-child p {
+        font-size: 14px;
+
+        line-height: 1.75;
+    }
+
+    .entry-tags-list {
+        margin-top: 15px;
+    }
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+========================================================= */
+
+@media (max-width: 575px) {
+
+    .inner-bg {
+        padding: 25px 0;
+    }
+
+    .inner-bg .col-lg-5 img {
+        height: 200px;
+    }
+
+    .inner-bg h1 {
+        font-size: 27px;
+    }
+
+    .inner-bg .col-lg-7 p.fs-4 {
+        font-size: 15px !important;
+    }
+
+    .inner-bg .col-lg-7 p.border {
+        font-size: 12px;
+    }
+
+    section.p-4 > .container:first-child > .row {
+        padding: 20px 16px !important;
+    }
+
+    section.p-4 h2 {
+        font-size: 19px !important;
+
+        padding-left: 12px;
+    }
+
+    section.p-4 .container:first-child p {
+        font-size: 13px;
+
+        line-height: 1.7;
+    }
+
+    .entry-tags-list strong {
+        font-size: 13px;
+    }
+
+    .entry-tags-list a {
+        width: 31px;
+        height: 31px;
+    }
+
+    section.p-4 .container.mt-4 .col-auto {
+        padding: 8px 18px !important;
+    }
+
+    .breadcrumb-item {
+        font-size: 12px;
+    }
+}
+

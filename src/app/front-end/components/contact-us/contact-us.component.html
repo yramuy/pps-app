@@ -1,0 +1,142 @@
+<!-- Page Header Start -->
+<div class="main-bg">
+  <div class="container">
+    <div class="pt-lg-3 pt-5 pb-lg-0 pb-3">
+      <div class="row align-items-center justify-content-center text-center">
+        <div class="col-lg-10">
+          <div class="pt-lg-5 pb-lg-3 pt-2 pb-2">
+            <div class="row pt-3 justify-content-center">
+              <div class="col-lg-10 p-3 rounded-20">
+                <h1 class="display-3 fw-bold text-white">Contact Us</h1>
+                <p class="text-white">
+                  We empower farmers with sustainable practices, quality seeds,
+                  and modern technologies to cultivate abundant harvests,
+                  support communities, protect resources, and ensure global food
+                  security.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="about" class="pt-4"></div>
+  </div>
+</div>
+<!---- Banner section end ----->
+<section class="py-5">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-5 text-center">
+        <img
+          src="assets/images/contact-image.webp"
+          class="img-fluid rounded-20"
+        />
+      </div>
+      <div class="col-lg-7">
+        <div class="row">
+          <div class="col-lg-12">
+            <h2 class="fs-1 mt-lg-0 mt-2">Feel free to get in touch</h2>
+            <form
+              id="wf-form-Contact-Form"
+              name="wf-form-Contact-Form"
+              data-name="Contact Form"
+              method="get"
+              class="contact-form-box"
+              data-wf-page-id="678f23fa4acbbeb379b4881e"
+              data-wf-element-id="2689f2f1-4a35-f88f-7524-c565fc39d47d"
+              aria-label="Contact Form"
+            >
+              <div class="contact-form-column row gy-3">
+                <div class="col-lg-6">
+                  <input
+                    class="contact-form-input w-input"
+                    maxlength="256"
+                    name="Name"
+                    data-name="Name"
+                    placeholder="Full Name *"
+                    type="text"
+                    id="Name-3"
+                  />
+                </div>
+                <div class="col-lg-6">
+                  <input
+                    class="contact-form-input w-input"
+                    maxlength="256"
+                    name="email"
+                    data-name="Email"
+                    placeholder="Your Email *"
+                    type="email"
+                    id="email"
+                    required=""
+                  />
+                </div>
+                <div class="col-lg-6">
+                  <input
+                    class="contact-form-input w-input"
+                    maxlength="256"
+                    name="Phone-Number"
+                    data-name="Phone Number"
+                    placeholder="Phone Number"
+                    type="tel"
+                    id="Phone-Number"
+                  />
+                </div>
+                <div class="col-lg-6">
+                  <input
+                    class="contact-form-input w-input"
+                    maxlength="256"
+                    name="Subject"
+                    data-name="Subject"
+                    placeholder="Subject"
+                    type="text"
+                    id="Subject"
+                  />
+                </div>
+              </div>
+              <textarea
+                id="field"
+                name="field"
+                maxlength="5000"
+                data-name="Field"
+                placeholder="Message"
+                class="contact-form-input textarea w-input"
+              ></textarea>
+
+              <input
+                type="submit"
+                data-wait="Please wait..."
+                class="btn theme-btn mt-4 px-4 border fw-bold"
+                value="Submit Now"
+              />
+            </form>
+          </div>
+          <div class="col-lg-12 py-4">
+            <div class="row">
+              <div class="col-lg-4 my-2">
+                <div class="border rounded-20 p-3 h-100">
+                  <h2 class="fs-3">Address</h2>
+                  <p>
+                    {{ contactData.address }}
+                  </p>
+                </div>
+              </div>
+              <div class="col-lg-4 my-2">
+                <div class="border rounded-20 p-3 h-100">
+                  <h2 class="fs-3">Email</h2>
+                  <p>{{ contactData.email }}</p>
+                </div>
+              </div>
+              <div class="col-lg-4 my-2">
+                <div class="border rounded-20 p-3 h-100">
+                  <h2 class="fs-3">Contact</h2>
+                  <p>{{ contactData.contact_number }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

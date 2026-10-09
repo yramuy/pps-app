@@ -5,3 +5,23 @@
   border-radius: 50%;
   display: block;
 }
+
+.user-list-page {
+  width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+html,
+body,
+.wrapper {
+  min-height: 100%;
+  height: auto !important;
+}
+
+.content-wrapper {
+  min-height: 100vh;
+  height: auto !important;
+  overflow-y: auto !important;
+  overflow-x: hidden;
+}

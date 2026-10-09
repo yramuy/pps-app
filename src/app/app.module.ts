@@ -51,6 +51,14 @@ import { AboutUsComponent } from './back-end/components/about-us/about-us.compon
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { ViewAdvertisementComponent } from './back-end/components/advertisement/view-advertisement/view-advertisement.component';
 import { AddAdvertisementComponent } from './back-end/components/advertisement/add-advertisement/add-advertisement.component';
+import { VipProfilesComponent } from './front-end/components/vip-profiles/vip-profiles.component';
+import { LeaderProfileComponent } from './front-end/components/leader-profile/leader-profile.component';
+import { IssueDetailsComponent } from './front-end/components/issue-details/issue-details.component';
+import { SchemeDetailsComponent } from './front-end/components/scheme-details/scheme-details.component';
+import { LeaderBiographyComponent } from './back-end/components/leader-biography/leader-biography.component';
+import { AccountComponent } from './back-end/components/account/account.component';
+import { ContactUsComponent } from './front-end/components/contact-us/contact-us.component';
+import { ContactFormComponent } from './back-end/components/contact-form/contact-form.component';
 
 @NgModule({
   declarations: [
@@ -97,7 +105,15 @@ import { AddAdvertisementComponent } from './back-end/components/advertisement/a
     ViewSchemesComponent,
     AboutUsComponent,
     ViewAdvertisementComponent,
-    AddAdvertisementComponent
+    AddAdvertisementComponent,
+    VipProfilesComponent,
+    LeaderProfileComponent,
+    IssueDetailsComponent,
+    SchemeDetailsComponent,
+    LeaderBiographyComponent,
+    AccountComponent,
+    ContactUsComponent,
+    ContactFormComponent
 
   ],
   imports: [

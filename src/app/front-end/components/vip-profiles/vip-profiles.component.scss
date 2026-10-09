@@ -1,0 +1,424 @@
+/* =========================================================
+   VIP HEADER
+========================================================= */
+
+.vip-header {
+  position: relative;
+}
+
+.rounded-20 {
+  border-radius: 20px;
+}
+
+/* =========================================================
+   VIP SECTION
+========================================================= */
+
+.vip-section {
+  background: #f7f8fc;
+}
+
+/* =========================================================
+   FILTER CARD
+========================================================= */
+
+.vip-filter-card {
+  background: #ffffff;
+  border-radius: 18px;
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  border: 1px solid #eeeeee;
+}
+
+.vip-filter-card .panel {
+  margin-bottom: 0;
+  border: 0;
+}
+
+.vip-filter-card .panel-heading {
+  padding: 0;
+  background: #ffffff;
+  border: 0;
+}
+
+.filter-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 22px;
+  color: #333333;
+  text-decoration: none !important;
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.filter-title:hover {
+  color: inherit;
+}
+
+.filter-title .material-icons {
+  transition: transform 0.3s ease;
+}
+
+.filter-title:not(.collapsed) .material-icons {
+  transform: rotate(180deg);
+}
+
+.vip-filter-card .panel-body {
+  padding: 20px 22px 24px;
+  border-top: 1px solid #eeeeee;
+}
+
+/* =========================================================
+   FILTER INPUTS
+========================================================= */
+
+.filter-group {
+  margin-bottom: 10px;
+}
+
+.filter-group label {
+  display: block;
+  margin-bottom: 7px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #555555;
+}
+
+.filter-group .form-control {
+  height: 42px;
+  border-radius: 10px;
+  border: 1px solid #dddddd;
+  box-shadow: none;
+  padding: 8px 12px;
+  font-size: 14px;
+}
+
+.filter-group .form-control:focus {
+  border-color: #8e2790;
+  box-shadow: 0 0 0 2px rgba(142, 39, 144, 0.08);
+}
+
+/* =========================================================
+   SEARCH BUTTON
+========================================================= */
+
+.filter-button-wrapper {
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+}
+
+.vip-search-btn {
+  width: 100%;
+  min-height: 42px;
+  border-radius: 10px;
+  border: 0;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.vip-search-btn:hover {
+  transform: translateY(-2px);
+}
+
+/* =========================================================
+   PROFILE CARD
+========================================================= */
+
+.vip-profile-row {
+  margin-top: 20px;
+}
+
+.vip-profile-card {
+  height: 100%;
+  background: #ffffff;
+  border-radius: 22px;
+  overflow: hidden;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid #eeeeee;
+  transition: all 0.35s ease;
+}
+
+.vip-profile-card:hover {
+  transform: translateY(-7px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.14);
+}
+
+/* =========================================================
+   PROFILE BOX
+========================================================= */
+
+.vip-profile-box {
+  position: relative;
+  text-align: center;
+  padding: 30px 22px 22px;
+}
+
+/* =========================================================
+   PROFILE IMAGE
+========================================================= */
+
+.vip-profile-image {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 18px;
+}
+
+.vip-profile-image img {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 5px solid #ffffff;
+  box-shadow: 0 5px 18px rgba(0, 0, 0, 0.15);
+  background: #f2f2f2;
+  transition: transform 0.35s ease;
+}
+
+.vip-profile-card:hover .vip-profile-image img {
+  transform: scale(1.05);
+}
+
+/* =========================================================
+   VIP BADGE
+========================================================= */
+
+.vip-badge {
+  position: absolute;
+  right: -2px;
+  bottom: 4px;
+  padding: 5px 10px;
+  border-radius: 20px;
+  background: #8e2790;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* =========================================================
+   PROFILE NAME
+========================================================= */
+
+.vip-profile-name {
+  margin: 0 0 12px;
+  color: #252525;
+  font-size: 21px;
+  line-height: 1.35;
+  font-weight: 700;
+}
+
+.vip-profile-name span {
+  display: block;
+  margin-top: 5px;
+  color: #8e2790;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* =========================================================
+   DESCRIPTION
+========================================================= */
+
+.vip-profile-description {
+  min-height: 72px;
+  margin: 0 auto 18px;
+  color: #777777;
+  font-size: 13px;
+  line-height: 1.7;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* =========================================================
+   READ MORE
+========================================================= */
+
+.vip-read-more {
+  margin-bottom: 18px;
+}
+
+.vip-read-btn {
+  padding: 0.8em 2em;
+  font-size: 16px;
+  text-transform: uppercase;
+  letter-spacing: 2.5px;
+  font-weight: 500;
+  color: #000;
+  background-color: #fff;
+  border: none;
+  border-radius: 45px;
+  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease 0s;
+  cursor: pointer;
+  outline: none;
+  display: inline-block;
+}
+
+.vip-read-btn:hover {
+  background-color: #90caff;
+  box-shadow: 0px 15px 20px rgba(139, 204, 254, 0.4);
+  color: #fff;
+  transform: translateY(-7px);
+}
+
+/* =========================================================
+   SOCIAL ICONS
+========================================================= */
+
+.vip-social {
+  padding-top: 5px;
+}
+
+.vip-social ul {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+
+  padding: 0;
+  margin: 0;
+
+  list-style: none;
+}
+
+.vip-social ul li {
+  margin: 0;
+  padding: 0;
+}
+
+.vip-social ul li a {
+  width: 34px;
+  height: 34px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #f1f1f1;
+  color: #666666;
+
+  text-decoration: none;
+
+  transition: all 0.3s ease;
+}
+
+.vip-social ul li a:hover {
+  background: #8e2790;
+  color: #ffffff;
+  transform: translateY(-3px);
+}
+
+/* =========================================================
+   NO DATA
+========================================================= */
+
+.vip-no-data {
+  padding: 45px 20px;
+}
+
+.vip-no-data i {
+  font-size: 45px;
+  color: #8e2790;
+  margin-bottom: 15px;
+}
+
+.vip-no-data h4 {
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #333333;
+}
+
+.vip-no-data p {
+  margin: 0;
+  color: #888888;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 991px) {
+  .vip-profile-box {
+    padding: 25px 18px 20px;
+  }
+
+  .vip-profile-name {
+    font-size: 19px;
+  }
+}
+
+@media (max-width: 767px) {
+  .vip-header h1 {
+    font-size: 42px;
+  }
+
+  .vip-header p {
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .vip-filter-card .panel-body {
+    padding: 18px 15px;
+  }
+
+  .filter-button-wrapper {
+    margin-top: 8px;
+  }
+
+  .vip-search-btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 575px) {
+  .vip-section {
+    padding-top: 30px !important;
+  }
+
+  .vip-profile-row {
+    margin-top: 10px;
+  }
+
+  .vip-profile-box {
+    padding: 30px 25px 22px;
+  }
+
+  .vip-profile-image,
+  .vip-profile-image img {
+    width: 110px;
+    height: 110px;
+  }
+
+  .vip-profile-name {
+    font-size: 20px;
+  }
+}
+
+.vip-loader {
+  min-height: 250px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.theme-spinner {
+  width: 45px;
+  height: 45px;
+  border-width: 4px;
+  color: #8e2790;
+}
+
+.vip-loader p {
+  font-size: 16px;
+  color: #666;
+}

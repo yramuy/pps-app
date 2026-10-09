@@ -12,6 +12,12 @@ import { AuthService } from 'src/app/services/auth.service';
 export class IssueCreateComponent {
   message: string = '';
   isMessage: boolean = false;
+  @ViewChild('videoInput') videoInput!: ElementRef;
+
+  selectedVideo: File | null = null;
+  videoPreview: string = '';
+  existingVideoUrl: string = '';
+  removeExistingVideoFlag: boolean = false;
 
   states: any = [];
   districts: any = [];
@@ -49,6 +55,7 @@ export class IssueCreateComponent {
   isSaving: boolean = false;
 
   @ViewChild('fileInput') fileInput!: ElementRef;
+  
 
   constructor(
     private apiService: ApiService,
@@ -87,8 +94,63 @@ export class IssueCreateComponent {
     });
   }
 
+  onVideoChange(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+
+    if (!file) {
+      return;
+    }
+
+    if (!file.type.startsWith('video/')) {
+      alert('Please select a valid video file.');
+      input.value = '';
+      return;
+    }
+
+    // Optional: Maximum video size of 50 MB
+    const maxSize = 50 * 1024 * 1024;
+
+    if (file.size > maxSize) {
+      alert('Video size must not exceed 50 MB.');
+      input.value = '';
+      return;
+    }
+
+    // Release the previous preview URL
+    if (this.videoPreview) {
+      URL.revokeObjectURL(this.videoPreview);
+    }
+
+    this.selectedVideo = file;
+    this.videoPreview = URL.createObjectURL(file);
+
+    input.value = '';
+  }
+
+  removeSelectedVideo() {
+    if (this.videoPreview) {
+      URL.revokeObjectURL(this.videoPreview);
+    }
+
+    this.selectedVideo = null;
+    this.videoPreview = '';
+  }
+
+  removeExistingVideo() {
+    this.existingVideoUrl = '';
+    this.removeExistingVideoFlag = true;
+  }
+
   loadViewIssueDeta(issueID: any) {
-    this.apiService.request('GET', `/issueDataById/${issueID}`).subscribe({
+    const payload = {
+      is_token: '1',
+      issue_id: issueID,
+    };
+
+    console.log('Issue API Payload:', payload);
+
+    this.apiService.request('POST', '/issueDataById', payload).subscribe({
       next: (res: any) => {
         this.issue_images = res.issue_images || [];
 
@@ -270,58 +332,53 @@ export class IssueCreateComponent {
   }
 
   saveIssue(form: NgForm) {
-  if (form.invalid) {
-    return;
-  }
-
-  if (
-    this.selectedFiles.length === 0 &&
-    this.existingImages.length === 0
-  ) {
-    this.showMessage('At least one issue picture is required');
-    return;
-  }
-
-  // Prevent multiple submissions
-  if (this.isSaving) {
-    return;
-  }
-
-  this.isSaving = true;
-
-  const formData = new FormData();
-
-  Object.keys(this.issue).forEach((key) => {
-    if (key !== 'issue_pic') {
-      formData.append(key, this.issue[key] ?? '');
+    if (form.invalid) {
+      return;
     }
-  });
 
-  formData.append('id', this.issue.id ?? '');
-  formData.append('master_id', '9');
-  formData.append('status_id', '1');
-  formData.append('comment', 'New issue created');
-  formData.append('created_by', this.loginUser?.userId ?? '');
+    if (this.selectedFiles.length === 0 && this.existingImages.length === 0) {
+      this.showMessage('At least one issue picture is required');
+      return;
+    }
 
-  // Existing images in edit mode
-  this.existingImages.forEach((img) => {
-    formData.append('existing_images[]', img);
-  });
+    // Prevent multiple submissions
+    if (this.isSaving) {
+      return;
+    }
 
-  // New uploaded images
-  this.selectedFiles.forEach((file) => {
-    formData.append('images[]', file);
-  });
+    this.isSaving = true;
 
-  console.log('FormData values:');
+    const formData = new FormData();
 
-  formData.forEach((value, key) => {
-    console.log(key, value);
-  });
+    Object.keys(this.issue).forEach((key) => {
+      if (key !== 'issue_pic') {
+        formData.append(key, this.issue[key] ?? '');
+      }
+    });
 
-  this.apiService
-    .request('POST', '/saveAndUpdateIssue', formData)
-    .subscribe({
+    formData.append('id', this.issue.id ?? '');
+    formData.append('master_id', '9');
+    formData.append('status_id', '1');
+    formData.append('comment', 'New issue created');
+    formData.append('created_by', this.loginUser?.userId ?? '');
+
+    // Existing images in edit mode
+    this.existingImages.forEach((img) => {
+      formData.append('existing_images[]', img);
+    });
+
+    // New uploaded images
+    this.selectedFiles.forEach((file) => {
+      formData.append('images[]', file);
+    });
+
+    console.log('FormData values:');
+
+    formData.forEach((value, key) => {
+      console.log(key, value);
+    });
+
+    this.apiService.request('POST', '/saveAndUpdateIssue', formData).subscribe({
       next: (res: any) => {
         if (res.status) {
           this.router.navigate(['/admin/issues/my-issues'], {
@@ -342,7 +399,7 @@ export class IssueCreateComponent {
         this.showMessage('Something went wrong');
       },
     });
-}
+  }
 
   handleBackBtn() {
     this.router.navigate(['/admin/issues/my-issues']);

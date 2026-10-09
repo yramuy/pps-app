@@ -1,0 +1,138 @@
+<!-- Leader Profile Header -->
+<section class="leader-profile-header">
+  <div class="container">
+    <!-- Biography Card -->
+    <div class="my-account-card">
+      <div class="my-account-icon"><i class="fas fa-book-open"></i></div>
+      <div class="my-account-content">
+        <h2>My Biography</h2>
+        <p>View and manage your biography and personal profile information</p>
+      </div>
+    </div>
+    <div class="profile-header-card">
+      <!-- Profile Image -->
+      <div class="profile-image-wrapper">
+        <img
+          [src]="biography.profilePic"
+          alt="Sundarapu Vijay Kumar"
+          class="leader-profile-image"
+        />
+      </div>
+
+      <!-- Profile Details -->
+      <div class="profile-header-content">
+        <h1 class="leader-name">
+          {{ biography.fullName }}
+        </h1>
+
+        <div class="leader-designation">
+          <i class="fas fa-user-tie"></i>
+          <span>{{ biography.roleName }}</span>
+        </div>
+
+        <div class="leader-location">
+          <i class="fas fa-map-marker-alt"></i>
+          <span>{{ biography.location }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Biography Content -->
+<section class="biography-content">
+  <div class="container">
+    <!-- ========================================= -->
+    <!-- Personal Information Card -->
+    <!-- ========================================= -->
+
+    <div
+      class="bio-card personal-information-card mb-4"
+      *ngIf="biography.personal_information"
+    >
+      <div class="bio-card-header">
+        <div class="section-icon">
+          <i class="fas fa-user"></i>
+        </div>
+
+        <div>
+          <h3>Personal Information</h3>
+          <p>Basic profile and personal details</p>
+        </div>
+      </div>
+
+      <div class="bio-card-body">
+        <div
+          class="personal-information-content"
+          [innerHTML]="biography.personal_information"
+        ></div>
+      </div>
+    </div>
+
+    <!-- ========================================= -->
+    <!-- About Card -->
+    <!-- ========================================= -->
+    <div class="bio-card about-card mb-4">
+      <div class="bio-card-header">
+        <div class="section-icon">
+          <i class="fas fa-user-tie"></i>
+        </div>
+
+        <div>
+          <h3>About</h3>
+          <p>Public service journey and community involvement</p>
+        </div>
+      </div>
+
+      <div class="bio-card-body">
+        <div class="about-content" [innerHTML]="biography?.about"></div>
+      </div>
+    </div>
+
+    <!-- ========================================= -->
+    <!-- Areas of Interest Card -->
+    <!-- ========================================= -->
+    <div class="bio-card interest-card mb-4">
+      <div class="bio-card-header">
+        <div class="section-icon">
+          <i class="fas fa-bullseye"></i>
+        </div>
+
+        <div>
+          <h3>Areas of Interest</h3>
+          <p>Key areas of public service and community development</p>
+        </div>
+      </div>
+
+      <div class="bio-card-body">
+        <div
+          class="interest-list"
+          [innerHTML]="biography?.areas_of_interest"
+        ></div>
+      </div>
+    </div>
+
+    <!-- ========================================= -->
+    <!-- Achievements Card -->
+    <!-- ========================================= -->
+    <div class="bio-card achievements-card mb-4">
+      <div class="bio-card-header">
+        <div class="section-icon">
+          <i class="fas fa-trophy"></i>
+        </div>
+
+        <div>
+          <h3>Achievements</h3>
+          <p>Key contributions and public service milestones</p>
+        </div>
+      </div>
+
+      <div class="bio-card-body">
+        <div
+          class="achievement-list"
+          [innerHTML]="biography?.achievements"
+        ></div>
+      </div>
+    </div>
+  </div>
+</section>

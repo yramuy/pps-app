@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+
+import { Component, signal } from '@angular/core';
 import { ApiService } from 'src/app/services/api.service';
 import { AuthService } from 'src/app/services/auth.service';
 
@@ -8,8 +9,10 @@ import { AuthService } from 'src/app/services/auth.service';
   styleUrls: ['./about.component.scss'],
 })
 export class AboutComponent {
+
   aboutUs: any = [];
-  message: any = '';
+  message = signal('');
+  loading = signal(true);
 
   constructor(
     private authService: AuthService,
@@ -19,25 +22,46 @@ export class AboutComponent {
   }
 
   loadAboutUsData() {
-    let payload = {
+
+    this.loading.set(true);
+    this.message.set('');
+
+    const payload = {
       mode: '0',
     };
+
     this.apiService.request('POST', '/aboutUs', payload).subscribe({
+
       next: (res: any) => {
-        this.aboutUs = res.data[0] || [];
+
+        this.aboutUs = res.data?.[0] || [];
+
+        // Stop loader after data is received
+        this.loading.set(false);
       },
 
       error: (err: any) => {
+
+        // Stop loader on error
+        this.loading.set(false);
+
         if (err.status === 401) {
-          this.message = 'Token expired';
+          this.message.set('Token expired');
+
         } else if (err.status === 400) {
-          this.message = 'Invalid request data';
+          this.message.set('Invalid request data');
+
         } else if (err.status === 500) {
-          this.message = 'Server error. Please try again later';
+          this.message.set('Server error. Please try again later');
+
         } else {
-          this.message = 'Something went wrong. Please try again later';
+          this.message.set(
+            'Something went wrong. Please try again later'
+          );
         }
       },
+
     });
   }
 }
+

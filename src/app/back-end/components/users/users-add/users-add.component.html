@@ -1,433 +1,913 @@
+
 <div class="card">
+
+  <!-- ===================================================== -->
+  <!-- CARD HEADER -->
+  <!-- ===================================================== -->
+
   <div class="card-header">
-    <h5 class="card-title text-white">
+    <h5 class="card-title text-white mb-0">
       {{ isEdit ? "Update User" : "Add User" }}
     </h5>
   </div>
+
+  <!-- ===================================================== -->
+  <!-- FORM -->
+  <!-- ===================================================== -->
 
   <form
     #userForm="ngForm"
     (ngSubmit)="saveUser(userForm)"
     enctype="multipart/form-data"
     novalidate>
+
     <div class="card-body">
-      <!-- Alert -->
-      <div *ngIf="isMessage" class="alert alert-danger">
+
+      <!-- ================================================= -->
+      <!-- ALERT -->
+      <!-- ================================================= -->
+
+      <div
+        *ngIf="isMessage"
+        class="alert alert-danger">
         {{ message }}
       </div>
 
-      <div class="row">
-        <!-- User Role -->
-        <div class="col-6 mb-3">
-          <label>User Role *</label>
-          <select
-            class="form-control"
-            name="user_role_id"
-            [(ngModel)]="user.user_role_id"
-            #user_role_id="ngModel"
-            required>
-            <option value>-- Select --</option>
-            <option *ngFor="let r of userRoles" [value]="r.id">
-              {{ r.name }}
-            </option>
-          </select>
+      <!-- ================================================= -->
+      <!-- CONTACT DETAILS -->
+      <!-- ================================================= -->
 
-          <small
-            class="text-danger"
-            *ngIf="userForm.submitted && user_role_id.invalid">
-            User Role is required
-          </small>
+      <div class="form-section mb-4">
+
+        <!-- Section Header -->
+
+        <div class="section-header">
+
+          <div class="section-icon">
+            <i class="fas fa-address-card"></i>
+          </div>
+
+          <div>
+            <h5 class="mb-0">
+              Contact Details
+            </h5>
+
+            <small class="text-muted">
+              Enter the user's basic and contact information
+            </small>
+          </div>
+
         </div>
 
-        <!-- Full Name -->
-        <div class="col-6 mb-3">
-          <label>Full Name *</label>
-          <input
-            type="text"
-            class="form-control"
-            name="full_name"
-            [(ngModel)]="user.full_name"
-            #full_name="ngModel"
-            required />
+        <!-- Section Body -->
 
-          <small
-            class="text-danger"
-            *ngIf="userForm.submitted && full_name.invalid">
-            Full Name is required
-          </small>
-        </div>
-      </div>
+        <div class="section-body">
 
-      <div class="row">
-        <!-- Username -->
-        <div class="col-6 mb-3">
-          <label>Username *</label>
-          <input
-            type="text"
-            class="form-control"
-            name="user_name"
-            [(ngModel)]="user.user_name"
-            #user_name="ngModel"
-            required />
+          <!-- ============================================= -->
+          <!-- ROLE + FULL NAME -->
+          <!-- ============================================= -->
 
-          <small
-            class="text-danger"
-            *ngIf="userForm.submitted && user_name.invalid">
-            Username is required
-          </small>
-        </div>
+          <div class="row">
 
-        <!-- Password -->
-        <div class="col-6 mb-3">
-          <label>Password *</label>
-          <input
-            type="password"
-            class="form-control"
-            name="password"
-            [(ngModel)]="user.password"
-            #password="ngModel"
-            [required]="!isEdit" />
+            <!-- User Role -->
 
-          <small
-            class="text-danger"
-            *ngIf="userForm.submitted && password.invalid">
-            Password is required
-          </small>
-        </div>
-      </div>
+            <div class="col-md-6 mb-3">
 
-      <div class="row">
-        <!-- Email -->
-        <div class="col-6 mb-3">
-          <label>Email *</label>
-          <input
-            type="email"
-            class="form-control"
-            name="email"
-            [(ngModel)]="user.email"
-            #email="ngModel"
-            required
-            email />
+              <label>
+                User Role
+                <span class="text-danger">*</span>
+              </label>
 
-          <small
-            class="text-danger"
-            *ngIf="userForm.submitted && email.invalid">
-            Valid Email is required
-          </small>
-        </div>
+              <select
+                class="form-control"
+                name="user_role_id"
+                [(ngModel)]="user.user_role_id"
+                #user_role_id="ngModel"
+                required>
 
-        <!-- Mobile -->
-        <div class="col-6 mb-3">
-          <label>Mobile</label>
-          <input
-            type="text"
-            class="form-control"
-            name="mobile"
-            [(ngModel)]="user.mobile"
-            pattern="^[0-9]{10}$"
-            #mobile="ngModel" />
+                <option value>
+                  -- Select --
+                </option>
 
-          <small
-            class="text-danger"
-            *ngIf="userForm.submitted && mobile.invalid">
-            Enter valid 10-digit mobile number
-          </small>
-        </div>
-      </div>
+                <option
+                  *ngFor="let r of userRoles"
+                  [value]="r.id">
+                  {{ r.name }}
+                </option>
 
-      <div class="row">
-        <!-- Registration Date -->
-        <div class="col-6 mb-3">
-          <label>Registration Date *</label>
+              </select>
 
-          <input
-            type="date"
-            class="form-control"
-            name="registration_date"
-            [(ngModel)]="user.registration_date"
-            #registration_date="ngModel"
-            required />
+              <small
+                class="text-danger"
+                *ngIf="
+                  userForm.submitted &&
+                  user_role_id.invalid
+                ">
+                User Role is required
+              </small>
 
-          <small
-            class="text-danger"
-            *ngIf="userForm.submitted && registration_date.invalid">
-            Registration Date is required
-          </small>
-        </div>
-
-        <!-- Aadhaar Card Number -->
-        <div class="col-6 mb-3">
-          <label>Aadhaar Card Number *</label>
-
-          <input
-            type="text"
-            class="form-control"
-            name="aadhar_card_number"
-            [(ngModel)]="user.aadhar_card_number"
-            #aadhar_card_number="ngModel"
-            maxlength="12"
-            pattern="^[0-9]{12}$"
-            inputmode="numeric"
-            required />
-
-          <small
-            class="text-danger"
-            *ngIf="userForm.submitted && aadhar_card_number.invalid">
-            Enter a valid 12-digit Aadhaar number
-          </small>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col-6 mb-3">
-          <label>Aadhaar Document *</label>
-
-          <input
-            type="file"
-            #aadharFileInput
-            class="form-control"
-            name="aadhar_document"
-            accept=".pdf,image/*"
-            (change)="onAadharFileChange($event)" />
-
-          <small
-            class="text-muted">
-            PDF, JPG, JPEG or PNG
-          </small>
-
-          <!-- Existing / Selected Document -->
-          <div
-            *ngIf="selectedAadharFile || (isEdit && user.aadhar_document)"
-            class="mt-2">
-
-            <!-- Selected File -->
-            <div *ngIf="selectedAadharFile" class="alert alert-light">
-              <i class="fas fa-file mr-2"></i>
-              {{ selectedAadharFile.name }}
-
-              <button
-                type="button"
-                class="btn btn-danger btn-sm ml-2"
-                (click)="resetAadharDocument(true)">
-                Remove
-              </button>
             </div>
 
-            <!-- Existing File -->
-            <div
-              *ngIf="!selectedAadharFile && isEdit && user.aadhar_document"
-              class="alert alert-light">
-              <i class="fas fa-file-pdf mr-2"></i>
+            <!-- Full Name -->
 
-              <a
-                [href]="baseUrl + '/uploads/aadhar/' + user.aadhar_document"
-                target="_blank"
-                rel="noopener noreferrer">
-                View Existing Aadhaar Document
-              </a>
+            <div class="col-md-6 mb-3">
 
-              <button
-                type="button"
-                class="btn btn-danger btn-sm ml-2"
-                (click)="resetAadharDocument(true)">
-                Remove
-              </button>
+              <label>
+                Full Name
+                <span class="text-danger">*</span>
+              </label>
+
+              <input
+                type="text"
+                class="form-control"
+                name="full_name"
+                [(ngModel)]="user.full_name"
+                #full_name="ngModel"
+                required />
+
+              <small
+                class="text-danger"
+                *ngIf="
+                  userForm.submitted &&
+                  full_name.invalid
+                ">
+                Full Name is required
+              </small>
+
             </div>
 
           </div>
 
-          <small
-            class="text-danger"
-            *ngIf="
-        userForm.submitted &&
-        !selectedAadharFile &&
-        (!isEdit || !user.aadhar_document)
-      ">
-            Aadhaar document is required
-          </small>
-        </div>
-      </div>
+          <!-- ============================================= -->
+          <!-- USERNAME + PASSWORD -->
+          <!-- ============================================= -->
 
-      <!-- Location -->
-      <div class="row">
-        <div class="col-6 mb-3">
-          <label>State *</label>
-          <select
-            class="form-control"
-            name="state_id"
-            [(ngModel)]="user.state_id"
-            #state_id="ngModel"
-            (change)="loadDistricts(user.state_id)"
-            required>
-            <option value>-- Select --</option>
-            <option *ngFor="let s of states" [value]="s.id">
-              {{ s.name }}
-            </option>
-          </select>
+          <div class="row">
 
-          <small
-            class="text-danger"
-            *ngIf="userForm.submitted && state_id.invalid">
-            State is required
-          </small>
-        </div>
+            <!-- Username -->
 
-        <div class="col-6 mb-3">
-          <label>District *</label>
-          <select
-            class="form-control"
-            name="district_id"
-            [(ngModel)]="user.district_id"
-            #district_id="ngModel"
-            (change)="loadAssemblies(user.district_id)"
-            required>
-            <option value>-- Select --</option>
-            <option *ngFor="let d of districts" [value]="d.id">
-              {{ d.name }}
-            </option>
-          </select>
+            <div class="col-md-6 mb-3">
 
-          <small
-            class="text-danger"
-            *ngIf="userForm.submitted && district_id.invalid">
-            District is required
-          </small>
-        </div>
-      </div>
+              <label>
+                Username
+                <span class="text-danger">*</span>
+              </label>
 
-      <div class="row">
-        <div class="col-6 mb-3">
-          <label>Assembly </label>
-          <select
-            class="form-control"
-            name="assembly_id"
-            [(ngModel)]="user.assembly_id"
-            #assembly_id="ngModel"
-            (change)="loadMandals(user.assembly_id)">
-            <option value>-- Select --</option>
-            <option *ngFor="let a of assemblies" [value]="a.id">
-              {{ a.name }}
-            </option>
-          </select>
+              <input
+                type="text"
+                class="form-control"
+                name="user_name"
+                [(ngModel)]="user.user_name"
+                #user_name="ngModel"
+                required />
 
-          <!-- <small class="text-danger"
-            *ngIf="userForm.submitted && assembly_id.invalid">
-            Assembly is required
-          </small> -->
-        </div>
+              <small
+                class="text-danger"
+                *ngIf="
+                  userForm.submitted &&
+                  user_name.invalid
+                ">
+                Username is required
+              </small>
 
-        <div class="col-6 mb-3">
-          <label>Mandal </label>
-          <select
-            class="form-control"
-            name="mandal_id"
-            [(ngModel)]="user.mandal_id"
-            #mandal_id="ngModel"
-            (change)="loadVillages(user.mandal_id)">
-            <option value>-- Select --</option>
-            <option *ngFor="let m of mandals" [value]="m.id">
-              {{ m.name }}
-            </option>
-          </select>
+            </div>
 
-          <!-- <small class="text-danger"
-            *ngIf="userForm.submitted && mandal_id.invalid">
-            Mandal is required
-          </small> -->
-        </div>
-      </div>
+            <!-- Password -->
 
-      <div class="row">
-        <div class="col-6 mb-3">
-          <label>Village </label>
-          <select
-            class="form-control"
-            name="village_id"
-            [(ngModel)]="user.village_id"
-            #village_id="ngModel">
-            <option value>-- Select --</option>
-            <option *ngFor="let v of villages" [value]="v.id">
-              {{ v.name }}
-            </option>
-          </select>
+            <div class="col-md-6 mb-3">
 
-          <!-- <small class="text-danger"
-            *ngIf="userForm.submitted && village_id.invalid">
-            Village is required
-          </small> -->
-        </div>
+              <label>
+                Password
 
-        <!-- Profile Pic -->
-        <div class="col-6 mb-3">
-          <label>Profile Pic</label>
+                <span
+                  *ngIf="!isEdit"
+                  class="text-danger">
+                  *
+                </span>
+              </label>
 
-          <input
-            type="file"
-            #fileInput
-            class="form-control"
-            name="profile_pic"
-            accept="image/*"
-            (change)="onFileChange($event)" />
+              <input
+                type="password"
+                class="form-control"
+                name="password"
+                [(ngModel)]="user.password"
+                #password="ngModel"
+                [required]="!isEdit" />
 
-          <div
-            *ngIf="imagePreview || (isEdit && user.profile_pic)"
-            class="mt-2 d-flex align-items-center">
-            <img
-              [src]="
-                imagePreview
-                  ? imagePreview
-                  : baseUrl + '/uploads/profile/' + user.profile_pic
-              "
-              width="100"
-              height="100"
-              style="object-fit: cover; border-radius: 5px" />
+              <small
+                class="text-danger"
+                *ngIf="
+                  userForm.submitted &&
+                  password.invalid
+                ">
+                Password is required
+              </small>
 
-            <button
-              type="button"
-              class="btn btn-danger btn-sm ml-2"
-              (click)="resetImage(true)">
-              Reset
-            </button>
+              <small
+                *ngIf="isEdit"
+                class="text-muted">
+                Leave blank to keep the existing password.
+              </small>
+
+            </div>
+
           </div>
+
+          <!-- ============================================= -->
+          <!-- EMAIL + MOBILE -->
+          <!-- ============================================= -->
+
+          <div class="row">
+
+            <!-- Email -->
+
+            <div class="col-md-6 mb-3">
+
+              <label>
+                Email
+                <span class="text-danger">*</span>
+              </label>
+
+              <input
+                type="email"
+                class="form-control"
+                name="email"
+                [(ngModel)]="user.email"
+                #email="ngModel"
+                required
+                email />
+
+              <small
+                class="text-danger"
+                *ngIf="
+                  userForm.submitted &&
+                  email.invalid
+                ">
+                Valid Email is required
+              </small>
+
+            </div>
+
+            <!-- Mobile -->
+
+            <div class="col-md-6 mb-3">
+
+              <label>
+                Mobile
+              </label>
+
+              <input
+                type="text"
+                class="form-control"
+                name="mobile"
+                [(ngModel)]="user.mobile"
+                #mobile="ngModel"
+                pattern="^[0-9]{10}$"
+                maxlength="10"
+                inputmode="numeric" />
+
+              <small
+                class="text-danger"
+                *ngIf="
+                  userForm.submitted &&
+                  mobile.invalid
+                ">
+                Enter valid 10-digit mobile number
+              </small>
+
+            </div>
+
+          </div>
+
+          <!-- ============================================= -->
+          <!-- REGISTRATION DATE + AADHAAR -->
+          <!-- ============================================= -->
+
+          <div class="row">
+
+            <!-- Registration Date -->
+
+            <div class="col-md-6 mb-3">
+
+              <label>
+                Registration Date
+                <span class="text-danger">*</span>
+              </label>
+
+              <input
+                type="date"
+                class="form-control"
+                name="registration_date"
+                [(ngModel)]="user.registration_date"
+                #registration_date="ngModel"
+                required />
+
+              <small
+                class="text-danger"
+                *ngIf="
+                  userForm.submitted &&
+                  registration_date.invalid
+                ">
+                Registration Date is required
+              </small>
+
+            </div>
+
+            <!-- Aadhaar Number -->
+
+            <div class="col-md-6 mb-3">
+
+              <label>
+                Aadhaar Card Number
+                <span class="text-danger">*</span>
+              </label>
+
+              <input
+                type="text"
+                class="form-control"
+                name="aadhar_card_number"
+                [(ngModel)]="user.aadhar_card_number"
+                #aadhar_card_number="ngModel"
+                maxlength="12"
+                pattern="^[0-9]{12}$"
+                inputmode="numeric"
+                required />
+
+              <small
+                class="text-danger"
+                *ngIf="
+                  userForm.submitted &&
+                  aadhar_card_number.invalid
+                ">
+                Enter a valid 12-digit Aadhaar number
+              </small>
+
+            </div>
+
+          </div>
+
+          <!-- ============================================= -->
+          <!-- AADHAAR DOCUMENT -->
+          <!-- ============================================= -->
+
+          <div class="row">
+
+            <div class="col-md-6 mb-3">
+
+              <label>
+                Aadhaar Document
+                <span class="text-danger">*</span>
+              </label>
+
+              <input
+                type="file"
+                #aadharFileInput
+                class="form-control"
+                name="aadhar_document"
+                accept=".pdf,image/*"
+                (change)="onAadharFileChange($event)" />
+
+              <small class="text-muted">
+                PDF, JPG, JPEG or PNG
+              </small>
+
+              <!-- Selected / Existing Document -->
+
+              <div
+                *ngIf="
+                  selectedAadharFile ||
+                  (isEdit && user.aadhar_document)
+                "
+                class="mt-2">
+
+                <!-- Selected File -->
+
+                <div
+                  *ngIf="selectedAadharFile"
+                  class="alert alert-light mb-0">
+
+                  <i class="fas fa-file mr-2"></i>
+
+                  {{ selectedAadharFile.name }}
+
+                  <button
+                    type="button"
+                    class="btn btn-danger btn-sm ml-2"
+                    (click)="resetAadharDocument(true)">
+                    Remove
+                  </button>
+
+                </div>
+
+                <!-- Existing File -->
+
+                <div
+                  *ngIf="
+                    !selectedAadharFile &&
+                    isEdit &&
+                    user.aadhar_document
+                  "
+                  class="alert alert-light mb-0">
+
+                  <i class="fas fa-file-pdf mr-2"></i>
+
+                  <a
+                    [href]="
+                      baseUrl +
+                      '/uploads/aadhar/' +
+                      user.aadhar_document
+                    "
+                    target="_blank"
+                    rel="noopener noreferrer">
+                    View Existing Aadhaar Document
+                  </a>
+
+                  <button
+                    type="button"
+                    class="btn btn-danger btn-sm ml-2"
+                    (click)="resetAadharDocument(true)">
+                    Remove
+                  </button>
+
+                </div>
+
+              </div>
+
+              <!-- Required Validation -->
+
+              <small
+                class="text-danger"
+                *ngIf="
+                  userForm.submitted &&
+                  !selectedAadharFile &&
+                  (!isEdit || !user.aadhar_document)
+                ">
+                Aadhaar document is required
+              </small>
+
+            </div>
+
+            <!-- Profile Pic -->
+
+            <div class="col-md-6 mb-3">
+
+              <label>
+                Profile Pic
+              </label>
+
+              <input
+                type="file"
+                #fileInput
+                class="form-control"
+                name="profile_pic"
+                accept="image/*"
+                (change)="onFileChange($event)" />
+
+              <!-- Profile Preview -->
+
+              <div
+                *ngIf="
+                  imagePreview ||
+                  (isEdit && user.profile_pic)
+                "
+                class="mt-2 d-flex align-items-center">
+
+                <img
+                  [src]="
+                    imagePreview
+                      ? imagePreview
+                      : user.profile_pic
+                  "
+                  width="100"
+                  height="100"
+                  style="
+                    object-fit: cover;
+                    border-radius: 8px;
+                    border: 1px solid #ddd;
+                  " />
+
+                <button
+                  type="button"
+                  class="btn btn-danger btn-sm ml-2"
+                  (click)="resetImage(true)">
+                  Reset
+                </button>
+
+              </div>
+
+            </div>
+
+          </div>
+
         </div>
+
       </div>
 
-      <div class="row">
-        <div class="row">
-          <div class="col-md-12 mb-3">
-            <label> Bio Graphy </label>
+      <!-- ================================================= -->
+      <!-- LOCATION DETAILS -->
+      <!-- ================================================= -->
+
+      <div class="form-section mb-4">
+
+        <!-- Section Header -->
+
+        <div class="section-header">
+
+          <div class="section-icon">
+            <i class="fas fa-map-marker-alt"></i>
+          </div>
+
+          <div>
+
+            <h5 class="mb-0">
+              Location Details
+            </h5>
+
+            <small class="text-muted">
+              Select the user's geographical location
+            </small>
+
+          </div>
+
+        </div>
+
+        <!-- Section Body -->
+
+        <div class="section-body">
+
+          <!-- ============================================= -->
+          <!-- STATE + DISTRICT -->
+          <!-- ============================================= -->
+
+          <div class="row">
+
+            <!-- State -->
+
+            <div class="col-md-6 mb-3">
+
+              <label>
+                State
+                <span class="text-danger">*</span>
+              </label>
+
+              <select
+                class="form-control"
+                name="state_id"
+                [(ngModel)]="user.state_id"
+                #state_id="ngModel"
+                (change)="loadDistricts(user.state_id)"
+                required>
+
+                <option value>
+                  -- Select --
+                </option>
+
+                <option
+                  *ngFor="let s of states"
+                  [value]="s.id">
+                  {{ s.name }}
+                </option>
+
+              </select>
+
+              <small
+                class="text-danger"
+                *ngIf="
+                  userForm.submitted &&
+                  state_id.invalid
+                ">
+                State is required
+              </small>
+
+            </div>
+
+            <!-- District -->
+
+            <div class="col-md-6 mb-3">
+
+              <label>
+                District
+                <span class="text-danger">*</span>
+              </label>
+
+              <select
+                class="form-control"
+                name="district_id"
+                [(ngModel)]="user.district_id"
+                #district_id="ngModel"
+                (change)="loadAssemblies(user.district_id)"
+                required>
+
+                <option value>
+                  -- Select --
+                </option>
+
+                <option
+                  *ngFor="let d of districts"
+                  [value]="d.id">
+                  {{ d.name }}
+                </option>
+
+              </select>
+
+              <small
+                class="text-danger"
+                *ngIf="
+                  userForm.submitted &&
+                  district_id.invalid
+                ">
+                District is required
+              </small>
+
+            </div>
+
+          </div>
+
+          <!-- ============================================= -->
+          <!-- ASSEMBLY + MANDAL -->
+          <!-- ============================================= -->
+
+          <div class="row">
+
+            <!-- Assembly -->
+
+            <div class="col-md-6 mb-3">
+
+              <label>
+                Assembly
+              </label>
+
+              <select
+                class="form-control"
+                name="assembly_id"
+                [(ngModel)]="user.assembly_id"
+                #assembly_id="ngModel"
+                (change)="loadMandals(user.assembly_id)">
+
+                <option value>
+                  -- Select --
+                </option>
+
+                <option
+                  *ngFor="let a of assemblies"
+                  [value]="a.id">
+                  {{ a.name }}
+                </option>
+
+              </select>
+
+            </div>
+
+            <!-- Mandal -->
+
+            <div class="col-md-6 mb-3">
+
+              <label>
+                Mandal
+              </label>
+
+              <select
+                class="form-control"
+                name="mandal_id"
+                [(ngModel)]="user.mandal_id"
+                #mandal_id="ngModel"
+                (change)="loadVillages(user.mandal_id)">
+
+                <option value>
+                  -- Select --
+                </option>
+
+                <option
+                  *ngFor="let m of mandals"
+                  [value]="m.id">
+                  {{ m.name }}
+                </option>
+
+              </select>
+
+            </div>
+
+          </div>
+
+          <!-- ============================================= -->
+          <!-- VILLAGE + PROFILE IMAGE -->
+          <!-- ============================================= -->
+
+          <div class="row">
+
+            <!-- Village -->
+
+            <div class="col-md-6 mb-3">
+
+              <label>
+                Village
+              </label>
+
+              <select
+                class="form-control"
+                name="village_id"
+                [(ngModel)]="user.village_id"
+                #village_id="ngModel">
+
+                <option value>
+                  -- Select --
+                </option>
+
+                <option
+                  *ngFor="let v of villages"
+                  [value]="v.id">
+                  {{ v.name }}
+                </option>
+
+              </select>
+
+            </div>
+
+            
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- ================================================= -->
+      <!-- BIOGRAPHY DETAILS -->
+      <!-- ================================================= -->
+
+      <div class="form-section mb-4">
+
+        <!-- Section Header -->
+
+        <div class="section-header">
+
+          <div class="section-icon">
+            <i class="fas fa-user-edit"></i>
+          </div>
+
+          <div>
+
+            <h5 class="mb-0">
+              Biography Details
+            </h5>
+
+            <small class="text-muted">
+              Add personal information, about, interests
+              and achievements
+            </small>
+
+          </div>
+
+        </div>
+
+        <!-- Section Body -->
+
+        <div class="section-body">
+
+          <!-- ============================================= -->
+          <!-- PERSONAL INFORMATION -->
+          <!-- ============================================= -->
+
+          <div class="biography-field mb-4">
+
+            <label class="biography-label">
+
+              <i class="fas fa-user mr-1"></i>
+
+              Personal Information
+
+            </label>
 
             <ckeditor
-              name="bio_graphy"
+              name="personal_information"
               [editor]="Editor"
-              [(ngModel)]="user.bio_graphy"
+              [(ngModel)]="user.personal_information"
               [config]="editorConfig"
-              #description="ngModel"
-              required>
+              #personal_information="ngModel">
             </ckeditor>
+
           </div>
+
+          <!-- ============================================= -->
+          <!-- ABOUT -->
+          <!-- ============================================= -->
+
+          <div class="biography-field mb-4">
+
+            <label class="biography-label">
+
+              <i class="fas fa-info-circle mr-1"></i>
+
+              About
+
+            </label>
+
+            <ckeditor
+              name="about"
+              [editor]="Editor"
+              [(ngModel)]="user.about"
+              [config]="editorConfig"
+              #about="ngModel">
+            </ckeditor>
+
+          </div>
+
+          <!-- ============================================= -->
+          <!-- AREAS OF INTEREST -->
+          <!-- ============================================= -->
+
+          <div class="biography-field mb-4">
+
+            <label class="biography-label">
+
+              <i class="fas fa-heart mr-1"></i>
+
+              Areas of Interest
+
+            </label>
+
+            <ckeditor
+              name="areas_of_interest"
+              [editor]="Editor"
+              [(ngModel)]="user.areas_of_interest"
+              [config]="editorConfig"
+              #areas_of_interest="ngModel">
+            </ckeditor>
+
+          </div>
+
+          <!-- ============================================= -->
+          <!-- ACHIEVEMENTS -->
+          <!-- ============================================= -->
+
+          <div class="biography-field">
+
+            <label class="biography-label">
+
+              <i class="fas fa-trophy mr-1"></i>
+
+              Achievements
+
+            </label>
+
+            <ckeditor
+              name="achievements"
+              [editor]="Editor"
+              [(ngModel)]="user.achievements"
+              [config]="editorConfig"
+              #achievements="ngModel">
+            </ckeditor>
+
+          </div>
+
         </div>
+
       </div>
+
     </div>
 
+    <!-- ===================================================== -->
+    <!-- FORM FOOTER -->
+    <!-- ===================================================== -->
+
     <div class="card-footer d-flex align-items-center">
+
+      <!-- Save / Update -->
+
       <button
         type="submit"
         class="btn btn-primary mr-2"
         [disabled]="isSaving">
+
         <span *ngIf="isSaving">
+
           <i class="fas fa-spinner fa-spin mr-2"></i>
+
           {{ isEdit ? 'Updating...' : 'Saving...' }}
+
         </span>
 
         <span *ngIf="!isSaving">
+
           {{ isEdit ? 'Update' : 'Save' }}
+
         </span>
+
       </button>
 
-      <button type="button" class="btn btn-dark" (click)="handleBackBtn()">
+      <!-- Back -->
+
+      <button
+        type="button"
+        class="btn btn-dark"
+        (click)="handleBackBtn()">
+
         Back
+
       </button>
+
     </div>
+
   </form>
+
 </div>

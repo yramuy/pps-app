@@ -1,0 +1,216 @@
+<div class="card">
+  <!-- Header -->
+  <div class="card-header">
+    <h5 class="text-white mb-0">
+      <i class="fas fa-address-book mr-2"></i>
+      Contact Us
+    </h5>
+  </div>
+
+  <!-- Contact Us Form -->
+  <form
+    #contactForm="ngForm"
+    (ngSubmit)="saveContact(contactForm)"
+    enctype="multipart/form-data"
+    novalidate
+  >
+    <div class="card-body">
+      <!-- Message -->
+      <div *ngIf="isMessage" class="alert alert-danger">
+        {{ message }}
+      </div>
+
+      <!-- Loading Indicator -->
+      <div *ngIf="loading" class="text-center mb-3">
+        <div
+          class="spinner-border text-primary"
+          role="status"
+          aria-label="Loading"
+        ></div>
+        <p class="text-muted mt-2 mb-0">Please wait...</p>
+      </div>
+
+      <!-- Name and Email -->
+      <div class="row">
+        <!-- Name -->
+        <div class="col-md-6 mb-3">
+          <label for="name"> Name <span class="text-danger">*</span> </label>
+
+          <input
+            id="name"
+            type="text"
+            class="form-control"
+            name="name"
+            [(ngModel)]="contact.name"
+            #name="ngModel"
+            placeholder="Enter your name"
+            required
+            maxlength="100"
+            [disabled]="loading"
+          />
+
+          <small
+            class="text-danger"
+            *ngIf="contactForm.submitted && name.invalid"
+          >
+            Name is required.
+          </small>
+        </div>
+
+        <!-- Email -->
+        <div class="col-md-6 mb-3">
+          <label for="email"> Email <span class="text-danger">*</span> </label>
+
+          <input
+            id="email"
+            type="email"
+            class="form-control"
+            name="email"
+            [(ngModel)]="contact.email"
+            #email="ngModel"
+            placeholder="Enter your email"
+            required
+            email
+            maxlength="150"
+            [disabled]="loading"
+          />
+
+          <small
+            class="text-danger"
+            *ngIf="contactForm.submitted && email.invalid"
+          >
+            Please enter a valid email address.
+          </small>
+        </div>
+      </div>
+
+      <!-- Contact Number and Image -->
+      <div class="row">
+        <!-- Contact Number -->
+        <div class="col-md-6 mb-3">
+          <label for="contact_number">
+            Contact Number <span class="text-danger">*</span>
+          </label>
+
+          <input
+            id="contact_number"
+            type="tel"
+            class="form-control"
+            name="contact_number"
+            [(ngModel)]="contact.contact_number"
+            #contactNumber="ngModel"
+            placeholder="Enter contact number"
+            required
+            pattern="[0-9]{10}"
+            maxlength="10"
+            inputmode="numeric"
+            [disabled]="loading"
+          />
+
+          <small
+            class="text-danger"
+            *ngIf="contactForm.submitted && contactNumber.invalid"
+          >
+            Enter a valid 10-digit contact number.
+          </small>
+        </div>
+
+        <!-- Address -->
+
+        <div class="col-md-6 mb-3">
+          <label for="address">
+            Address <span class="text-danger">*</span>
+          </label>
+
+          <textarea
+            id="address"
+            class="form-control"
+            name="address"
+            [(ngModel)]="contact.address"
+            #address="ngModel"
+            rows="4"
+            placeholder="Enter address"
+            required
+            maxlength="500"
+            [disabled]="loading"
+          ></textarea>
+
+          <small
+            class="text-danger"
+            *ngIf="contactForm.submitted && address.invalid"
+          >
+            Address is required.
+          </small>
+        </div>
+      </div>
+
+      <div class="row">
+        <!-- Image Upload -->
+        <div class="col-md-6 mb-3">
+          <label for="image">Upload Image</label>
+
+          <input
+            #fileInput
+            id="image"
+            type="file"
+            class="form-control"
+            accept="image/jpeg,image/png,image/webp"
+            (change)="onImageChange($event)"
+            [disabled]="loading"
+          />
+
+          <small class="text-muted d-block mt-1">
+            Allowed formats: JPG, PNG, WEBP. Maximum size: 2 MB.
+          </small>
+
+          <!-- Image Preview -->
+          <div *ngIf="imagePreview" class="mt-3">
+            <label>Image Preview</label>
+
+            <div>
+              <img
+                [src]="imagePreview"
+                alt="Contact image preview"
+                class="img-thumbnail contact-image-preview"
+              />
+            </div>
+
+            <button
+              type="button"
+              class="btn btn-sm btn-outline-danger mt-2"
+              (click)="removeImage()"
+              [disabled]="loading"
+            >
+              <i class="fas fa-trash-alt mr-1"></i>
+              Remove Image
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="card-footer">
+      <!-- Save Button -->
+      <button type="submit" class="btn btn-primary mr-2" [disabled]="loading">
+        <i class="fas fa-save mr-1" *ngIf="!loading"></i>
+
+        <span *ngIf="!loading">Save</span>
+        <span *ngIf="loading">Please wait...</span>
+      </button>
+
+      <!-- Back Button (Optional) -->
+      <!--
+      <button
+        type="button"
+        class="btn btn-dark"
+        (click)="handleBackBtn()"
+        [disabled]="loading"
+      >
+        <i class="fas fa-arrow-left mr-1"></i>
+        Back
+      </button>
+      -->
+    </div>
+  </form>
+</div>
