@@ -1,5 +1,9 @@
 import { Component, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { AuthService } from 'src/app/services/auth.service';
+import { NotificationService } from 'src/app/services/notification.service';
 
 @Component({
   selector: 'app-website-header',
@@ -7,16 +11,51 @@ import { Router } from '@angular/router';
   styleUrls: ['./website-header.component.scss'],
 })
 export class WebsiteHeaderComponent {
-
   isScrolled = false;
   isMenuOpen = false;
-  activeSection = 'home';
+  isLogin: any = '';
+  private destroy$ = new Subject<void>();
 
-  constructor(private router: Router) {}
-
-  @HostListener('window:scroll', [])
+  @HostListener('window:scroll')
   onWindowScroll(): void {
     this.isScrolled = window.scrollY > 50;
+  }
+
+  constructor(
+    private notificationService: NotificationService,
+    private authService: AuthService,
+    private router: Router,
+  ) {}
+
+  ngOnInit(): void {
+    this.loadIsLogin();
+  }
+
+  loadIsLogin(): void {
+    this.isLogin = this.authService.isLoggedIn() ? 'LOGOUT' : 'LOGIN';
+  }
+
+  handleLoginClick(): void {
+    if (this.authService.isLoggedIn()) {
+      const confirmed = window.confirm('Are you sure you want to logout?');
+
+      if (!confirmed) {
+        return;
+      }
+
+      this.closeMenu();
+
+      this.authService.logout();
+      localStorage.clear();
+
+      // Navigate to Login page
+      this.router.navigate(['/admin/login']);
+    } else {
+      this.closeMenu();
+
+      // Navigate to Website
+      this.router.navigate(['/admin/login']);
+    }
   }
 
   toggleMenu(): void {
@@ -25,77 +64,5 @@ export class WebsiteHeaderComponent {
 
   closeMenu(): void {
     this.isMenuOpen = false;
-  }
-
-  goHome(): void {
-    this.closeMenu();
-    this.activeSection = 'home';
-
-    if (this.router.url !== '/') {
-      this.router.navigate(['/']).then(() => {
-        setTimeout(() => {
-          window.scrollTo({
-            top: 0,
-            left: 0,
-            behavior: 'smooth',
-          });
-        }, 100);
-      });
-    } else {
-      window.scrollTo({
-        top: 0,
-        left: 0,
-        behavior: 'smooth',
-      });
-    }
-  }
-
-  navigateToSection(section: string): void {
-    this.closeMenu();
-    this.activeSection = section;
-
-    // Already on Home page
-    if (this.router.url === '/' || this.router.url === '') {
-      setTimeout(() => {
-        this.scrollToSection(section);
-      }, 50);
-
-      return;
-    }
-
-    // Navigate to Home first
-    this.router.navigate(['/']).then(() => {
-      setTimeout(() => {
-        this.scrollToSection(section);
-      }, 300);
-    });
-  }
-
-  private scrollToSection(section: string): void {
-
-    const element = document.getElementById(section);
-
-    if (!element) {
-      console.warn(`Section not found: #${section}`);
-      return;
-    }
-
-    const header = document.getElementById('header');
-
-    const headerHeight = header
-      ? header.offsetHeight
-      : 0;
-
-    const elementPosition =
-      element.getBoundingClientRect().top + window.pageYOffset;
-
-    const scrollPosition =
-      elementPosition - headerHeight - 1;
-
-    window.scrollTo({
-      top: scrollPosition,
-      left: 0,
-      behavior: 'smooth',
-    });
   }
 }

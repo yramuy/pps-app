@@ -12,12 +12,13 @@ import { AuthService } from 'src/app/services/auth.service';
 export class IssueCreateComponent {
   message: string = '';
   isMessage: boolean = false;
-  @ViewChild('videoInput') videoInput!: ElementRef;
+  @ViewChild('videoInput') videoInput!: ElementRef<HTMLInputElement>;
 
   selectedVideo: File | null = null;
-  videoPreview: string = '';
-  existingVideoUrl: string = '';
-  removeExistingVideoFlag: boolean = false;
+  videoPreview = '';
+  existingVideoUrl = '';
+  existingVideoName = '';
+  removeExistingVideoFlag = false;
 
   states: any = [];
   districts: any = [];
@@ -55,7 +56,6 @@ export class IssueCreateComponent {
   isSaving: boolean = false;
 
   @ViewChild('fileInput') fileInput!: ElementRef;
-  
 
   constructor(
     private apiService: ApiService,
@@ -94,7 +94,7 @@ export class IssueCreateComponent {
     });
   }
 
-  onVideoChange(event: Event) {
+  onVideoChange(event: Event): void {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
 
@@ -103,21 +103,20 @@ export class IssueCreateComponent {
     }
 
     if (!file.type.startsWith('video/')) {
-      alert('Please select a valid video file.');
+      this.showMessage('Please select a valid video file.');
       input.value = '';
       return;
     }
 
-    // Optional: Maximum video size of 50 MB
     const maxSize = 50 * 1024 * 1024;
 
     if (file.size > maxSize) {
-      alert('Video size must not exceed 50 MB.');
+      this.showMessage('Video size must not exceed 50 MB.');
       input.value = '';
       return;
     }
 
-    // Release the previous preview URL
+    // Release the previous preview
     if (this.videoPreview) {
       URL.revokeObjectURL(this.videoPreview);
     }
@@ -125,20 +124,29 @@ export class IssueCreateComponent {
     this.selectedVideo = file;
     this.videoPreview = URL.createObjectURL(file);
 
+    // A newly selected video replaces the existing video
+    this.removeExistingVideoFlag = false;
+
+    // Allow selecting the same file again
     input.value = '';
   }
 
-  removeSelectedVideo() {
+  removeSelectedVideo(): void {
     if (this.videoPreview) {
       URL.revokeObjectURL(this.videoPreview);
     }
 
     this.selectedVideo = null;
     this.videoPreview = '';
+
+    if (this.videoInput) {
+      this.videoInput.nativeElement.value = '';
+    }
   }
 
-  removeExistingVideo() {
+  removeExistingVideo(): void {
     this.existingVideoUrl = '';
+    this.existingVideoName = '';
     this.removeExistingVideoFlag = true;
   }
 
@@ -152,6 +160,12 @@ export class IssueCreateComponent {
 
     this.apiService.request('POST', '/issueDataById', payload).subscribe({
       next: (res: any) => {
+        const issueData = res.issueData || {};
+
+        // Load existing video
+        this.existingVideoName = issueData.video || '';
+        this.existingVideoUrl = issueData.video_url || '';
+        this.removeExistingVideoFlag = false;
         this.issue_images = res.issue_images || [];
 
         this.existingImages = (res.issue_images || []).map(
@@ -362,15 +376,26 @@ export class IssueCreateComponent {
     formData.append('comment', 'New issue created');
     formData.append('created_by', this.loginUser?.userId ?? '');
 
-    // Existing images in edit mode
+    // Existing images
     this.existingImages.forEach((img) => {
       formData.append('existing_images[]', img);
     });
 
-    // New uploaded images
+    // Newly selected images
     this.selectedFiles.forEach((file) => {
       formData.append('images[]', file);
     });
+
+    // Newly selected video file
+    if (this.selectedVideo) {
+      formData.append('video', this.selectedVideo);
+    }
+
+    // Existing video removal flag
+    formData.append(
+      'remove_existing_video',
+      this.removeExistingVideoFlag ? '1' : '0',
+    );
 
     console.log('FormData values:');
 

@@ -48,6 +48,7 @@ import { LeaderBiographyComponent } from './back-end/components/leader-biography
 import { AccountComponent } from './back-end/components/account/account.component';
 import { ContactUsComponent } from './front-end/components/contact-us/contact-us.component';
 import { ContactFormComponent } from './back-end/components/contact-form/contact-form.component';
+import { HeroComponent } from './front-end/components/hero/hero.component';
 
 const routes: Routes = [
   // Admin Login

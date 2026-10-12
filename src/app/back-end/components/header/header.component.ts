@@ -384,17 +384,12 @@ export class HeaderComponent
   }
 
   // =========================
-  // Go To Website
-  // =========================
+// Go To Website
+// =========================
 
-  goToWebsite(): void {
-
-    this.authService.logout();
-
-    localStorage.clear();
-
-    this.router.navigate(['/']);
-  }
+goToWebsite(): void {
+  window.open('/', '_blank');
+}
 
   // =========================
   // Settings

@@ -3,8 +3,12 @@
     <h5 class="text-white">{{ isEdit ? "Update Issue" : "Add Issue" }}</h5>
   </div>
 
-  <form #issueForm="ngForm" (ngSubmit)="saveIssue(issueForm)"
-    enctype="multipart/form-data" novalidate>
+  <form
+    #issueForm="ngForm"
+    (ngSubmit)="saveIssue(issueForm)"
+    enctype="multipart/form-data"
+    novalidate
+  >
     <div class="card-body">
       <div *ngIf="isMessage" class="alert alert-danger">
         {{ message }}
@@ -18,14 +22,17 @@
             name="category_id"
             [(ngModel)]="issue.category_id"
             #category_id="ngModel"
-            required>
+            required
+          >
             <option value>-- Select --</option>
             <option *ngFor="let r of categories" [value]="r.id">
               {{ r.name }}
             </option>
           </select>
-          <small class="text-danger"
-            *ngIf="issueForm.submitted && category_id.invalid">
+          <small
+            class="text-danger"
+            *ngIf="issueForm.submitted && category_id.invalid"
+          >
             Category is required
           </small>
         </div>
@@ -38,9 +45,12 @@
             name="issue_title"
             [(ngModel)]="issue.issue_title"
             #issue_title="ngModel"
-            required />
-          <small class="text-danger"
-            *ngIf="issueForm.submitted && issue_title.invalid">
+            required
+          />
+          <small
+            class="text-danger"
+            *ngIf="issueForm.submitted && issue_title.invalid"
+          >
             Issue Title is required
           </small>
         </div>
@@ -57,19 +67,19 @@
             name="post_date"
             [(ngModel)]="issue.post_date"
             #post_date="ngModel"
-            required />
+            required
+          />
 
           <small
             class="text-danger"
-            *ngIf="issueForm.submitted && post_date.invalid">
+            *ngIf="issueForm.submitted && post_date.invalid"
+          >
             Post Date is required
           </small>
         </div>
-
       </div>
 
       <div class="row">
-
         <div class="col-12 mb-3">
           <label>Issue Description *</label>
           <textarea
@@ -78,13 +88,15 @@
             [(ngModel)]="issue.issue_description"
             #issue_description="ngModel"
             rows="4"
-            required></textarea>
-          <small class="text-danger"
-            *ngIf="issueForm.submitted && issue_description.invalid">
+            required
+          ></textarea>
+          <small
+            class="text-danger"
+            *ngIf="issueForm.submitted && issue_description.invalid"
+          >
             Issue Description is required
           </small>
         </div>
-
       </div>
 
       <div class="row">
@@ -96,14 +108,17 @@
             [(ngModel)]="issue.state_id"
             #state_id="ngModel"
             (change)="loadDistricts(issue.state_id)"
-            required>
+            required
+          >
             <option value>-- Select --</option>
             <option *ngFor="let s of states" [value]="s.id">
               {{ s.name }}
             </option>
           </select>
-          <small class="text-danger"
-            *ngIf="issueForm.submitted && state_id.invalid">
+          <small
+            class="text-danger"
+            *ngIf="issueForm.submitted && state_id.invalid"
+          >
             State is required
           </small>
         </div>
@@ -116,14 +131,17 @@
             [(ngModel)]="issue.district_id"
             #district_id="ngModel"
             (change)="loadAssemblies(issue.district_id)"
-            required>
+            required
+          >
             <option value>-- Select --</option>
             <option *ngFor="let d of districts" [value]="d.id">
               {{ d.name }}
             </option>
           </select>
-          <small class="text-danger"
-            *ngIf="issueForm.submitted && district_id.invalid">
+          <small
+            class="text-danger"
+            *ngIf="issueForm.submitted && district_id.invalid"
+          >
             District is required
           </small>
         </div>
@@ -138,14 +156,17 @@
             [(ngModel)]="issue.assembly_id"
             #assembly_id="ngModel"
             (change)="loadMandals(issue.assembly_id)"
-            required>
+            required
+          >
             <option value>-- Select --</option>
             <option *ngFor="let a of assemblies" [value]="a.id">
               {{ a.name }}
             </option>
           </select>
-          <small class="text-danger"
-            *ngIf="issueForm.submitted && assembly_id.invalid">
+          <small
+            class="text-danger"
+            *ngIf="issueForm.submitted && assembly_id.invalid"
+          >
             Assembly is required
           </small>
         </div>
@@ -157,7 +178,8 @@
             name="mandal_id"
             [(ngModel)]="issue.mandal_id"
             #mandal_id="ngModel"
-            (change)="loadVillages(issue.mandal_id)">
+            (change)="loadVillages(issue.mandal_id)"
+          >
             <option value>-- Select --</option>
             <option *ngFor="let m of mandals" [value]="m.id">
               {{ m.name }}
@@ -174,7 +196,8 @@
             name="village_id"
             [(ngModel)]="issue.village_id"
             #village_id="ngModel"
-            (change)="loadRepresentatives()">
+            (change)="loadRepresentatives()"
+          >
             <option value>-- Select --</option>
             <option *ngFor="let v of villages" [value]="v.id">
               {{ v.name }}
@@ -189,15 +212,20 @@
             name="assigned_to"
             [(ngModel)]="issue.assigned_to"
             #assigned_to="ngModel"
-            required>
+            required
+          >
             <option value>-- Select --</option>
-            <option *ngFor="let representative of representatives"
-              [value]="representative.id">
+            <option
+              *ngFor="let representative of representatives"
+              [value]="representative.id"
+            >
               {{ representative.full_name }} - {{ representative.role }}
             </option>
           </select>
-          <small class="text-danger"
-            *ngIf="issueForm.submitted && assigned_to.invalid">
+          <small
+            class="text-danger"
+            *ngIf="issueForm.submitted && assigned_to.invalid"
+          >
             Tag Representative is required
           </small>
         </div>
@@ -212,51 +240,61 @@
             class="form-control"
             accept="image/*"
             multiple
-            (change)="onFileChange($event)" />
+            (change)="onFileChange($event)"
+          />
 
           <small
             class="text-danger"
-            *ngIf="issueForm.submitted && imagePreviews.length === 0 && existingImages.length === 0">
+            *ngIf="
+              issueForm.submitted &&
+              imagePreviews.length === 0 &&
+              existingImages.length === 0
+            "
+          >
             At least one issue picture is required
           </small>
 
-          <div *ngIf="existingImages.length || imagePreviews.length"
-            class="mt-2">
+          <div
+            *ngIf="existingImages.length || imagePreviews.length"
+            class="mt-2"
+          >
             <div class="d-flex flex-wrap align-items-start gap-3">
-
               <!-- Existing Images -->
               <div *ngFor="let img of existingImages" class="text-center">
                 <img
                   [src]="img"
                   class="img-thumbnail"
-                  style="width:120px; height:120px; object-fit:cover;">
+                  style="width: 120px; height: 120px; object-fit: cover"
+                />
               </div>
 
               <!-- Uploaded Images -->
-              <div *ngFor="let img of imagePreviews; let i = index"
-                class="text-center">
+              <div
+                *ngFor="let img of imagePreviews; let i = index"
+                class="text-center"
+              >
                 <img
                   [src]="img"
                   class="img-thumbnail"
-                  style="width:120px; height:120px; object-fit:cover;">
+                  style="width: 120px; height: 120px; object-fit: cover"
+                />
 
                 <button
                   type="button"
                   class="btn btn-danger btn-sm mt-2 w-100"
-                  (click)="removeSelectedImage(i)">
+                  (click)="removeSelectedImage(i)"
+                >
                   Remove
                 </button>
               </div>
-
             </div>
           </div>
         </div>
-
       </div>
 
       <!-- Issue Video Upload -->
       <div class="row">
-        <div class="col-6 mb-3">
+        <div class="col-12 col-md-6 mb-3">
           <label>Issue Video</label>
 
           <input
@@ -264,10 +302,11 @@
             #videoInput
             class="form-control"
             accept="video/*"
-            (change)="onVideoChange($event)" />
+            (change)="onVideoChange($event)"
+          />
 
           <small class="form-text text-muted">
-            Upload a video related to the issue.
+            Maximum video size: 50 MB.
           </small>
 
           <!-- Existing Video -->
@@ -278,18 +317,22 @@
               [src]="existingVideoUrl"
               controls
               preload="metadata"
-              class="issue-video-preview">
-            </video>
+              class="issue-video-preview"
+            ></video>
 
-            <button
-              type="button"
-              class="btn btn-danger btn-sm mt-2"
-              (click)="removeExistingVideo()">
-              <i class="fas fa-trash mr-1"></i> Remove Video
-            </button>
+            <div class="mt-2">
+              <button
+                type="button"
+                class="btn btn-danger btn-sm"
+                (click)="removeExistingVideo()"
+              >
+                <i class="fas fa-trash mr-1"></i>
+                Remove Existing Video
+              </button>
+            </div>
           </div>
 
-          <!-- Selected Video Preview -->
+          <!-- New Video Preview -->
           <div *ngIf="videoPreview" class="mt-3">
             <label>Selected Video</label>
 
@@ -297,27 +340,26 @@
               [src]="videoPreview"
               controls
               preload="metadata"
-              class="issue-video-preview">
-            </video>
+              class="issue-video-preview"
+            ></video>
 
-            <button
-              type="button"
-              class="btn btn-danger btn-sm mt-2"
-              (click)="removeSelectedVideo()">
-              <i class="fas fa-trash mr-1"></i> Remove Video
-            </button>
+            <div class="mt-2">
+              <button
+                type="button"
+                class="btn btn-danger btn-sm"
+                (click)="removeSelectedVideo()"
+              >
+                <i class="fas fa-trash mr-1"></i>
+                Remove Selected Video
+              </button>
+            </div>
           </div>
         </div>
       </div>
-
     </div>
 
     <div class="card-footer d-flex align-items-center">
-      <button
-        type="submit"
-        class="btn btn-primary mr-2"
-        [disabled]="isSaving">
-
+      <button type="submit" class="btn btn-primary mr-2" [disabled]="isSaving">
         <span *ngIf="isSaving">
           <i class="fas fa-spinner fa-spin mr-2"></i>
           {{ isEdit ? "Updating..." : "Saving..." }}
@@ -326,7 +368,6 @@
         <span *ngIf="!isSaving">
           {{ isEdit ? "Update" : "Save" }}
         </span>
-
       </button>
 
       <button type="button" class="btn btn-dark" (click)="handleBackBtn()">

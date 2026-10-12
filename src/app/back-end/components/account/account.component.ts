@@ -25,7 +25,7 @@ export class AccountComponent {
   // Biography
   // =========================
   biography: any = {
-    fullName: '',
+    full_name: '',
     profilePic: '',
     roleName: '',
     state: '',

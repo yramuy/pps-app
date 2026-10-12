@@ -1,69 +1,55 @@
-<!-- Header -->
 <header id="header" [class.scrolled]="isScrolled">
-
   <div class="container">
-
     <!-- Logo -->
-    <a routerLink="/" class="logo" (click)="goHome()">
-      <p class="fs-5 d-flex align-items-center mb-0 fw-bold text-white">
-        <img
-          src="assets/images/pps-main-logo.png"
-          alt="Logo"
-          width="80"
-          class="me-2" />
-      </p>
+    <a routerLink="/" class="logo" (click)="closeMenu()">
+      <img src="assets/images/pps-main-logo.png" alt="PPS Logo" width="80" />
     </a>
 
     <!-- Navigation -->
     <nav id="desktopNav" [class.active]="isMenuOpen">
-
       <a
-        href="javascript:void(0)"
-        [class.active]="activeSection === 'home'"
-        (click)="navigateToSection('home')">
+        routerLink="/"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        (click)="closeMenu()"
+      >
         Home
       </a>
 
-      <a
-        href="javascript:void(0)"
-        [class.active]="activeSection === 'about'"
-        (click)="navigateToSection('about')">
-        About Us
+      <a routerLink="/issues" routerLinkActive="active" (click)="closeMenu()">
+        Issues
       </a>
 
-      <a
-        href="javascript:void(0)"
-        [class.active]="activeSection === 'schemes'"
-        (click)="navigateToSection('schemes')">
+      <a routerLink="/schemes" routerLinkActive="active" (click)="closeMenu()">
         Schemes
       </a>
 
       <a
-        href="javascript:void(0)"
-        [class.active]="activeSection === 'issues'"
-        (click)="navigateToSection('issues')">
-        Issues
-      </a>
-
-      <a
-        href="javascript:void(0)"
-        [class.active]="activeSection === 'vip-profiles'"
-        (click)="navigateToSection('vip-profiles')">
+        routerLink="/vip-profiles"
+        routerLinkActive="active"
+        (click)="closeMenu()"
+      >
         VIP Profiles
       </a>
 
+      <a routerLink="/about" routerLinkActive="active" (click)="closeMenu()">
+        About Us
+      </a>
+
       <a
-        href="javascript:void(0)"
-        [class.active]="activeSection === 'contact-us'"
-        (click)="navigateToSection('contact')">
+        routerLink="/contact-us"
+        routerLinkActive="active"
+        (click)="closeMenu()"
+      >
         Contact Us
       </a>
 
       <a
-        routerLink="/admin/login"
+        href="javascript:void(0)"
         class="button-login px-3 py-2"
-        (click)="closeMenu()">
-        Login
+        (click)="handleLoginClick()"
+      >
+        {{ isLogin }}
       </a>
 
     </nav>
@@ -72,19 +58,13 @@
     <button
       class="menu-btn"
       type="button"
-      (click)="toggleMenu()">
-
+      aria-label="Toggle navigation menu"
+      [attr.aria-expanded]="isMenuOpen"
+      (click)="toggleMenu()"
+    >
       <span></span>
       <span></span>
       <span></span>
-
     </button>
-
   </div>
-
 </header>
-
-<!-- Header Components -->
-<!-- <app-hero></app-hero> -->
-
-<!-- <app-brand-marquee></app-brand-marquee> -->
