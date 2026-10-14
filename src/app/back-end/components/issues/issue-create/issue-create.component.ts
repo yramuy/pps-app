@@ -45,6 +45,7 @@ export class IssueCreateComponent {
     master_id: '9',
     mode: 'web',
     post_date: '',
+    // priority: '',
   };
 
   isEdit: boolean = false;
@@ -63,36 +64,294 @@ export class IssueCreateComponent {
     private router: Router,
   ) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.loadStates();
     this.loadCategories();
 
+    // Default current date for a new issue
+    this.issue.post_date = this.getCurrentDate();
+
     const state: any = history.state;
 
-    if (state.issue) {
-      this.issue = state.issue;
+    if (state?.issue) {
       this.isEdit = true;
 
-      if (this.issue.issue_pic) {
-        if (Array.isArray(this.issue.issue_pic)) {
-          this.existingImages = this.issue.issue_pic;
-        } else if (typeof this.issue.issue_pic === 'string') {
-          this.existingImages = [this.issue.issue_pic];
-        }
+      // Copy the issue instead of keeping the original object reference.
+      this.issue = {
+        ...this.issue,
+        ...state.issue,
+      };
+
+      // Keep the existing post date in edit mode
+      this.issue.post_date = state.issue.post_date || this.getCurrentDate();
+
+      // this.issue.priority = state.issue.priority ?? '';
+
+      this.issue.state_id = this.toId(this.issue.state_id);
+      this.issue.district_id = this.toId(this.issue.district_id);
+      this.issue.assembly_id = this.toId(this.issue.assembly_id);
+      this.issue.mandal_id = this.toId(this.issue.mandal_id);
+      this.issue.village_id = this.toId(this.issue.village_id);
+      this.issue.assigned_to = this.toId(this.issue.assigned_to);
+
+      if (Array.isArray(this.issue.issue_pic)) {
+        this.existingImages = [...this.issue.issue_pic];
+      } else if (
+        typeof this.issue.issue_pic === 'string' &&
+        this.issue.issue_pic
+      ) {
+        this.existingImages = [this.issue.issue_pic];
       }
 
       this.loadViewIssueDeta(this.issue.id);
-
-      this.loadDistricts(this.issue.state_id);
-      this.loadAssemblies(this.issue.district_id);
-      this.loadMandals(this.issue.assembly_id);
-      this.loadVillages(this.issue.mandal_id);
+      this.loadEditLocationData();
     }
 
     this.authService.user$.subscribe((user: any) => {
       this.loginUser = user;
     });
   }
+
+  private getCurrentDate(): string {
+    const today = new Date();
+
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
+  }
+
+  private toId(value: any): string {
+    return value === null || value === undefined ? '' : String(value);
+  }
+
+  loadEditLocationData(): void {
+    const stateId = this.toId(this.issue.state_id);
+    const districtId = this.toId(this.issue.district_id);
+    const assemblyId = this.toId(this.issue.assembly_id);
+    const mandalId = this.toId(this.issue.mandal_id);
+    const villageId = this.toId(this.issue.village_id);
+    const assignedTo = this.toId(this.issue.assigned_to);
+
+    const loadDependentData = (
+      masterId: number,
+      parentId: string,
+      callback: (items: any[]) => void,
+    ): void => {
+      if (!parentId) {
+        callback([]);
+        return;
+      }
+
+      this.apiService
+        .request(
+          'POST',
+          '/dependanceMasterData',
+          JSON.stringify({
+            master_id: masterId,
+            dropdown_id: parentId,
+            mode: 'web',
+          }),
+        )
+        .subscribe({
+          next: (res: any) => {
+            callback(
+              (res.dependance_master_data || []).map((item: any) => ({
+                ...item,
+                id: this.toId(item.id),
+              })),
+            );
+          },
+          error: (err: any) => {
+            console.error(`Failed to load master ${masterId}:`, err);
+            callback([]);
+          },
+        });
+    };
+
+    this.issue.state_id = stateId;
+
+    loadDependentData(3, stateId, (districts) => {
+      this.districts = districts;
+      this.issue.district_id = districtId;
+
+      loadDependentData(4, districtId, (assemblies) => {
+        this.assemblies = assemblies;
+        this.issue.assembly_id = assemblyId;
+
+        loadDependentData(5, assemblyId, (mandals) => {
+          this.mandals = mandals;
+          this.issue.mandal_id = mandalId;
+
+          loadDependentData(6, mandalId, (villages) => {
+            this.villages = villages;
+            this.issue.village_id = villageId;
+            this.issue.assigned_to = assignedTo;
+
+            // Load representatives after the location is restored.
+            this.loadRepresentatives();
+          });
+        });
+      });
+    });
+  }
+
+  loadDistricts(stateId: any): void {
+    this.issue.state_id = this.toId(stateId);
+    this.issue.district_id = '';
+    this.issue.assembly_id = '';
+    this.issue.mandal_id = '';
+    this.issue.village_id = '';
+
+    this.districts = [];
+    this.assemblies = [];
+    this.mandals = [];
+    this.villages = [];
+    this.representatives = [];
+
+    if (!stateId) return;
+
+    this.apiService
+      .request(
+        'POST',
+        '/dependanceMasterData',
+        JSON.stringify({
+          master_id: 3,
+          dropdown_id: stateId,
+          mode: 'web',
+        }),
+      )
+      .subscribe({
+        next: (res: any) => {
+          this.districts = (res.dependance_master_data || []).map(
+            (item: any) => ({ ...item, id: this.toId(item.id) }),
+          );
+        },
+        error: (err: any) => console.error('District loading failed:', err),
+      });
+  }
+
+  loadAssemblies(districtId: any): void {
+    this.issue.district_id = this.toId(districtId);
+    this.issue.assembly_id = '';
+    this.issue.mandal_id = '';
+    this.issue.village_id = '';
+
+    this.assemblies = [];
+    this.mandals = [];
+    this.villages = [];
+    this.representatives = [];
+
+    if (!districtId) return;
+
+    this.apiService
+      .request(
+        'POST',
+        '/dependanceMasterData',
+        JSON.stringify({
+          master_id: 4,
+          dropdown_id: districtId,
+          mode: 'web',
+        }),
+      )
+      .subscribe({
+        next: (res: any) => {
+          this.assemblies = (res.dependance_master_data || []).map(
+            (item: any) => ({ ...item, id: this.toId(item.id) }),
+          );
+
+          this.loadRepresentatives();
+        },
+
+        
+        
+        error: (err: any) => console.error('Assembly loading failed:', err),
+      });
+  }
+
+  loadMandals(assemblyId: any): void {
+    this.issue.assembly_id = this.toId(assemblyId);
+    this.issue.mandal_id = '';
+    this.issue.village_id = '';
+
+    this.mandals = [];
+    this.villages = [];
+    this.representatives = [];
+
+    if (!assemblyId) return;
+
+    this.apiService
+      .request(
+        'POST',
+        '/dependanceMasterData',
+        JSON.stringify({
+          master_id: 5,
+          dropdown_id: assemblyId,
+          mode: 'web',
+        }),
+      )
+      .subscribe({
+        next: (res: any) => {
+          this.mandals = (res.dependance_master_data || []).map(
+            (item: any) => ({ ...item, id: this.toId(item.id) }),
+          );
+
+          this.loadRepresentatives();
+        },
+        error: (err: any) => console.error('Mandal loading failed:', err),
+      });
+  }
+
+  loadVillages(mandalId: any): void {
+    this.issue.mandal_id = this.toId(mandalId);
+    this.issue.village_id = '';
+
+    this.villages = [];
+    this.representatives = [];
+
+    if (!mandalId) return;
+
+    this.apiService
+      .request(
+        'POST',
+        '/dependanceMasterData',
+        JSON.stringify({
+          master_id: 6,
+          dropdown_id: mandalId,
+          mode: 'web',
+        }),
+      )
+      .subscribe({
+        next: (res: any) => {
+          this.villages = (res.dependance_master_data || []).map(
+            (item: any) => ({ ...item, id: this.toId(item.id) }),
+          );
+        },
+        error: (err: any) => console.error('Village loading failed:', err),
+      });
+  }
+
+  // loadRepresentatives(): void {
+  //   this.apiService.request(
+  //     'POST',
+  //     '/usersListByLocation',
+  //     JSON.stringify({
+  //       state_id: this.issue.state_id,
+  //       district_id: this.issue.district_id,
+  //       assembly_id: this.issue.assembly_id,
+  //       mandal_id: this.issue.mandal_id,
+  //       village_id: this.issue.village_id
+  //     })
+  //   ).subscribe({
+  //     next: (res: any) => {
+  //       this.representatives = (res.usersList || []).map(
+  //         (item: any) => ({ ...item, id: this.toId(item.id) })
+  //       );
+  //     },
+  //     error: (err: any) => console.error('Representative loading failed:', err)
+  //   });
+  // }
 
   onVideoChange(event: Event): void {
     const input = event.target as HTMLInputElement;
@@ -150,27 +409,42 @@ export class IssueCreateComponent {
     this.removeExistingVideoFlag = true;
   }
 
-  loadViewIssueDeta(issueID: any) {
+  loadViewIssueDeta(issueID: any): void {
     const payload = {
       is_token: '1',
       issue_id: issueID,
     };
 
-    console.log('Issue API Payload:', payload);
-
     this.apiService.request('POST', '/issueDataById', payload).subscribe({
       next: (res: any) => {
         const issueData = res.issueData || {};
 
-        // Load existing video
+        // Preserve form values while filling missing detail fields.
+        this.issue = {
+          ...this.issue,
+          ...issueData,
+        };
+
+        // Normalize dropdown IDs.
+        this.issue.state_id = this.toId(this.issue.state_id);
+        this.issue.district_id = this.toId(this.issue.district_id);
+        this.issue.assembly_id = this.toId(this.issue.assembly_id);
+        this.issue.mandal_id = this.toId(this.issue.mandal_id);
+        this.issue.village_id = this.toId(this.issue.village_id);
+        this.issue.assigned_to = this.toId(this.issue.assigned_to);
+
         this.existingVideoName = issueData.video || '';
         this.existingVideoUrl = issueData.video_url || '';
         this.removeExistingVideoFlag = false;
-        this.issue_images = res.issue_images || [];
 
-        this.existingImages = (res.issue_images || []).map(
-          (img: any) => img.img_url,
-        );
+        this.issue_images = res.issue_images || [];
+        this.existingImages = this.issue_images.map((img: any) => img.img_url);
+
+        // Load options only after the complete issue data is available.
+        this.loadEditLocationData();
+      },
+      error: (err: any) => {
+        console.error('Failed to load issue details:', err);
       },
     });
   }
@@ -255,77 +529,77 @@ export class IssueCreateComponent {
       });
   }
 
-  loadDistricts(stateId: any) {
-    this.loadRepresentatives();
+  // loadDistricts(stateId: any) {
+  //   this.loadRepresentatives();
 
-    this.apiService
-      .request(
-        'POST',
-        '/dependanceMasterData',
-        JSON.stringify({
-          master_id: 3,
-          dropdown_id: stateId,
-          mode: 'web',
-        }),
-      )
-      .subscribe((res: { dependance_master_data: never[] }) => {
-        this.districts = res.dependance_master_data || [];
-      });
-  }
+  //   this.apiService
+  //     .request(
+  //       'POST',
+  //       '/dependanceMasterData',
+  //       JSON.stringify({
+  //         master_id: 3,
+  //         dropdown_id: stateId,
+  //         mode: 'web',
+  //       }),
+  //     )
+  //     .subscribe((res: { dependance_master_data: never[] }) => {
+  //       this.districts = res.dependance_master_data || [];
+  //     });
+  // }
 
-  loadAssemblies(districtId: any) {
-    this.loadRepresentatives();
+  // loadAssemblies(districtId: any) {
+  //   this.loadRepresentatives();
 
-    this.apiService
-      .request(
-        'POST',
-        '/dependanceMasterData',
-        JSON.stringify({
-          master_id: 4,
-          dropdown_id: districtId,
-          mode: 'web',
-        }),
-      )
-      .subscribe((res: { dependance_master_data: never[] }) => {
-        this.assemblies = res.dependance_master_data || [];
-      });
-  }
+  //   this.apiService
+  //     .request(
+  //       'POST',
+  //       '/dependanceMasterData',
+  //       JSON.stringify({
+  //         master_id: 4,
+  //         dropdown_id: districtId,
+  //         mode: 'web',
+  //       }),
+  //     )
+  //     .subscribe((res: { dependance_master_data: never[] }) => {
+  //       this.assemblies = res.dependance_master_data || [];
+  //     });
+  // }
 
-  loadMandals(assemblyId: any) {
-    this.loadRepresentatives();
+  // loadMandals(assemblyId: any) {
+  //   this.loadRepresentatives();
 
-    this.apiService
-      .request(
-        'POST',
-        '/dependanceMasterData',
-        JSON.stringify({
-          master_id: 5,
-          dropdown_id: assemblyId,
-          mode: 'web',
-        }),
-      )
-      .subscribe((res: { dependance_master_data: never[] }) => {
-        this.mandals = res.dependance_master_data || [];
-      });
-  }
+  //   this.apiService
+  //     .request(
+  //       'POST',
+  //       '/dependanceMasterData',
+  //       JSON.stringify({
+  //         master_id: 5,
+  //         dropdown_id: assemblyId,
+  //         mode: 'web',
+  //       }),
+  //     )
+  //     .subscribe((res: { dependance_master_data: never[] }) => {
+  //       this.mandals = res.dependance_master_data || [];
+  //     });
+  // }
 
-  loadVillages(mandalId: any) {
-    this.loadRepresentatives();
+  // loadVillages(mandalId: any) {
+  //   this.loadRepresentatives();
 
-    this.apiService
-      .request(
-        'POST',
-        '/dependanceMasterData',
-        JSON.stringify({
-          master_id: 6,
-          dropdown_id: mandalId,
-          mode: 'web',
-        }),
-      )
-      .subscribe((res: { dependance_master_data: never[] }) => {
-        this.villages = res.dependance_master_data || [];
-      });
-  }
+  //   this.apiService
+  //     .request(
+  //       'POST',
+  //       '/dependanceMasterData',
+  //       JSON.stringify({
+  //         master_id: 6,
+  //         dropdown_id: mandalId,
+  //         mode: 'web',
+  //       }),
+  //     )
+  //     .subscribe((res: { dependance_master_data: never[] }) => {
+  //       this.villages = res.dependance_master_data || [];
+  //     });
+  // }
 
   loadRepresentatives() {
     this.apiService

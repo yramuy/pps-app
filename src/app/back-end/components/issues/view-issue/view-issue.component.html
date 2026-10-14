@@ -9,7 +9,8 @@
       <div
         id="pageLoader"
         *ngIf="loader.loading$ | async"
-        class="text-center my-3">
+        class="text-center my-3"
+      >
         <div class="spinner-border text-primary"></div>
       </div>
 
@@ -36,27 +37,38 @@
               id="issueImageCarousel"
               class="carousel slide"
               data-ride="carousel"
-              data-interval="3000">
+              data-interval="3000"
+            >
               <div class="carousel-inner rounded">
                 <div
                   class="carousel-item"
                   *ngFor="let img of issue_images; let i = index"
-                  [class.active]="i === 0">
+                  [class.active]="i === 0"
+                >
                   <img
                     [src]="img.img_url"
                     class="d-block w-100"
-                    style="height: 450px; object-fit: cover" />
+                    style="height: 450px; object-fit: cover"
+                  />
                 </div>
               </div>
 
-              <a class="carousel-control-prev custom-carousel-btn"
-                href="#issueImageCarousel" role="button" data-slide="prev">
-                <span style="font-size: 18px; color: #333;">&#10094;</span>
+              <a
+                class="carousel-control-prev custom-carousel-btn"
+                href="#issueImageCarousel"
+                role="button"
+                data-slide="prev"
+              >
+                <span style="font-size: 18px; color: #333">&#10094;</span>
               </a>
 
-              <a class="carousel-control-next custom-carousel-btn"
-                href="#issueImageCarousel" role="button" data-slide="next">
-                <span style="font-size: 18px; color: #333;">&#10095;</span>
+              <a
+                class="carousel-control-next custom-carousel-btn"
+                href="#issueImageCarousel"
+                role="button"
+                data-slide="next"
+              >
+                <span style="font-size: 18px; color: #333">&#10095;</span>
               </a>
             </div>
           </div>
@@ -72,16 +84,69 @@
               <span class="d-flex align-items-center gap-2">
                 <!-- 👉 gap between icon & text -->
                 <i class="fa fa-map-marker-alt text-danger"></i>
-                <span style="margin-left: 3px;">{{ getLocation() }}</span>
+                <span style="margin-left: 3px">{{ getLocation() }}</span>
               </span>
 
               <!-- Views -->
-              <span class="d-flex align-items-center gap-2"
-                style="margin-left: 20px;">
+              <span
+                class="d-flex align-items-center gap-2"
+                style="margin-left: 20px"
+              >
                 <!-- 👉 gap between icon & text -->
                 <i class="fa fa-user text-primary"></i>
-                <span style="margin-left: 3px;">{{ views || 0 }} views</span>
+                <span style="margin-left: 3px">{{ views || 0 }} views</span>
               </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Voting Buttons with Counts -->
+        <div class="row mb-4">
+          <div class="col-12">
+            <div class="d-flex flex-wrap align-items-center gap-3">
+              <!-- Vote Label -->
+              <span class="vote-label">
+                <i class="fas fa-vote-yea me-1"></i>
+                Vote:
+              </span>
+
+              <!-- Diamond Vote -->
+              <button
+                type="button"
+                class="btn vote-btn diamond-btn"
+                [class.active]="isDiamondSelected"
+                [disabled]="isVoting"
+                (click)="saveVoting('diamond')"
+              >
+                <i class="fas fa-gem me-2"></i>
+                Diamond
+
+                <span class="vote-count">{{ diamondCount }}</span>
+
+                <i
+                  *ngIf="isDiamondSelected"
+                  class="fas fa-check-circle ms-2"
+                ></i>
+              </button>
+
+              <!-- Bronze Vote -->
+              <button
+                type="button"
+                class="btn vote-btn bronze-btn"
+                [class.active]="isBronzeSelected"
+                [disabled]="isVoting"
+                (click)="saveVoting('bronze')"
+              >
+                <i class="fas fa-medal me-2"></i>
+                Bronze
+
+                <span class="vote-count">{{ bronzeCount }}</span>
+
+                <i
+                  *ngIf="isBronzeSelected"
+                  class="fas fa-check-circle ms-2"
+                ></i>
+              </button>
             </div>
           </div>
         </div>
@@ -111,7 +176,8 @@
           *ngIf="
             (issueData.status_id == '1' || issueData.status_id == '2') &&
             loginUser.roleId != '7'
-          ">
+          "
+        >
           <!-- Title -->
           <div class="row">
             <div class="col-6">
@@ -128,7 +194,8 @@
                 class="form-control mb-2"
                 name="status_id"
                 [(ngModel)]="selectedStatusId"
-                required>
+                required
+              >
                 <option value>-- Select --</option>
                 <option *ngFor="let r of issueStatuses" [value]="r.id">
                   {{ r.name }}
@@ -138,7 +205,8 @@
               <!-- Validation -->
               <small
                 class="text-danger"
-                *ngIf="selectedStatusId.touched && selectedStatusId.invalid">
+                *ngIf="selectedStatusId.touched && selectedStatusId.invalid"
+              >
                 Status is required
               </small>
             </div>
@@ -156,7 +224,8 @@
                 #wf_comment_ref="ngModel"
                 rows="4"
                 placeholder="Enter your comment..."
-                [required]="selectedStatusId == '3'"></textarea>
+                [required]="selectedStatusId == '3'"
+              ></textarea>
 
               <!-- Validation (only when Reject selected) -->
               <small
@@ -165,7 +234,8 @@
                   wf_comment_ref.touched &&
                   wf_comment_ref.invalid &&
                   selectedStatusId == 3
-                ">
+                "
+              >
                 Comment is required when status is Reject
               </small>
             </div>
@@ -176,93 +246,134 @@
             <button
               type="submit"
               class="btn btn-primary"
-              [disabled]="issueWfForm.invalid">
+              [disabled]="issueWfForm.invalid"
+            >
               Submit
             </button>
           </div>
         </form>
 
-        <!-- ✅ Workflow Table (3 & 4) -->
-        <div>
-          <h5 class="fw-bold mt-4">Workflow History</h5>
-
-          <table class="table table-bordered">
-            <tr>
-              <th>#</th>
-              <th>Status</th>
-              <th>Comment</th>
-              <th>Action By</th>
-              <th>Action On</th>
-            </tr>
-
-            <tr *ngFor="let wf of issueWorkflowList; let i = index">
-              <td>{{ i + 1 }}</td>
-              <td>{{ wf.status }}</td>
-              <td>{{ wf.comment }}</td>
-              <td>{{ wf.action_by_name }}</td>
-              <td>{{ wf.created_on }}</td>
-            </tr>
-          </table>
-        </div>
-
-        <!-- 🔹 Comment Section -->
-        <form #issueCmtForm="ngForm" (ngSubmit)="submitComment(issueCmtForm)">
-          <div class="row justify-content-center mt-4">
-            <div class="col">
-              <!-- Label -->
-              <label class="fw-bold mb-2">Add Comment *</label>
-
-              <!-- Textarea -->
-              <textarea
-                class="form-control"
-                name="issue_comment"
-                [(ngModel)]="issue_comment"
-                #issueComment="ngModel"
-                rows="4"
-                placeholder="Enter your comment..."
-                required></textarea>
-
-              <!-- Validation Error -->
-              <div
-                *ngIf="issueComment.invalid && issueComment.touched"
-                class="text-danger mt-1">
-                Comment is required
-              </div>
-
-              <!-- Submit Button -->
-              <div class="mt-3 text-end">
-                <button
-                  type="submit"
-                  class="btn btn-primary"
-                  [disabled]="issueCmtForm.invalid || (loader.loading$ | async)">
-                  Submit Comment
-                </button>
-              </div>
+        <!-- Workflow History -->
+        <div class="workflow-card mt-4">
+          <div class="workflow-header">
+            <div>
+              <h5 class="workflow-title">
+                <i class="fas fa-route me-2"></i>
+                Workflow History
+              </h5>
+              <p class="workflow-subtitle">
+                Track the progress of this issue from submission to resolution.
+              </p>
             </div>
-          </div>
-        </form>
-        <br />
 
-        <div
-          class="row align-items-start mb-3"
-          *ngFor="let comment of issueComments">
-          <!-- Profile Image -->
-          <div class="col-auto">
-            <img
-              [src]="comment.profile_pic"
-              class="rounded-circle"
-              style="width: 60px; height: 60px; object-fit: cover" />
+            <span class="workflow-count">
+              {{ issueWorkflowList?.length || 0 }} Steps
+            </span>
           </div>
 
-          <!-- Name + Comment -->
-          <div class="col">
-            <div style="font-weight: 600">
-              {{ comment.submitted_by_name }}
+          <div
+            class="workflow-progress-wrapper"
+            *ngIf="issueWorkflowList?.length"
+          >
+            <!-- Progress Line -->
+            <div class="workflow-progress-track">
+              <div class="workflow-progress-fill" [style.width.%]="100"></div>
             </div>
 
-            <div style="color: #555; margin-top: 4px">
-              {{ comment.comment }}
+            <!-- Workflow Steps -->
+            <div class="workflow-steps">
+              <ng-container
+                *ngFor="
+                  let wf of issueWorkflowList;
+                  let i = index;
+                  let last = last
+                "
+              >
+                <div class="workflow-step">
+                  <!-- Status Icon -->
+                  <div
+                    class="workflow-step-icon"
+                    [ngClass]="{
+                      'step-submitted': wf.status_id == 1,
+                      'step-approved': wf.status_id == 2,
+                      'step-rejected': wf.status_id == 3,
+                      'step-resolved': wf.status_id == 4,
+                      'step-intermediate': wf.step_type === 'intermediate',
+                    }"
+                  >
+                    <i
+                      class="fas"
+                      [ngClass]="{
+                        'fa-paper-plane': wf.status_id == 1,
+                        'fa-check': wf.status_id == 2,
+                        'fa-times': wf.status_id == 3,
+                        'fa-check-double': wf.status_id == 4,
+                        'fa-hourglass-half':
+                          wf.status_id === 'pending_approval',
+                        'fa-search': wf.status_id === 'under_review',
+                      }"
+                    >
+                    </i>
+                  </div>
+
+                  <!-- Arrow -->
+                  <div class="workflow-arrow" *ngIf="!last">
+                    <i class="fas fa-chevron-right"></i>
+                  </div>
+
+                  <!-- Details -->
+                  <div class="workflow-step-content">
+                    <!-- Status Badge -->
+                    <span
+                      class="workflow-status"
+                      [ngClass]="{
+                        'badge-submitted': wf.status_id == 1,
+                        'badge-approved': wf.status_id == 2,
+                        'badge-rejected': wf.status_id == 3,
+                        'badge-resolved': wf.status_id == 4,
+                        'badge-intermediate': wf.step_type === 'intermediate',
+                      }"
+                    >
+                      {{ wf.status }}
+                    </span>
+
+                    <!-- Comment -->
+                    <h6 class="workflow-comment">
+                      {{ wf.comment || "No comment available" }}
+                    </h6>
+
+                    <!-- Assigned User / Action By -->
+                    <div class="workflow-meta" *ngIf="wf.action_by_name">
+                      <i class="fas fa-user-circle me-1"></i>
+                      <span>{{ wf.action_by_name }}</span>
+                    </div>
+
+                    <!-- Timestamp: show only for actual workflow records -->
+                    <div class="workflow-meta" *ngIf="wf.created_on">
+                      <i class="far fa-clock me-1"></i>
+                      <span>
+                        {{ wf.created_on | date: "dd MMM yyyy, hh:mm a" }}
+                      </span>
+                    </div>
+
+                    <!-- Intermediate step indicator -->
+                    <div
+                      class="workflow-pending-note"
+                      *ngIf="wf.step_type === 'intermediate'"
+                    >
+                      <i class="fas fa-info-circle me-1"></i>
+                      Workflow stage
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
             </div>
+          </div>
+
+          <!-- Empty State -->
+          <div class="workflow-empty" *ngIf="!issueWorkflowList?.length">
+            <i class="fas fa-history"></i>
+            <p>No workflow history available.</p>
           </div>
         </div>
       </div>

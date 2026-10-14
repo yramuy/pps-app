@@ -37,6 +37,12 @@ export class ViewIssueComponent implements OnInit, OnDestroy {
   private routerSubscription?: Subscription;
   private userSubscription?: Subscription;
 
+  diamondCount = '10k';
+  bronzeCount = '5k';
+  isDiamondSelected = false;
+  isBronzeSelected = false;
+  isVoting = false;
+
   constructor(
     private apiService: ApiService,
     private authService: AuthService,
@@ -74,6 +80,47 @@ export class ViewIssueComponent implements OnInit, OnDestroy {
 
         this.loadIssueFromState();
       });
+  }
+
+  saveVoting(voteType: 'diamond' | 'bronze'): void {
+    if (!this.issueID || !this.loginUser?.userId || this.isVoting) {
+      return;
+    }
+
+    this.isVoting = true;
+
+    const payload = {
+      issue_id: this.issueID,
+      created_by: this.loginUser.userId,
+      vote_type: voteType,
+    };
+
+    this.apiService.request('POST', '/saveAndUpdateVoting', payload).subscribe({
+      next: (res: any) => {
+        if (res?.status === true || res?.status === 'success') {
+          // Refresh counts from the server response
+          if (res.voting) {
+            // this.diamondCount = Number(res.voting.diamond_count || 0);
+            // this.bronzeCount = Number(res.voting.bronze_count || 0);
+
+            this.isDiamondSelected = Number(res.voting.is_diamond || 0) === 1;
+
+            this.isBronzeSelected = Number(res.voting.is_bronze || 0) === 1;
+          }
+
+          this.showMessage(res.message || 'Vote updated successfully.');
+        } else {
+          this.showMessage(res?.message || 'Unable to update vote.');
+        }
+
+        this.isVoting = false;
+      },
+      error: (err: any) => {
+        console.error('Voting API error:', err);
+        this.showMessage('Unable to update vote. Please try again.');
+        this.isVoting = false;
+      },
+    });
   }
 
   // =====================================================
@@ -210,6 +257,7 @@ export class ViewIssueComponent implements OnInit, OnDestroy {
     const payload = {
       issue_id: this.issueID,
       is_read: 1,
+      login_user_id: this.loginUser.userId,
     };
 
     console.log('updateNotificationStatus payload :', payload);
