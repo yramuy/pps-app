@@ -1,19 +1,21 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { finalize } from 'rxjs/operators';
 import { ApiService } from 'src/app/services/api.service';
 
 @Component({
   selector: 'app-scheme-details',
   templateUrl: './scheme-details.component.html',
-  styleUrls: ['./scheme-details.component.scss']
+  styleUrls: ['./scheme-details.component.scss'],
 })
 export class SchemeDetailsComponent implements OnInit {
-
   schemeData: any = {};
   message: string = '';
   loading: boolean = false;
   schemeId: any;
   scheme_images: any = [];
+  private pendingApiCalls = 0;
+  isLoading = false;
 
   constructor(
     private apiService: ApiService,
@@ -21,7 +23,6 @@ export class SchemeDetailsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-
     // Move page to top
     window.scrollTo(0, 0);
 
@@ -38,26 +39,31 @@ export class SchemeDetailsComponent implements OnInit {
     }
   }
 
-  loadSchemeData(): void {
+  private requestWithLoader(endpoint: string, payload: any): any {
+    this.pendingApiCalls++;
+    this.isLoading = true;
 
+    return this.apiService.request('POST', endpoint, payload).pipe(
+      finalize(() => {
+        this.pendingApiCalls = Math.max(0, this.pendingApiCalls - 1);
+        this.isLoading = this.pendingApiCalls > 0;
+      }),
+    );
+  }
+
+  loadSchemeData(): void {
     this.loading = true;
     this.message = '';
 
     const payload = {
       is_token: '0',
-      scheme_id: this.schemeId
+      scheme_id: this.schemeId,
     };
 
     console.log('Scheme API Payload:', payload);
 
-    this.apiService.request(
-      'POST',
-      '/schemeDataById',
-      payload
-    ).subscribe({
-
+    this.requestWithLoader('/schemeDataById', payload).subscribe({
       next: (res: any) => {
-
         console.log('Scheme Details Response:', res);
 
         this.schemeData = res?.schemeData || {};
@@ -72,7 +78,6 @@ export class SchemeDetailsComponent implements OnInit {
       },
 
       error: (err: any) => {
-
         console.error('Scheme Details Error:', err);
 
         if (err.status === 400) {
@@ -84,8 +89,7 @@ export class SchemeDetailsComponent implements OnInit {
         }
 
         this.loading = false;
-      }
-
+      },
     });
   }
 }

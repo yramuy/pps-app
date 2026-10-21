@@ -1,3 +1,8 @@
+<!-- Loader -->
+<div class="loader-overlay" *ngIf="isLoading">
+  <div class="loader" role="status" aria-label="Loading"></div>
+</div>
+
 <section class="content">
   <div class="container-fluid">
     <div class="card">
@@ -5,35 +10,12 @@
         <h3 class="card-title text-white">Assigned To Me</h3>
       </div>
 
-      <div id="pageLoader" *ngIf="loader.loading$ | async">
-        <div class="spinner-border text-primary"></div>
-      </div>
-
       <div class="card-body">
-        <!-- Error message -->
-        <!-- <div
-          *ngIf="message"
-          class="alert alert-danger alert-dismissible fade show"
-          role="alert"
-        >
-          {{ message }}
-
-          <button
-            type="button"
-            class="btn-close"
-            aria-label="Close"
-            (click)="message.set('')"
-          ></button>
-        </div> -->
-
         <!-- Filters -->
         <div class="row mb-3">
-
           <!-- Category -->
           <div class="col-md-3 mb-3">
-            <label for="categoryFilter" class="form-label">
-              Category
-            </label>
+            <label for="categoryFilter" class="form-label"> Category </label>
 
             <select
               id="categoryFilter"
@@ -43,10 +25,7 @@
             >
               <option value="">All Categories</option>
 
-              <option
-                *ngFor="let category of categories"
-                [value]="category.id"
-              >
+              <option *ngFor="let category of categories" [value]="category.id">
                 {{ category.name }}
               </option>
             </select>
@@ -54,9 +33,7 @@
 
           <!-- Assembly -->
           <div class="col-md-3 mb-3">
-            <label for="assemblyFilter" class="form-label">
-              Assembly
-            </label>
+            <label for="assemblyFilter" class="form-label"> Assembly </label>
 
             <select
               id="assemblyFilter"
@@ -67,10 +44,7 @@
             >
               <option value="">All Assemblies</option>
 
-              <option
-                *ngFor="let assembly of assemblies"
-                [value]="assembly.id"
-              >
+              <option *ngFor="let assembly of assemblies" [value]="assembly.id">
                 {{ assembly.name }}
               </option>
             </select>
@@ -78,9 +52,7 @@
 
           <!-- Mandal -->
           <div class="col-md-3 mb-3">
-            <label for="mandalFilter" class="form-label">
-              Mandal
-            </label>
+            <label for="mandalFilter" class="form-label"> Mandal </label>
 
             <select
               id="mandalFilter"
@@ -91,10 +63,7 @@
             >
               <option value="">All Mandals</option>
 
-              <option
-                *ngFor="let mandal of mandals"
-                [value]="mandal.id"
-              >
+              <option *ngFor="let mandal of mandals" [value]="mandal.id">
                 {{ mandal.name }}
               </option>
             </select>
@@ -102,9 +71,7 @@
 
           <!-- Village -->
           <div class="col-md-3 mb-3">
-            <label for="villageFilter" class="form-label">
-              Village
-            </label>
+            <label for="villageFilter" class="form-label"> Village </label>
 
             <select
               id="villageFilter"
@@ -115,15 +82,11 @@
             >
               <option value="">All Villages</option>
 
-              <option
-                *ngFor="let village of villages"
-                [value]="village.id"
-              >
+              <option *ngFor="let village of villages" [value]="village.id">
                 {{ village.name }}
               </option>
             </select>
           </div>
-
         </div>
 
         <!-- Reset filters -->
@@ -138,8 +101,10 @@
         </div>
 
         <div class="table-responsive">
-          <table id="assignedToMeIssuesTable"
-            class="table table-bordered table-striped">
+          <table
+            id="assignedToMeIssuesTable"
+            class="table table-bordered table-striped"
+          >
             <thead>
               <tr>
                 <th>Sno</th>
@@ -158,15 +123,14 @@
               <tr *ngFor="let issue of assignedToMeIssues(); let i = index">
                 <td>{{ i + 1 }}</td>
                 <td>{{ issue.category }}</td>
-                <td>{{ issue.post_date}}</td>
+                <td>{{ issue.post_date }}</td>
                 <td class="description-cell">{{ issue.issue_title }}</td>
                 <td class="description-cell">{{ issue.issue_description }}</td>
                 <td>{{ issue.mandal }}</td>
                 <td>{{ issue.village }}</td>
                 <td>{{ issue.status }}</td>
                 <td>
-                  <button class="btn btn-info "
-                    (click)="handleView(issue.id)">
+                  <button class="btn btn-info" (click)="handleView(issue.id)">
                     <i class="fas fa-eye"></i>
                   </button>
                 </td>

@@ -1,6 +1,6 @@
 import { Component, OnDestroy, signal } from '@angular/core';
 
-import { Subscription } from 'rxjs';
+import { finalize, Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 
 import { ApiService } from 'src/app/services/api.service';
@@ -61,6 +61,9 @@ export class AssignedToMeIssuesComponent implements OnDestroy {
   readonly SARPANCH_ROLE_ID = 5;
   readonly GUEST_ROLE_ID = 7;
 
+  private pendingApiCalls = 0;
+  isLoading = false;
+
   // =========================================================
   // Constructor
   // =========================================================
@@ -114,6 +117,18 @@ export class AssignedToMeIssuesComponent implements OnDestroy {
       },
     });
   }
+
+  private requestWithLoader(endpoint: string, payload: any): any {
+      this.pendingApiCalls++;
+      this.isLoading = true;
+  
+      return this.apiService.request('POST', endpoint, payload).pipe(
+        finalize(() => {
+          this.pendingApiCalls = Math.max(0, this.pendingApiCalls - 1);
+          this.isLoading = this.pendingApiCalls > 0;
+        }),
+      );
+    }
 
   // =========================================================
   // Set Login Location Filters
@@ -222,9 +237,7 @@ export class AssignedToMeIssuesComponent implements OnDestroy {
   // =========================================================
 
   loadCategories(): void {
-    this.apiService
-      .request(
-        'POST',
+    this.requestWithLoader(
         '/masterData',
         JSON.stringify({
           master_id: 1,
@@ -265,9 +278,7 @@ export class AssignedToMeIssuesComponent implements OnDestroy {
       return;
     }
 
-    this.apiService
-      .request(
-        'POST',
+    this.requestWithLoader(
         '/dependanceMasterData',
         JSON.stringify({
           master_id: 4,
@@ -329,9 +340,7 @@ export class AssignedToMeIssuesComponent implements OnDestroy {
       return;
     }
 
-    this.apiService
-      .request(
-        'POST',
+    this.requestWithLoader(
         '/dependanceMasterData',
         JSON.stringify({
           master_id: 5,
@@ -390,9 +399,7 @@ export class AssignedToMeIssuesComponent implements OnDestroy {
       return;
     }
 
-    this.apiService
-      .request(
-        'POST',
+    this.requestWithLoader(
         '/dependanceMasterData',
         JSON.stringify({
           master_id: 6,
@@ -710,7 +717,7 @@ export class AssignedToMeIssuesComponent implements OnDestroy {
     // API Request
     // =======================================================
 
-    this.apiService.request('POST', '/assignedToMeIssues', payload).subscribe({
+    this.requestWithLoader('/assignedToMeIssues', payload).subscribe({
       // ===================================================
       // Success
       // ===================================================
@@ -722,9 +729,9 @@ export class AssignedToMeIssuesComponent implements OnDestroy {
 
         console.log('assignedToMeIssues:', this.assignedToMeIssues());
 
-        this.loading.set(false);
+        // this.loading.set(false);
 
-        this.loader.hide();
+        // this.loader.hide();
 
         this.refreshDataTable();
       },
@@ -748,9 +755,9 @@ export class AssignedToMeIssuesComponent implements OnDestroy {
           this.message.set('Something went wrong. Please try again later');
         }
 
-        this.loading.set(false);
+        // this.loading.set(false);
 
-        this.loader.hide();
+        // this.loader.hide();
 
         this.destroyDataTable();
       },

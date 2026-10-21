@@ -1,3 +1,7 @@
+<!-- Loader -->
+<div class="loader-overlay" *ngIf="isLoading">
+  <div class="loader" role="status" aria-label="Loading"></div>
+</div>
 <section class="content">
   <div class="container-fluid">
     <div class="card">
@@ -6,13 +10,13 @@
       </div>
 
       <!-- Loader -->
-      <div
+      <!-- <div
         id="pageLoader"
         *ngIf="loader.loading$ | async"
         class="text-center my-3"
       >
         <div class="spinner-border text-primary"></div>
-      </div>
+      </div> -->
 
       <div class="card-body">
         <!-- 🔹 Image (Full Width) -->
@@ -21,237 +25,299 @@
           {{ message }}
         </div>
 
-        <!-- <div class="row mb-2">
-          <div class="col-11">
-            <img
-              [src]="issueData.issue_pic"
-              class="img-fluid w-100 rounded"
-              style="height: 450px; object-fit: cover"
-            />
-          </div>
-        </div> -->
+        <div class="row mb-2">
+          <!-- Issue Images -->
+          <div
+            [ngClass]="issueData?.video_url ? 'col-12 col-md-6' : 'col-12'"
+            *ngIf="issue_images?.length"
+          >
+            <div class="card h-100">
+              <div class="card-header">
+                <h5 class="card-title mb-0">
+                  <i class="fas fa-images me-2 text-white"></i>
+                  <span class="text-white">Issue Images</span>
+                </h5>
+              </div>
 
-        <div class="row mb-2" *ngIf="issue_images?.length">
-          <div class="col-11">
-            <div
-              id="issueImageCarousel"
-              class="carousel slide"
-              data-ride="carousel"
-              data-interval="3000"
-            >
-              <div class="carousel-inner rounded">
+              <div class="card-body">
                 <div
-                  class="carousel-item"
-                  *ngFor="let img of issue_images; let i = index"
-                  [class.active]="i === 0"
+                  id="issueImageCarousel"
+                  class="carousel slide"
+                  data-ride="carousel"
+                  data-interval="3000"
                 >
-                  <img
-                    [src]="img.img_url"
-                    class="d-block w-100"
-                    style="height: 450px; object-fit: cover"
-                  />
+                  <div class="carousel-inner rounded">
+                    <div
+                      class="carousel-item"
+                      *ngFor="let img of issue_images; let i = index"
+                      [class.active]="i === 0"
+                    >
+                      <img
+                        [src]="img.img_url"
+                        class="d-block w-100 issue-media"
+                        alt="Issue Image"
+                      />
+                    </div>
+                  </div>
+
+                  <!-- Previous -->
+                  <a
+                    *ngIf="(issue_images?.length ?? 0) > 1"
+                    class="carousel-control-prev custom-carousel-btn"
+                    href="#issueImageCarousel"
+                    role="button"
+                    data-slide="prev"
+                  >
+                    <span style="font-size: 18px; color: #333">&#10094;</span>
+                  </a>
+
+                  <!-- Next -->
+                  <a
+                    *ngIf="(issue_images?.length ?? 0) > 1"
+                    class="carousel-control-next custom-carousel-btn"
+                    href="#issueImageCarousel"
+                    role="button"
+                    data-slide="next"
+                  >
+                    <span style="font-size: 18px; color: #333">&#10095;</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Issue Video -->
+          <div
+            [ngClass]="issue_images.length ? 'col-12 col-md-6' : 'col-12'"
+            *ngIf="issueData?.video_url"
+          >
+            <div class="card h-100">
+              <div class="card-header">
+                <h5 class="card-title mb-0">
+                  <i class="fas fa-video me-2 text-white"></i>
+                  <span class="text-white">Issue Video</span>
+                </h5>
+              </div>
+
+              <div class="card-body">
+                <video class="w-100 issue-media" controls preload="metadata">
+                  <source [src]="issueData.video_url" type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Location & Views Information -->
+        <div class="row mb-3 mt-3">
+          <div class="col-12">
+            <div class="issue-info-bar">
+              <!-- Location -->
+              <div class="issue-info-item">
+                <div class="issue-info-icon location-icon">
+                  <i class="fas fa-map-marker-alt"></i>
+                </div>
+
+                <div class="issue-info-content">
+                  <small>Location</small>
+                  <span>{{ getLocation() }}</span>
                 </div>
               </div>
 
-              <a
-                class="carousel-control-prev custom-carousel-btn"
-                href="#issueImageCarousel"
-                role="button"
-                data-slide="prev"
-              >
-                <span style="font-size: 18px; color: #333">&#10094;</span>
-              </a>
-
-              <a
-                class="carousel-control-next custom-carousel-btn"
-                href="#issueImageCarousel"
-                role="button"
-                data-slide="next"
-              >
-                <span style="font-size: 18px; color: #333">&#10095;</span>
-              </a>
-            </div>
-          </div>
-        </div>
-
-        <!-- 🔹 Location -->
-        <div class="row mb-3 justify-content-center">
-          <div class="col-auto">
-            <div class="d-flex align-items-center gap-5">
-              <!-- 👉 gap between blocks -->
-
-              <!-- Location -->
-              <span class="d-flex align-items-center gap-2">
-                <!-- 👉 gap between icon & text -->
-                <i class="fa fa-map-marker-alt text-danger"></i>
-                <span style="margin-left: 3px">{{ getLocation() }}</span>
-              </span>
+              <!-- Divider -->
+              <div class="issue-info-divider"></div>
 
               <!-- Views -->
-              <span
-                class="d-flex align-items-center gap-2"
-                style="margin-left: 20px"
-              >
-                <!-- 👉 gap between icon & text -->
-                <i class="fa fa-user text-primary"></i>
-                <span style="margin-left: 3px">{{ views || 0 }} views</span>
-              </span>
+              <div class="issue-info-item">
+                <div class="issue-info-icon views-icon">
+                  <i class="fas fa-eye"></i>
+                </div>
+
+                <div class="issue-info-content">
+                  <small>Total Views</small>
+                  <span>{{ views || 0 }} views</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- Voting Buttons with Counts -->
-        <div class="row mb-4">
-          <div class="col-12">
-            <div class="d-flex flex-wrap align-items-center gap-3">
-              <!-- Vote Label -->
-              <span class="vote-label">
-                <i class="fas fa-vote-yea me-1"></i>
-                Vote:
-              </span>
+        <!-- Issue Details Card -->
+        <div class="card issue-details-card mb-3">
+          <!-- Voting Section -->
+          <div class="card-body pb-3">
+            <div class="voting-section">
+              <div class="vote-heading">
+                <i class="fas fa-vote-yea"></i>
+                <span>Support This Issue</span>
+              </div>
 
-              <!-- Diamond Vote -->
-              <button
-                type="button"
-                class="btn vote-btn diamond-btn"
-                [class.active]="isDiamondSelected"
-                [disabled]="isVoting"
-                (click)="saveVoting('diamond')"
-              >
-                <i class="fas fa-gem me-2"></i>
-                Diamond
+              <div class="d-flex flex-wrap align-items-center gap-3">
+                <!-- Diamond Vote -->
+                <button
+                  type="button"
+                  class="btn vote-btn diamond-btn"
+                  [class.active]="isDiamondSelected"
+                  [disabled]="isVoting"
+                  (click)="saveVoting('diamond')"
+                >
+                  <i class="fas fa-gem me-2"></i>
+                  <span>Diamond</span>
+                  <span class="vote-count">{{ diamondCount }}</span>
 
-                <span class="vote-count">{{ diamondCount }}</span>
+                  <i
+                    *ngIf="isDiamondSelected"
+                    class="fas fa-check-circle ms-1 selected-icon"
+                  ></i>
+                </button>
 
-                <i
-                  *ngIf="isDiamondSelected"
-                  class="fas fa-check-circle ms-2"
-                ></i>
-              </button>
+                <!-- Bronze Vote -->
+                <button
+                  type="button"
+                  class="btn vote-btn bronze-btn"
+                  [class.active]="isBronzeSelected"
+                  [disabled]="isVoting"
+                  (click)="saveVoting('bronze')"
+                >
+                  <i class="fas fa-medal me-2"></i>
+                  <span>Bronze</span>
+                  <span class="vote-count">{{ bronzeCount }}</span>
 
-              <!-- Bronze Vote -->
-              <button
-                type="button"
-                class="btn vote-btn bronze-btn"
-                [class.active]="isBronzeSelected"
-                [disabled]="isVoting"
-                (click)="saveVoting('bronze')"
-              >
-                <i class="fas fa-medal me-2"></i>
-                Bronze
+                  <i
+                    *ngIf="isBronzeSelected"
+                    class="fas fa-check-circle ms-1 selected-icon"
+                  ></i>
+                </button>
+              </div>
+            </div>
+          </div>
 
-                <span class="vote-count">{{ bronzeCount }}</span>
+          <div class="issue-section-divider"></div>
 
-                <i
-                  *ngIf="isBronzeSelected"
-                  class="fas fa-check-circle ms-2"
-                ></i>
-              </button>
+          <!-- Issue Title and Description -->
+          <div class="card-body pt-4">
+            <!-- Issue Title -->
+            <div class="issue-title-section">
+              <div class="issue-title-icon">
+                <i class="fas fa-bullhorn"></i>
+              </div>
+
+              <div class="flex-grow-1">
+                <small class="issue-section-label">ISSUE TITLE</small>
+                <h4 class="issue-title mb-0">
+                  {{ issueData.issue_title }}
+                </h4>
+              </div>
+            </div>
+
+            <!-- Issue Description -->
+            <div class="issue-description-section mt-4">
+              <h6 class="description-heading">
+                <i class="fas fa-align-left me-2"></i>
+                Description
+              </h6>
+
+              <p class="issue-description mb-0">
+                {{ issueData.issue_description }}
+              </p>
             </div>
           </div>
         </div>
 
-        <!-- 🔹 Title (Left Align) -->
-        <div class="row mb-2">
-          <div class="col-10">
-            <h4 class="fw-bold text-start">
-              {{ issueData.issue_title }}
-            </h4>
-          </div>
-        </div>
-
-        <!-- 🔹 Description (Left Align) -->
-        <div class="row">
-          <div class="col-10">
-            <p class="text-muted text-start" style="line-height: 1.6">
-              {{ issueData.issue_description }}
-            </p>
-          </div>
-        </div>
-
-        <!-- 🔹 Workflow Section -->
-        <form
-          #issueWfForm="ngForm"
-          (ngSubmit)="submitWorkFlow(issueWfForm)"
+        <!-- Issue Workflow Card -->
+        <div
+          class="card card-primary"
           *ngIf="
             (issueData.status_id == '1' || issueData.status_id == '2') &&
             loginUser.roleId != '7'
           "
         >
-          <!-- Title -->
-          <div class="row">
-            <div class="col-6">
-              <h4 class="fw-bold mb-3">Issue Workflow</h4>
-            </div>
+          <!-- Card Header -->
+          <div class="card-header">
+            <h3 class="card-title fw-bold">
+              <i class="fas fa-tasks me-2"></i>
+              <span class="text-white">Issue Workflow</span>
+            </h3>
           </div>
 
-          <!-- Status -->
-          <div class="row">
-            <div class="col-md-6 mb-3">
-              <label class="fw-bold">Status *</label>
-
-              <select
-                class="form-control mb-2"
-                name="status_id"
-                [(ngModel)]="selectedStatusId"
-                required
-              >
-                <option value>-- Select --</option>
-                <option *ngFor="let r of issueStatuses" [value]="r.id">
-                  {{ r.name }}
-                </option>
-              </select>
-
-              <!-- Validation -->
-              <small
-                class="text-danger"
-                *ngIf="selectedStatusId.touched && selectedStatusId.invalid"
-              >
-                Status is required
-              </small>
-            </div>
-          </div>
-
-          <!-- Comment -->
-          <div class="row">
-            <div class="col-md-12 mb-3">
-              <label class="fw-bold">Comment</label>
-
-              <textarea
-                class="form-control"
-                name="wf_comment"
-                [(ngModel)]="wf_comment"
-                #wf_comment_ref="ngModel"
-                rows="4"
-                placeholder="Enter your comment..."
-                [required]="selectedStatusId == '3'"
-              ></textarea>
-
-              <!-- Validation (only when Reject selected) -->
-              <small
-                class="text-danger"
-                *ngIf="
-                  wf_comment_ref.touched &&
-                  wf_comment_ref.invalid &&
-                  selectedStatusId == 3
-                "
-              >
-                Comment is required when status is Reject
-              </small>
-            </div>
-          </div>
-
-          <!-- Submit -->
-          <div class="text-end">
-            <button
-              type="submit"
-              class="btn btn-primary"
-              [disabled]="issueWfForm.invalid"
+          <!-- Card Body -->
+          <div class="card-body">
+            <form
+              #issueWfForm="ngForm"
+              (ngSubmit)="submitWorkFlow(issueWfForm)"
             >
-              Submit
-            </button>
+              <!-- Status -->
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label class="fw-bold">Status *</label>
+
+                  <select
+                    class="form-control"
+                    name="status_id"
+                    [(ngModel)]="selectedStatusId"
+                    #status_id_ref="ngModel"
+                    required
+                  >
+                    <option value="">-- Select --</option>
+                    <option *ngFor="let r of issueStatuses" [value]="r.id">
+                      {{ r.name }}
+                    </option>
+                  </select>
+
+                  <!-- Status Validation -->
+                  <small
+                    class="text-danger"
+                    *ngIf="status_id_ref.touched && status_id_ref.invalid"
+                  >
+                    Status is required
+                  </small>
+                </div>
+              </div>
+
+              <!-- Comment -->
+              <div class="row">
+                <div class="col-md-12 mb-3">
+                  <label class="fw-bold">Comment</label>
+
+                  <textarea
+                    class="form-control"
+                    name="wf_comment"
+                    [(ngModel)]="wf_comment"
+                    #wf_comment_ref="ngModel"
+                    rows="4"
+                    placeholder="Enter your comment..."
+                    [required]="selectedStatusId == '3'"
+                  ></textarea>
+
+                  <!-- Comment Validation -->
+                  <small
+                    class="text-danger"
+                    *ngIf="
+                      wf_comment_ref.touched &&
+                      wf_comment_ref.invalid &&
+                      selectedStatusId == '3'
+                    "
+                  >
+                    Comment is required when status is Reject
+                  </small>
+                </div>
+              </div>
+
+              <!-- Submit -->
+              <div class="text-end">
+                <button
+                  type="submit"
+                  class="btn btn-primary"
+                  [disabled]="issueWfForm.invalid"
+                >
+                  <i class="fas fa-paper-plane me-1"></i>
+                  Submit
+                </button>
+              </div>
+            </form>
           </div>
-        </form>
+        </div>
 
         <!-- Workflow History -->
         <div class="workflow-card mt-4">

@@ -1,5 +1,6 @@
 import { Component, signal } from '@angular/core';
 import { Router } from '@angular/router';
+import { finalize } from 'rxjs/operators';
 import { ApiService } from 'src/app/services/api.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { LoaderService } from 'src/app/services/loader.service';
@@ -35,6 +36,9 @@ export class ViewSchemesComponent {
 
   schemeType: string = '';
 
+  private pendingApiCalls = 0;
+  isLoading = false;
+
   // ============================================================
   // CONSTRUCTOR
   // ============================================================
@@ -68,6 +72,18 @@ export class ViewSchemesComponent {
         this.isMessage = false;
       }, 3000);
     }
+  }
+
+  private requestWithLoader(endpoint: string, payload: any): any {
+    this.pendingApiCalls++;
+    this.isLoading = true;
+
+    return this.apiService.request('POST', endpoint, payload).pipe(
+      finalize(() => {
+        this.pendingApiCalls = Math.max(0, this.pendingApiCalls - 1);
+        this.isLoading = this.pendingApiCalls > 0;
+      }),
+    );
   }
 
   // ============================================================
@@ -109,12 +125,10 @@ export class ViewSchemesComponent {
     // API CALL
     // ------------------------------------------------------------
 
-    this.apiService
-      .request(
-        'POST',
-        '/allSchemes',
-        payload
-      )
+    this.requestWithLoader(
+      '/allSchemes',
+      payload
+    )
       .subscribe({
 
         // ========================================================
@@ -134,7 +148,7 @@ export class ViewSchemesComponent {
 
           const schemes =
             res &&
-            Array.isArray(res.scheme_list)
+              Array.isArray(res.scheme_list)
               ? res.scheme_list
               : [];
 
@@ -417,12 +431,10 @@ export class ViewSchemesComponent {
 
     this.loader.show();
 
-    this.apiService
-      .request(
-        'POST',
-        '/deleteRecord',
-        payload
-      )
+    this.requestWithLoader(
+      '/deleteRecord',
+      payload
+    )
       .subscribe({
 
         // ======================================================

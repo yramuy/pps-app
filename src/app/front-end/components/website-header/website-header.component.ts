@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { AuthService } from 'src/app/services/auth.service';
+import { GlobalService } from 'src/app/services/global.service';
 import { NotificationService } from 'src/app/services/notification.service';
 
 @Component({
@@ -14,6 +15,8 @@ export class WebsiteHeaderComponent {
   isScrolled = false;
   isMenuOpen = false;
   isLogin: any = '';
+  user: any;
+  isProfile: boolean = false;
   private destroy$ = new Subject<void>();
 
   @HostListener('window:scroll')
@@ -25,6 +28,7 @@ export class WebsiteHeaderComponent {
     private notificationService: NotificationService,
     private authService: AuthService,
     private router: Router,
+    private globalService: GlobalService,
   ) {}
 
   ngOnInit(): void {
@@ -33,6 +37,10 @@ export class WebsiteHeaderComponent {
 
   loadIsLogin(): void {
     this.isLogin = this.authService.isLoggedIn() ? 'LOGOUT' : 'LOGIN';
+    this.authService.user$.subscribe((user) => {
+      this.user = user;
+    });
+    this.isProfile = this.authService.isLoggedIn();
   }
 
   handleLoginClick(): void {
@@ -47,6 +55,9 @@ export class WebsiteHeaderComponent {
 
       this.authService.logout();
       localStorage.clear();
+
+      this.globalService.setIssueID(0);
+      this.globalService.setIsIssueLogin(false);
 
       // Navigate to Login page
       this.router.navigate(['/admin/login']);

@@ -1,0 +1,200 @@
+
+<!-- Loader -->
+<div class="loader-overlay" *ngIf="isLoading">
+  <div class="loader" role="status" aria-label="Loading"></div>
+</div>
+
+<section class="blog-section py-4">
+  <div class="container">
+    <div class="card blog-card">
+
+      <!-- Card Header -->
+      <div class="card-header blog-card-header">
+        <div class="d-flex align-items-center gap-3">
+          <div class="blog-header-icon">
+            <i
+              class="fas"
+              [ngClass]="selectedVoteType === 'diamond' ? 'fa-gem' : 'fa-medal'"
+            ></i>
+          </div>
+
+          <div>
+            <h5 class="mb-1">Votes by Type</h5>
+            <small>
+              Explore issues supported with
+              {{ selectedVoteType === 'diamond' ? 'diamond' : 'bronze' }} votes
+            </small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card Body -->
+      <div class="card-body blog-card-body">
+
+        <!-- Error Message -->
+        <div class="alert alert-danger" *ngIf="isMessage">
+          {{ message }}
+        </div>
+
+        <!-- Vote Type Filter -->
+        <div class="vote-type-filter mb-4">
+          <label for="voteType" class="form-label fw-semibold">
+            <i class="fas fa-filter me-2"></i>
+            Filter by Vote Type
+          </label>
+
+          <select
+            id="voteType"
+            class="form-select vote-type-select"
+            [(ngModel)]="selectedVoteType"
+            (ngModelChange)="onVoteTypeChange($event)"
+            [disabled]="isLoading"
+          >
+            <option value="diamond">Diamond Votes</option>
+            <option value="bronze">Bronze Votes</option>
+          </select>
+        </div>
+
+        <!-- Dynamic Issues -->
+        <section
+          class="blog-details-section"
+          *ngFor="let issue of diamondIssues; let i = index"
+        >
+          <div class="row g-4">
+
+            <!-- Left Column -->
+            <div class="col-12 col-md-4">
+
+              <!-- Issue Image -->
+              <div class="blog-image-wrapper">
+                <img
+                  [src]="issue.image || 'assets/images/political-pic.jpg'"
+                  [alt]="issue.issue_title || 'Issue image'"
+                  class="blog-image"
+                />
+
+                <span class="blog-category">
+                  <i class="fas fa-exclamation-circle me-1"></i>
+                  {{ selectedVoteType === 'diamond' ? 'Diamond Issue' : 'Bronze Issue' }}
+                </span>
+              </div>
+
+              <!-- Vote Statistics Card -->
+              <div
+                class="vote-stat-card mt-3"
+                [ngClass]="selectedVoteType === 'diamond' ? 'diamond-stat' : 'bronze-stat'"
+              >
+                <div class="vote-stat-icon">
+                  <i
+                    class="fas"
+                    [ngClass]="selectedVoteType === 'diamond' ? 'fa-gem' : 'fa-medal'"
+                  ></i>
+                </div>
+
+                <div class="vote-stat-info">
+                  <span class="vote-stat-label">
+                    {{ selectedVoteType === 'diamond' ? 'Diamond Votes' : 'Bronze Votes' }}
+                  </span>
+
+                  <h4
+                    class="vote-count"
+                    [ngClass]="selectedVoteType === 'diamond' ? 'diamond-vote-count' : 'bronze-vote-count'"
+                  >
+                    {{
+                      (selectedVoteType === 'diamond'
+                        ? issue.diamond_votes
+                        : issue.bronze_votes) ?? 0
+                    }}
+                  </h4>
+
+                  <span class="vote-stat-caption">
+                    Total votes received
+                  </span>
+                </div>
+
+                <div
+                  class="diamond-badge"
+                  [ngClass]="selectedVoteType === 'diamond' ? 'diamond-badge' : 'bronze-badge'"
+                >
+                  <i class="fas fa-check"></i>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="col-12 col-md-8">
+              <div class="blog-content">
+
+                <!-- Date and Views -->
+                <div class="blog-meta mb-3">
+                  <span>
+                    <i class="far fa-calendar-alt me-1"></i>
+                    {{ issue.post_date | date:'dd MMM yyyy' }}
+                  </span>
+
+                  <span *ngIf="issue.views != null">
+                    <i class="far fa-eye me-1"></i>
+                    {{ issue.views | number }} views
+                  </span>
+                </div>
+
+                <!-- Title -->
+                <h2 class="blog-title">
+                  {{ issue.issue_title }}
+                </h2>
+
+                <!-- Description -->
+                <p class="blog-description">
+                  {{ issue.issue_description }}
+                </p>
+
+                <!-- Actions -->
+                <div class="blog-actions">
+
+                  <button
+                    type="button"
+                    class="btn blog-read-btn"
+                    (click)="readMore(issue.issue_id)"
+                  >
+                    Read More
+                    <i class="fas fa-arrow-right ms-2"></i>
+                  </button>
+
+                  <button
+                    type="button"
+                    class="btn blog-gift-btn"
+                    (click)="sendGift(issue)"
+                  >
+                    <i class="fas fa-gift me-2"></i>
+                    Send Gift
+                  </button>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- No Issues Found -->
+        <div
+          class="empty-issues"
+          *ngIf="!isLoading && diamondIssues.length === 0"
+        >
+          <i
+            class="fas"
+            [ngClass]="selectedVoteType === 'diamond' ? 'fa-gem' : 'fa-medal'"
+          ></i>
+
+          <h6>
+            No {{ selectedVoteType === 'diamond' ? 'Diamond' : 'Bronze' }} Issues Found
+          </h6>
+
+          <p>
+            There are no issues available for this vote type yet.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>

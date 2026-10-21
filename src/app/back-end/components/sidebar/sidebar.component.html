@@ -26,7 +26,8 @@
           <a
             routerLink="/admin/dashboard"
             routerLinkActive="active"
-            class="nav-link">
+            class="nav-link"
+          >
             <i class="nav-icon fas fa-tachometer-alt"></i>
             <p>Dashboard</p>
           </a>
@@ -38,7 +39,8 @@
             routerLink="/admin/users/list"
             routerLinkActive="menu-open"
             class="nav-link"
-            [class.active]="isMenuActive('/admin/users')">
+            [class.active]="isMenuActive('/admin/users')"
+          >
             <i class="nav-icon fas fa-users"></i>
             <p>Users</p>
           </a>
@@ -50,7 +52,8 @@
             routerLink="/admin/userRole/list"
             routerLinkActive="menu-open"
             class="nav-link"
-            [class.active]="isMenuActive('/admin/userRole')">
+            [class.active]="isMenuActive('/admin/userRole')"
+          >
             <i class="nav-icon fas fa-user-cog"></i>
             <p>User Roles</p>
           </a>
@@ -60,7 +63,8 @@
         <li
           class="nav-item has-treeview"
           [class.menu-open]="menuState.config"
-          *ngIf="user?.roleId == '1' || user?.roleId == '2'">
+          *ngIf="user?.roleId == '1' || user?.roleId == '2'"
+        >
           <a href="#" class="nav-link" (click)="toggleMenu('config', $event)">
             <i class="nav-icon fas fa-cogs"></i>
             <p>
@@ -71,13 +75,15 @@
 
           <ul
             class="nav nav-treeview"
-            [style.display]="menuState.config ? 'block' : 'none'">
+            [style.display]="menuState.config ? 'block' : 'none'"
+          >
             <li class="nav-item">
               <a
                 routerLink="/admin/category/list"
                 routerLinkActive="menu-open"
                 class="nav-link"
-                [class.active]="isMenuActive('/admin/category')">
+                [class.active]="isMenuActive('/admin/category')"
+              >
                 <i class="nav-icon fas fa-folder"></i>
 
                 <p>Categories</p>
@@ -88,7 +94,8 @@
               <a
                 routerLink="/admin/states/list"
                 routerLinkActive="active"
-                class="nav-link">
+                class="nav-link"
+              >
                 <i class="nav-icon fas fa-globe"></i>
                 <p>States</p>
               </a>
@@ -98,7 +105,8 @@
               <a
                 routerLink="/admin/districts/list"
                 routerLinkActive="active"
-                class="nav-link">
+                class="nav-link"
+              >
                 <i class="nav-icon fas fa-map-marked-alt"></i>
                 <p>Districts</p>
               </a>
@@ -109,7 +117,8 @@
                 routerLink="/admin/assembly/list"
                 routerLinkActive="menu-open"
                 class="nav-link"
-                [class.active]="isMenuActive('/admin/assembly')">
+                [class.active]="isMenuActive('/admin/assembly')"
+              >
                 <i class="nav-icon fas fa-landmark"></i>
                 <p>Assemblies</p>
               </a>
@@ -120,7 +129,8 @@
                 routerLink="/admin/mandal/list"
                 routerLinkActive="menu-open"
                 class="nav-link"
-                [class.active]="isMenuActive('/admin/mandal')">
+                [class.active]="isMenuActive('/admin/mandal')"
+              >
                 <i class="nav-icon fas fa-sitemap"></i>
                 <p>Mandals</p>
               </a>
@@ -131,7 +141,8 @@
                 routerLink="/admin/village/list"
                 routerLinkActive="menu-open"
                 class="nav-link"
-                [class.active]="isMenuActive('/admin/village')">
+                [class.active]="isMenuActive('/admin/village')"
+              >
                 <i class="nav-icon fas fa-home"></i>
                 <p>Villages</p>
               </a>
@@ -151,13 +162,15 @@
 
           <ul
             class="nav nav-treeview"
-            [style.display]="menuState.issue ? 'block' : 'none'">
+            [style.display]="menuState.issue ? 'block' : 'none'"
+          >
             <li class="nav-item">
               <a
                 routerLink="/admin/issues/create"
                 routerLinkActive="menu-open"
                 class="nav-link"
-                [class.active]="isMenuActive('/admin/issues/create')">
+                [class.active]="isMenuActive('/admin/issues/create')"
+              >
                 <i class="nav-icon fas fa-plus-circle"></i>
                 <p>Create Issue</p>
               </a>
@@ -168,7 +181,8 @@
                 routerLinkActive="menu-open"
                 class="nav-link"
                 [class.active]="isMenuActive('/admin/issues/my-issues')"
-                [routerLinkActiveOptions]="{ exact: false }">
+                [routerLinkActiveOptions]="{ exact: false }"
+              >
                 <i class="nav-icon fas fa-user-circle"></i>
                 <p>Created by me</p>
               </a>
@@ -180,7 +194,8 @@
                 class="nav-link"
                 [class.active]="
                   isMenuActive('/admin/issues/assigned-to-me-issues')
-                ">
+                "
+              >
                 <i class="nav-icon fas fa-user-circle"></i>
                 <p>Assigned to me</p>
               </a>
@@ -188,10 +203,35 @@
 
             <li class="nav-item" *ngIf="user?.roleId != '7'">
               <a
+                routerLink="/admin/issues/votesByType"
+                routerLinkActive="menu-open"
+                class="nav-link"
+                [class.active]="isMenuActive('/admin/issues/votesByType')"
+              >
+                <i class="nav-icon fas fa-gem"></i>
+                <p>Votes by Type</p>
+              </a>
+            </li>
+
+            <!-- <li class="nav-item" *ngIf="user?.roleId != '7'">
+              <a
+                routerLink="/admin/issues/bronze"
+                routerLinkActive="menu-open"
+                class="nav-link"
+                [class.active]="isMenuActive('/admin/issues/bronze')"
+              >
+                <i class="nav-icon fas fa-medal"></i>
+                <p>Bronze</p>
+              </a>
+            </li> -->
+
+            <li class="nav-item">
+              <a
                 routerLink="/admin/issues/list"
                 routerLinkActive="menu-open"
                 class="nav-link"
-                [class.active]="isMenuActive('/admin/issues/list')">
+                [class.active]="isMenuActive('/admin/issues/list')"
+              >
                 <i class="nav-icon fas fa-clipboard-list"></i>
                 <p>ALL Issues</p>
               </a>
@@ -205,7 +245,8 @@
           [class.menu-open]="menuState.scheme"
           *ngIf="
             user?.roleId == '1' || user?.roleId == '2' || user?.roleId == '4'
-          ">
+          "
+        >
           <a href="#" class="nav-link" (click)="toggleMenu('scheme', $event)">
             <i class="nav-icon fas fa-bug"></i>
             <p>
@@ -216,13 +257,15 @@
 
           <ul
             class="nav nav-treeview"
-            [style.display]="menuState.scheme ? 'block' : 'none'">
+            [style.display]="menuState.scheme ? 'block' : 'none'"
+          >
             <li class="nav-item">
               <a
                 routerLink="/admin/schemes/add"
                 routerLinkActive="menu-open"
                 class="nav-link"
-                [class.active]="isMenuActive('/admin/schemes/add')">
+                [class.active]="isMenuActive('/admin/schemes/add')"
+              >
                 <i class="nav-icon fas fa-plus-circle"></i>
                 <p>Add Scheme</p>
               </a>
@@ -233,7 +276,8 @@
                 routerLinkActive="menu-open"
                 class="nav-link"
                 [class.active]="isMenuActive('/admin/schemes/list')"
-                [routerLinkActiveOptions]="{ exact: false }">
+                [routerLinkActiveOptions]="{ exact: false }"
+              >
                 <i class="nav-icon fas fa-user-circle"></i>
                 <p>View Schemes</p>
               </a>
@@ -245,11 +289,13 @@
         <li
           class="nav-item has-treeview"
           [class.menu-open]="menuState.advertisement"
-          *ngIf="user?.roleId == '1' || user?.roleId == '2'">
+          *ngIf="user?.roleId == '1' || user?.roleId == '2'"
+        >
           <a
             href="#"
             class="nav-link"
-            (click)="toggleMenu('advertisement', $event)">
+            (click)="toggleMenu('advertisement', $event)"
+          >
             <i class="nav-icon fas fa-bug"></i>
             <p>
               Advertisement
@@ -259,13 +305,15 @@
 
           <ul
             class="nav nav-treeview"
-            [style.display]="menuState.advertisement ? 'block' : 'none'">
+            [style.display]="menuState.advertisement ? 'block' : 'none'"
+          >
             <li class="nav-item">
               <a
                 routerLink="/admin/advertisement/add"
                 routerLinkActive="menu-open"
                 class="nav-link"
-                [class.active]="isMenuActive('/admin/advertisement/add')">
+                [class.active]="isMenuActive('/admin/advertisement/add')"
+              >
                 <i class="nav-icon fas fa-plus-circle"></i>
                 <p>Add Advertisement</p>
               </a>
@@ -276,7 +324,8 @@
                 routerLinkActive="menu-open"
                 class="nav-link"
                 [class.active]="isMenuActive('/admin/advertisement/list')"
-                [routerLinkActiveOptions]="{ exact: false }">
+                [routerLinkActiveOptions]="{ exact: false }"
+              >
                 <i class="nav-icon fas fa-user-circle"></i>
                 <p>View Advertisements</p>
               </a>
@@ -290,7 +339,8 @@
             routerLink="/admin/aboutUs/add"
             routerLinkActive="menu-open"
             class="nav-link"
-            [class.active]="isMenuActive('/admin/aboutUs/add')">
+            [class.active]="isMenuActive('/admin/aboutUs/add')"
+          >
             <i class="nav-icon fas fa-user-cog"></i>
             <p>About Us</p>
           </a>
@@ -302,12 +352,12 @@
             routerLink="/admin/contactUs/add"
             routerLinkActive="menu-open"
             class="nav-link"
-            [class.active]="isMenuActive('/admin/contactUs/add')">
+            [class.active]="isMenuActive('/admin/contactUs/add')"
+          >
             <i class="nav-icon fas fa-address-book"></i>
             <p>Contact Us</p>
           </a>
         </li>
-
       </ul>
     </nav>
   </div>

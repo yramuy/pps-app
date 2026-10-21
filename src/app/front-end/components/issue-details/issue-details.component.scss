@@ -614,3 +614,12 @@ section.p-4 > .container:first-child > .row:hover {
     }
 }
 
+.vote-clickable {
+  cursor: pointer;
+}
+
+.vote-clickable:hover .border {
+  background-color: #f8f4f9;
+  transition: background-color 0.2s ease;
+}
+

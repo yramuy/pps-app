@@ -1,6 +1,7 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
+import { finalize } from 'rxjs/operators';
 import { ApiService } from 'src/app/services/api.service';
 import { AuthService } from 'src/app/services/auth.service';
 
@@ -55,6 +56,8 @@ export class IssueCreateComponent {
   existingImages: string[] = [];
   issue_images: string[] = [];
   isSaving: boolean = false;
+  private pendingApiCalls = 0;
+  isLoading = false;
 
   @ViewChild('fileInput') fileInput!: ElementRef;
 
@@ -112,6 +115,18 @@ export class IssueCreateComponent {
     });
   }
 
+  private requestWithLoader(endpoint: string, payload: any): any {
+    this.pendingApiCalls++;
+    this.isLoading = true;
+
+    return this.apiService.request('POST', endpoint, payload).pipe(
+      finalize(() => {
+        this.pendingApiCalls = Math.max(0, this.pendingApiCalls - 1);
+        this.isLoading = this.pendingApiCalls > 0;
+      }),
+    );
+  }
+
   private getCurrentDate(): string {
     const today = new Date();
 
@@ -144,30 +159,27 @@ export class IssueCreateComponent {
         return;
       }
 
-      this.apiService
-        .request(
-          'POST',
-          '/dependanceMasterData',
-          JSON.stringify({
-            master_id: masterId,
-            dropdown_id: parentId,
-            mode: 'web',
-          }),
-        )
-        .subscribe({
-          next: (res: any) => {
-            callback(
-              (res.dependance_master_data || []).map((item: any) => ({
-                ...item,
-                id: this.toId(item.id),
-              })),
-            );
-          },
-          error: (err: any) => {
-            console.error(`Failed to load master ${masterId}:`, err);
-            callback([]);
-          },
-        });
+      this.requestWithLoader(
+        '/dependanceMasterData',
+        JSON.stringify({
+          master_id: masterId,
+          dropdown_id: parentId,
+          mode: 'web',
+        }),
+      ).subscribe({
+        next: (res: any) => {
+          callback(
+            (res.dependance_master_data || []).map((item: any) => ({
+              ...item,
+              id: this.toId(item.id),
+            })),
+          );
+        },
+        error: (err: any) => {
+          console.error(`Failed to load master ${masterId}:`, err);
+          callback([]);
+        },
+      });
     };
 
     this.issue.state_id = stateId;
@@ -212,24 +224,21 @@ export class IssueCreateComponent {
 
     if (!stateId) return;
 
-    this.apiService
-      .request(
-        'POST',
-        '/dependanceMasterData',
-        JSON.stringify({
-          master_id: 3,
-          dropdown_id: stateId,
-          mode: 'web',
-        }),
-      )
-      .subscribe({
-        next: (res: any) => {
-          this.districts = (res.dependance_master_data || []).map(
-            (item: any) => ({ ...item, id: this.toId(item.id) }),
-          );
-        },
-        error: (err: any) => console.error('District loading failed:', err),
-      });
+    this.requestWithLoader(
+      '/dependanceMasterData',
+      JSON.stringify({
+        master_id: 3,
+        dropdown_id: stateId,
+        mode: 'web',
+      }),
+    ).subscribe({
+      next: (res: any) => {
+        this.districts = (res.dependance_master_data || []).map(
+          (item: any) => ({ ...item, id: this.toId(item.id) }),
+        );
+      },
+      error: (err: any) => console.error('District loading failed:', err),
+    });
   }
 
   loadAssemblies(districtId: any): void {
@@ -245,29 +254,24 @@ export class IssueCreateComponent {
 
     if (!districtId) return;
 
-    this.apiService
-      .request(
-        'POST',
-        '/dependanceMasterData',
-        JSON.stringify({
-          master_id: 4,
-          dropdown_id: districtId,
-          mode: 'web',
-        }),
-      )
-      .subscribe({
-        next: (res: any) => {
-          this.assemblies = (res.dependance_master_data || []).map(
-            (item: any) => ({ ...item, id: this.toId(item.id) }),
-          );
+    this.requestWithLoader(
+      '/dependanceMasterData',
+      JSON.stringify({
+        master_id: 4,
+        dropdown_id: districtId,
+        mode: 'web',
+      }),
+    ).subscribe({
+      next: (res: any) => {
+        this.assemblies = (res.dependance_master_data || []).map(
+          (item: any) => ({ ...item, id: this.toId(item.id) }),
+        );
 
-          this.loadRepresentatives();
-        },
+        this.loadRepresentatives();
+      },
 
-        
-        
-        error: (err: any) => console.error('Assembly loading failed:', err),
-      });
+      error: (err: any) => console.error('Assembly loading failed:', err),
+    });
   }
 
   loadMandals(assemblyId: any): void {
@@ -281,26 +285,24 @@ export class IssueCreateComponent {
 
     if (!assemblyId) return;
 
-    this.apiService
-      .request(
-        'POST',
-        '/dependanceMasterData',
-        JSON.stringify({
-          master_id: 5,
-          dropdown_id: assemblyId,
-          mode: 'web',
-        }),
-      )
-      .subscribe({
-        next: (res: any) => {
-          this.mandals = (res.dependance_master_data || []).map(
-            (item: any) => ({ ...item, id: this.toId(item.id) }),
-          );
+    this.requestWithLoader(
+      '/dependanceMasterData',
+      JSON.stringify({
+        master_id: 5,
+        dropdown_id: assemblyId,
+        mode: 'web',
+      }),
+    ).subscribe({
+      next: (res: any) => {
+        this.mandals = (res.dependance_master_data || []).map((item: any) => ({
+          ...item,
+          id: this.toId(item.id),
+        }));
 
-          this.loadRepresentatives();
-        },
-        error: (err: any) => console.error('Mandal loading failed:', err),
-      });
+        this.loadRepresentatives();
+      },
+      error: (err: any) => console.error('Mandal loading failed:', err),
+    });
   }
 
   loadVillages(mandalId: any): void {
@@ -312,24 +314,22 @@ export class IssueCreateComponent {
 
     if (!mandalId) return;
 
-    this.apiService
-      .request(
-        'POST',
-        '/dependanceMasterData',
-        JSON.stringify({
-          master_id: 6,
-          dropdown_id: mandalId,
-          mode: 'web',
-        }),
-      )
-      .subscribe({
-        next: (res: any) => {
-          this.villages = (res.dependance_master_data || []).map(
-            (item: any) => ({ ...item, id: this.toId(item.id) }),
-          );
-        },
-        error: (err: any) => console.error('Village loading failed:', err),
-      });
+    this.requestWithLoader(
+      '/dependanceMasterData',
+      JSON.stringify({
+        master_id: 6,
+        dropdown_id: mandalId,
+        mode: 'web',
+      }),
+    ).subscribe({
+      next: (res: any) => {
+        this.villages = (res.dependance_master_data || []).map((item: any) => ({
+          ...item,
+          id: this.toId(item.id),
+        }));
+      },
+      error: (err: any) => console.error('Village loading failed:', err),
+    });
   }
 
   // loadRepresentatives(): void {
@@ -415,7 +415,7 @@ export class IssueCreateComponent {
       issue_id: issueID,
     };
 
-    this.apiService.request('POST', '/issueDataById', payload).subscribe({
+    this.requestWithLoader('/issueDataById', payload).subscribe({
       next: (res: any) => {
         const issueData = res.issueData || {};
 
@@ -500,127 +500,47 @@ export class IssueCreateComponent {
   }
 
   loadCategories() {
-    this.apiService
-      .request(
-        'POST',
-        '/masterData',
-        JSON.stringify({
-          master_id: 1,
-          mode: 'web',
-        }),
-      )
-      .subscribe((res: { master_data: never[] }) => {
-        this.categories = res.master_data || [];
-      });
+    this.requestWithLoader(
+      '/masterData',
+      JSON.stringify({
+        master_id: 1,
+        mode: 'web',
+      }),
+    ).subscribe((res: { master_data: never[] }) => {
+      this.categories = res.master_data || [];
+    });
   }
 
   loadStates() {
-    this.apiService
-      .request(
-        'POST',
-        '/masterData',
-        JSON.stringify({
-          master_id: 2,
-          mode: 'web',
-        }),
-      )
-      .subscribe((res: { master_data: never[] }) => {
-        this.states = res.master_data || [];
-      });
+    this.requestWithLoader(
+      '/masterData',
+      JSON.stringify({
+        master_id: 2,
+        mode: 'web',
+      }),
+    ).subscribe((res: { master_data: never[] }) => {
+      this.states = res.master_data || [];
+    });
   }
-
-  // loadDistricts(stateId: any) {
-  //   this.loadRepresentatives();
-
-  //   this.apiService
-  //     .request(
-  //       'POST',
-  //       '/dependanceMasterData',
-  //       JSON.stringify({
-  //         master_id: 3,
-  //         dropdown_id: stateId,
-  //         mode: 'web',
-  //       }),
-  //     )
-  //     .subscribe((res: { dependance_master_data: never[] }) => {
-  //       this.districts = res.dependance_master_data || [];
-  //     });
-  // }
-
-  // loadAssemblies(districtId: any) {
-  //   this.loadRepresentatives();
-
-  //   this.apiService
-  //     .request(
-  //       'POST',
-  //       '/dependanceMasterData',
-  //       JSON.stringify({
-  //         master_id: 4,
-  //         dropdown_id: districtId,
-  //         mode: 'web',
-  //       }),
-  //     )
-  //     .subscribe((res: { dependance_master_data: never[] }) => {
-  //       this.assemblies = res.dependance_master_data || [];
-  //     });
-  // }
-
-  // loadMandals(assemblyId: any) {
-  //   this.loadRepresentatives();
-
-  //   this.apiService
-  //     .request(
-  //       'POST',
-  //       '/dependanceMasterData',
-  //       JSON.stringify({
-  //         master_id: 5,
-  //         dropdown_id: assemblyId,
-  //         mode: 'web',
-  //       }),
-  //     )
-  //     .subscribe((res: { dependance_master_data: never[] }) => {
-  //       this.mandals = res.dependance_master_data || [];
-  //     });
-  // }
-
-  // loadVillages(mandalId: any) {
-  //   this.loadRepresentatives();
-
-  //   this.apiService
-  //     .request(
-  //       'POST',
-  //       '/dependanceMasterData',
-  //       JSON.stringify({
-  //         master_id: 6,
-  //         dropdown_id: mandalId,
-  //         mode: 'web',
-  //       }),
-  //     )
-  //     .subscribe((res: { dependance_master_data: never[] }) => {
-  //       this.villages = res.dependance_master_data || [];
-  //     });
-  // }
 
   loadRepresentatives() {
-    this.apiService
-      .request(
-        'POST',
-        '/usersListByLocation',
-        JSON.stringify({
-          state_id: this.issue.state_id,
-          district_id: this.issue.district_id,
-          assembly_id: this.issue.assembly_id,
-          mandal_id: this.issue.mandal_id,
-          village_id: this.issue.village_id,
-        }),
-      )
-      .subscribe((res: { usersList: never[] }) => {
-        this.representatives = res.usersList || [];
-      });
+    this.requestWithLoader(
+      '/usersListByLocation',
+      JSON.stringify({
+        state_id: this.issue.state_id,
+        district_id: this.issue.district_id,
+        assembly_id: this.issue.assembly_id,
+        mandal_id: this.issue.mandal_id,
+        village_id: this.issue.village_id,
+      }),
+    ).subscribe((res: { usersList: never[] }) => {
+      this.representatives = res.usersList || [];
+    });
   }
 
-  saveIssue(form: NgForm) {
+  saveIssue(form: NgForm): void {
     if (form.invalid) {
+      form.control.markAllAsTouched();
       return;
     }
 
@@ -647,7 +567,10 @@ export class IssueCreateComponent {
     formData.append('id', this.issue.id ?? '');
     formData.append('master_id', '9');
     formData.append('status_id', '1');
-    formData.append('comment', 'New issue created');
+    formData.append(
+      'comment',
+      this.isEdit ? 'Issue updated' : 'New issue created',
+    );
     formData.append('created_by', this.loginUser?.userId ?? '');
 
     // Existing images
@@ -660,44 +583,41 @@ export class IssueCreateComponent {
       formData.append('images[]', file);
     });
 
-    // Newly selected video file
+    // Newly selected video
     if (this.selectedVideo) {
       formData.append('video', this.selectedVideo);
     }
 
-    // Existing video removal flag
+    // Remove existing video flag
     formData.append(
       'remove_existing_video',
       this.removeExistingVideoFlag ? '1' : '0',
     );
 
-    console.log('FormData values:');
-
-    formData.forEach((value, key) => {
-      console.log(key, value);
-    });
-
-    this.apiService.request('POST', '/saveAndUpdateIssue', formData).subscribe({
-      next: (res: any) => {
-        if (res.status) {
-          this.router.navigate(['/admin/issues/my-issues'], {
-            state: {
-              message: res.message || 'Success',
-            },
-          });
-        } else {
+    this.requestWithLoader('/saveAndUpdateIssue', formData)
+      .pipe(
+        finalize(() => {
           this.isSaving = false;
-          this.showMessage(res.message || 'Unable to save issue');
-        }
-      },
+        }),
+      )
+      .subscribe({
+        next: (res: any) => {
+          if (res?.status) {
+            this.router.navigate(['/admin/issues/my-issues'], {
+              state: {
+                message: res.message || 'Issue saved successfully',
+              },
+            });
+          } else {
+            this.showMessage(res?.message || 'Unable to save issue');
+          }
+        },
 
-      error: (err) => {
-        console.error('Save issue error:', err);
-
-        this.isSaving = false;
-        this.showMessage('Something went wrong');
-      },
-    });
+        error: (err: any) => {
+          console.error('Save issue error:', err);
+          this.showMessage('Something went wrong while saving the issue');
+        },
+      });
   }
 
   handleBackBtn() {

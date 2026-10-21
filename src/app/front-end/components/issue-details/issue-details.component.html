@@ -1,4 +1,9 @@
-<div class="issues-loader text-center py-5" *ngIf="loading">
+<!-- Loader -->
+<div class="loader-overlay" *ngIf="isLoading">
+  <div class="loader" role="status" aria-label="Loading"></div>
+</div>
+
+<!-- <div class="issues-loader text-center py-5" *ngIf="loading">
   <div class="spinner-border theme-spinner" role="status">
     <span class="visually-hidden">Loading...</span>
   </div>
@@ -6,20 +11,16 @@
   <p class="mt-3 mb-0">
     Loading Issue Details...
   </p>
-</div>
+</div> -->
 
-<div class="row" *ngIf="!loading">
-</div>
+<div class="row" *ngIf="!loading"></div>
 
 <!-- Page Header Start -->
 <div class="inner-bg">
   <div class="container">
     <div class="row align-items-start justify-content-center">
       <div class="col-lg-5">
-        <img
-          [src]="issue_images.img_url"
-          class="img-fluid rounded-20"
-        />
+        <img [src]="issue_images.img_url" class="img-fluid rounded-20" />
       </div>
       <div class="col-lg-7">
         <div class="pt-2 pb-2">
@@ -63,51 +64,63 @@
           <div class="col-sm-12 col-lg-auto my-2">
             <b class="fs-4">Vote :</b>
           </div>
-          <div class="col-sm-6 col-lg-auto my-2">
+
+          <!-- Diamond Vote -->
+          <div
+            class="col-sm-6 col-lg-auto my-2 vote-clickable"
+            (click)="saveVoting('diamond')"
+          >
             <div class="d-flex border rounded px-3 py-1">
               <img
                 src="assets/images/diamond-icon.png"
                 width="25"
                 height="25"
+                alt="Diamond"
               />
-              <p class="mb-0 px-2">130000</p>
+
+              <p class="mb-0 px-2">{{ diamond_count }}</p>
             </div>
           </div>
-          <div class="col-sm-6 col-lg-auto my-2">
+
+          <!-- Bronze Vote -->
+          <div
+            class="col-sm-6 col-lg-auto my-2 vote-clickable"
+            (click)="saveVoting('bronze')"
+          >
             <div class="d-flex border rounded px-3 py-1">
-              <img src="assets/images/gold-icon.png" width="25" height="25" />
-              <p class="mb-0 px-2">30000</p>
-            </div>
-          </div>
-          <div class="col-sm-6 col-lg-auto my-2">
-            <div class="d-flex border rounded px-3 py-1">
-              <img src="assets/images/silver-icon.png" width="25" height="25" />
-              <p class="mb-0 px-2">10000</p>
-            </div>
-          </div>
-          <div class="col-sm-6 col-lg-auto my-2">
-            <div class="d-flex border rounded px-3 py-1">
-              <img src="assets/images/basic-icon.png" width="25" height="25" />
-              <p class="mb-0 px-2">0</p>
+              <img
+                src="assets/images/basic-icon.png"
+                width="25"
+                height="25"
+                alt="Bronze"
+              />
+
+              <p class="mb-0 px-2">{{ bronze_count }}</p>
             </div>
           </div>
         </div>
       </div>
+
+      <!-- Share -->
       <div class="col-auto">
         <div class="entry-tags-list">
-          <strong> Share: </strong>
+          <strong>Share:</strong>
+
           <a href="#">
-            <img src="assets/images/facebook.svg" alt width="15"
-          /></a>
+            <img src="assets/images/facebook.svg" alt="Facebook" width="15" />
+          </a>
+
           <a href="#">
-            <img src="assets/images/twitter.svg" alt width="15"
-          /></a>
+            <img src="assets/images/twitter.svg" alt="Twitter" width="15" />
+          </a>
+
           <a href="#">
-            <img src="assets/images/instagram.svg" alt width="15"
-          /></a>
+            <img src="assets/images/instagram.svg" alt="Instagram" width="15" />
+          </a>
+
           <a href="#">
-            <img src="assets/images/linkedin.svg" alt width="15"
-          /></a>
+            <img src="assets/images/linkedin.svg" alt="LinkedIn" width="15" />
+          </a>
         </div>
       </div>
     </div>

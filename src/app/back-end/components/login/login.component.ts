@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs/operators';
 import { AuthService } from 'src/app/services/auth.service';
+import { GlobalService } from 'src/app/services/global.service';
 
 @Component({
   selector: 'app-login',
@@ -17,6 +18,7 @@ export class LoginComponent {
   constructor(
     private router: Router,
     private authService: AuthService,
+    private globalService: GlobalService,
   ) {}
 
   togglePassword() {
@@ -60,7 +62,14 @@ export class LoginComponent {
             this.authService.saveToken(res.token);
             this.authService.saveUserData(res);
 
-            this.router.navigate(['/admin/dashboard']);
+            if (this.globalService.getIsIssueLogin()) {
+              this.router.navigate([
+                '/issue-details',
+                this.globalService.getIssueID(),
+              ]);
+            } else {
+              this.router.navigate(['/admin/dashboard']);
+            }
           } else {
             alert(res.message || 'Invalid username or password');
             this.authService.logout();

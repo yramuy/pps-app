@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { finalize } from 'rxjs/operators';
 import { ApiService } from 'src/app/services/api.service';
 
 @Component({
@@ -13,12 +14,13 @@ export class LeaderProfileComponent {
   loading: boolean = false;
   profileId: any;
 
+  private pendingApiCalls = 0;
+  isLoading = false;
+
   constructor(
     private apiService: ApiService,
     private route: ActivatedRoute,
-  ) {
-    
-  }
+  ) {}
 
   ngOnInit(): void {
     this.profileId = this.route.snapshot.paramMap.get('id');
@@ -28,21 +30,31 @@ export class LeaderProfileComponent {
     window.scrollTo(0, 0);
 
     this.loadVIPProfiles();
+  }
 
-    
+  private requestWithLoader(endpoint: string, payload: any): any {
+    this.pendingApiCalls++;
+    this.isLoading = true;
+
+    return this.apiService.request('POST', endpoint, payload).pipe(
+      finalize(() => {
+        this.pendingApiCalls = Math.max(0, this.pendingApiCalls - 1);
+        this.isLoading = this.pendingApiCalls > 0;
+      }),
+    );
   }
 
   getProfileLocation(profile: any): string {
-  return [
-    profile?.village,
-    profile?.mandal,
-    profile?.assembly,
-    profile?.district,
-    profile?.state
-  ]
-    .filter(value => value !== null && value !== undefined && value !== '')
-    .join(', ');
-}
+    return [
+      profile?.village,
+      profile?.mandal,
+      profile?.assembly,
+      profile?.district,
+      profile?.state,
+    ]
+      .filter((value) => value !== null && value !== undefined && value !== '')
+      .join(', ');
+  }
 
   loadVIPProfiles() {
     this.loading = true;
@@ -51,7 +63,7 @@ export class LeaderProfileComponent {
       user_id: this.profileId,
     };
 
-    this.apiService.request('POST', '/userDataById', payload).subscribe({
+    this.requestWithLoader('/userDataById', payload).subscribe({
       next: (res: any) => {
         this.profile = res.data[0] || [];
         this.loading = false;

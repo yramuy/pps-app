@@ -49,6 +49,9 @@ import { AccountComponent } from './back-end/components/account/account.componen
 import { ContactUsComponent } from './front-end/components/contact-us/contact-us.component';
 import { ContactFormComponent } from './back-end/components/contact-form/contact-form.component';
 import { HeroComponent } from './front-end/components/hero/hero.component';
+import { DiamondComponent } from './back-end/components/issues/diamond/diamond.component';
+import { BronzeComponent } from './back-end/components/issues/bronze/bronze.component';
+import { VotesByTypeComponent } from './back-end/components/issues/votes-by-type/votes-by-type.component';
 
 const routes: Routes = [
   // Admin Login
@@ -95,6 +98,18 @@ const routes: Routes = [
       {
         path: 'issues/assigned-to-me-issues',
         component: AssignedToMeIssuesComponent,
+      },
+      {
+        path: 'issues/diamond',
+        component: DiamondComponent,
+      },
+      {
+        path: 'issues/bronze',
+        component: BronzeComponent,
+      },
+      {
+        path: 'issues/votesByType',
+        component: VotesByTypeComponent,
       },
       { path: 'issues/view-issue', component: ViewIssueComponent },
 

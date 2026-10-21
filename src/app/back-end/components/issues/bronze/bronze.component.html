@@ -1,0 +1,132 @@
+<!-- Loader -->
+<div class="loader-overlay" *ngIf="isLoading">
+  <div class="loader" role="status" aria-label="Loading"></div>
+</div>
+
+<section class="blog-section py-4">
+  <div class="container">
+    <div class="card blog-card">
+      <!-- Card Header -->
+      <div class="card-header blog-card-header">
+        <div class="d-flex align-items-center gap-3">
+          <div class="blog-header-icon">
+            <i class="fas fa-medal"></i>
+          </div>
+
+          <div>
+            <h5 class="mb-1">Bronze Issues</h5>
+            <small>Explore issues supported with bronze votes</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card Body -->
+      <div class="card-body blog-card-body">
+        <!-- Dynamic Issues -->
+        <section
+          class="blog-details-section"
+          *ngFor="let bronzeIssue of bronzeIssues; let i = index"
+        >
+          <div class="row g-4">
+            <!-- Left Column -->
+            <div class="col-12 col-md-4">
+              <!-- Issue Image -->
+              <div class="blog-image-wrapper">
+                <img
+                  [src]="bronzeIssue.image || 'assets/images/political-pic.jpg'"
+                  [alt]="bronzeIssue.issue_title || 'Issue image'"
+                  class="blog-image"
+                />
+
+                <span class="blog-category">
+                  <i class="fas fa-exclamation-circle me-1"></i>
+                  Bronze Issue
+                </span>
+              </div>
+
+              <!-- Bronze Vote Card -->
+              <div class="vote-stat-card bronze-stat mt-3">
+                <div class="vote-stat-icon">
+                  <i class="fas fa-medal"></i>
+                </div>
+
+                <div class="vote-stat-info">
+                  <span class="vote-stat-label">Bronze Votes</span>
+
+                  <h4 class="bronze-vote-count">
+                    {{ bronzeIssue.bronze_votes ?? 0 }}
+                  </h4>
+
+                  <span class="vote-stat-caption"> Total votes received </span>
+                </div>
+
+                <div class="bronze-badge">
+                  <i class="fas fa-check"></i>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="col-12 col-md-8">
+              <div class="blog-content">
+                <!-- Date and Views -->
+                <div class="blog-meta mb-3">
+                  <span>
+                    <i class="far fa-calendar-alt me-1"></i>
+                    {{ bronzeIssue.post_date | date: "dd MMM yyyy" }}
+                  </span>
+
+                  <span *ngIf="bronzeIssue.views != null">
+                    <i class="far fa-eye me-1"></i>
+                    {{ bronzeIssue.views | number }} views
+                  </span>
+                </div>
+
+                <!-- Title -->
+                <h2 class="blog-title">
+                  {{ bronzeIssue.issue_title }}
+                </h2>
+
+                <!-- Description -->
+                <p class="blog-description">
+                  {{ bronzeIssue.issue_description }}
+                </p>
+
+                <!-- Actions -->
+                <div class="blog-actions">
+                  <button
+                    type="button"
+                    class="btn blog-read-btn"
+                    (click)="readMore(bronzeIssue.issue_id)"
+                  >
+                    Read More
+                    <i class="fas fa-arrow-right ms-2"></i>
+                  </button>
+
+                  <button
+                    type="button"
+                    class="btn blog-gift-btn"
+                    (click)="sendGift(bronzeIssue)"
+                  >
+                    <i class="fas fa-gift me-2"></i>
+                    Send Gift
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- No Issues Found -->
+        <div
+          class="empty-issues"
+          *ngIf="!bronzeIssues || bronzeIssues.length === 0"
+        >
+          <i class="fas fa-gem"></i>
+          <h6>No Bronze Issues Found</h6>
+          <p>There are no issues available in this category yet.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

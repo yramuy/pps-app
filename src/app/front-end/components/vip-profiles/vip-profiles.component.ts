@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { finalize } from 'rxjs/operators';
 import { ApiService } from 'src/app/services/api.service';
 
 @Component({
@@ -11,9 +12,24 @@ export class VipProfilesComponent {
   message: any = '';
   loading: boolean = false;
 
+  private pendingApiCalls = 0;
+  isLoading = false;
+
   constructor(private apiService: ApiService) {
     this.loadVIPProfiles();
   }
+
+  private requestWithLoader(endpoint: string, payload: any): any {
+      this.pendingApiCalls++;
+      this.isLoading = true;
+  
+      return this.apiService.request('POST', endpoint, payload).pipe(
+        finalize(() => {
+          this.pendingApiCalls = Math.max(0, this.pendingApiCalls - 1);
+          this.isLoading = this.pendingApiCalls > 0;
+        }),
+      );
+    }
 
   loadVIPProfiles() {
     this.loading = true;
@@ -21,7 +37,7 @@ export class VipProfilesComponent {
       is_token: '0',
     };
 
-    this.apiService.request('POST', '/vipProfiles', payload).subscribe({
+    this.requestWithLoader('/vipProfiles', payload).subscribe({
       next: (res: any) => {
         this.profiles = res.data || [];
         this.loading = false;

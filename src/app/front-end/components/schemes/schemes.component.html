@@ -1,3 +1,8 @@
+<!-- Loader -->
+<div class="loader-overlay" *ngIf="isLoading">
+  <div class="loader" role="status" aria-label="Loading"></div>
+</div>
+
 <!-- ================= PAGE HEADER ================= -->
 <div class="main-bg">
   <div class="container">
@@ -31,37 +36,59 @@
 <!-- ================= GOVERNMENT SCHEMES ================= -->
 <section class="blog-wrap my-4">
   <div class="container">
-    <!-- ================= LOADER ================= -->
-    <div class="schemes-loader text-center py-5" *ngIf="loading()">
-      <div class="spinner-border theme-spinner" role="status">
-        <span class="visually-hidden"> Loading... </span>
-      </div>
 
-      <p class="mt-3 mb-0">Loading Government Schemes...</p>
+    <!-- Explore All Schemes / Show Less -->
+    <div
+      class="text-end mb-3"
+      *ngIf="schemes().length > 6">
+
+      <button
+        type="button"
+        class="btn explore-issues-btn"
+        (click)="showAllSchemes = !showAllSchemes">
+
+        {{ showAllSchemes ? 'Show Less' : 'Explore All Schemes' }}
+
+        <i
+          class="fa ms-2"
+          [ngClass]="showAllSchemes ? 'fa-arrow-up' : 'fa-arrow-right'">
+        </i>
+      </button>
     </div>
 
     <!-- ================= SCHEMES CARDS ================= -->
-    <div class="row" *ngIf="!loading()">
-      <!-- ================= CARD ================= -->
-      <div class="col-lg-4 col-md-6 my-2" *ngFor="let scheme of schemes()">
+    <div class="row">
+
+      <div
+        class="col-lg-4 col-md-6 my-2"
+        *ngFor="
+          let scheme of (
+            showAllSchemes
+              ? schemes()
+              : schemes().slice(0, 6)
+          )
+        ">
+
         <div class="border rounded-20 bg-white h-100 d-flex flex-column">
-          <div class="blog-cate p-2">
-            <div class="blog-cate p-2 d-flex justify-content-end">
-              <span class="scheme-type-badge">
-                {{ scheme.scheme_type_name }}
-              </span>
-            </div>
+
+          <!-- Scheme Type -->
+          <div class="blog-cate p-2 d-flex justify-content-end">
+            <span class="scheme-type-badge">
+              {{ scheme.scheme_type_name }}
+            </span>
           </div>
 
+          <!-- Scheme Image -->
           <div>
             <img
               [src]="scheme.scheme_pic"
               class="img-fluid blog-img w-100"
-              alt="Agriculture Government Schemes"
-            />
+              [alt]="scheme.scheme_title">
           </div>
 
+          <!-- Scheme Details -->
           <div class="col-lg-12 px-3 pt-3 d-flex flex-column flex-grow-1">
+
             <p class="fs-5 fw-bold mb-2">
               {{ scheme.scheme_title }}
             </p>
@@ -70,13 +97,14 @@
               {{ scheme.scheme_description }}
             </p>
 
+            <!-- Date and Read More -->
             <div class="mt-auto">
               <div class="row align-items-center justify-content-between pb-3">
+
                 <div class="col-auto">
-                  <a class="mb-0">
-                    <span class="mr-1">📅</span>
-                    {{ scheme.created_on }}
-                  </a>
+                  <span class="mb-0">
+                    📅 {{ scheme.created_on }}
+                  </span>
                 </div>
 
                 <div class="col-auto">
@@ -84,17 +112,21 @@
                     [routerLink]="['/scheme-details', scheme.id]"
                     class="vip-read-btn">
                     Read More
-                    <!-- <i class="fa fa-arrow-right ms-1"></i> -->
                   </a>
                 </div>
+
               </div>
             </div>
+
           </div>
         </div>
       </div>
 
       <!-- ================= NO DATA ================= -->
-      <div class="col-12 text-center py-5" *ngIf="schemes().length === 0">
+      <div
+        class="col-12 text-center py-5"
+        *ngIf="schemes().length === 0">
+
         <div class="vip-no-data">
           <i class="fa fa-book"></i>
 
@@ -103,6 +135,7 @@
           <p>There are currently no schemes available.</p>
         </div>
       </div>
+
     </div>
   </div>
 </section>

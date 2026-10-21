@@ -1,3 +1,8 @@
+<!-- Loader -->
+<div class="loader-overlay" *ngIf="isLoading">
+  <div class="loader" role="status" aria-label="Loading"></div>
+</div>
+
 <div class="main-bg">
   <div class="container">
     <div class="pt-lg-3 pt-5 pb-lg-0 pb-3">
@@ -24,12 +29,12 @@
 </div>
 
 <!-- Profile Loading -->
-<section *ngIf="loading" class="profile-loader-section">
+<!-- <section *ngIf="loading" class="profile-loader-section">
   <div class="loader-wrapper">
     <div class="loader"></div>
     <p class="loader-text">Loading leader profile...</p>
   </div>
-</section>
+</section> -->
 
 <!---- Banner section end ----->
 <section class="pt-4 pb-4">

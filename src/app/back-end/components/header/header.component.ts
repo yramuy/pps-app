@@ -5,6 +5,7 @@ import { AuthService } from 'src/app/services/auth.service';
 import { NotificationService } from '../../../services/notification.service';
 import { ApiService } from '../../../services/api.service';
 import { Subscription } from 'rxjs';
+import { GlobalService } from 'src/app/services/global.service';
 
 declare var $: any;
 
@@ -46,6 +47,7 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
     private authService: AuthService,
     private apiService: ApiService,
     private notificationService: NotificationService,
+    private globalService: GlobalService
   ) {}
 
   ngAfterViewInit(): void {
@@ -272,6 +274,9 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
     this.authService.logout();
 
     localStorage.clear();
+
+    this.globalService.setIssueID(0);
+    this.globalService.setIsIssueLogin(false);
 
     this.router.navigate(['/admin/login']);
   }

@@ -2,6 +2,7 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
+import { finalize } from 'rxjs/operators';
 
 import { ApiService } from 'src/app/services/api.service';
 import { AuthService } from 'src/app/services/auth.service';
@@ -42,6 +43,9 @@ export class AddSchemeComponent {
   existingImages: string[] = [];
 
   scheme_images: any[] = [];
+
+  private pendingApiCalls = 0;
+  isLoading = false;
 
   @ViewChild('fileInput')
   fileInput!: ElementRef;
@@ -91,11 +95,34 @@ export class AddSchemeComponent {
     });
   }
 
+  private requestWithLoader(endpoint: string, payload: any): any {
+    this.pendingApiCalls++;
+    this.isLoading = true;
+
+    return this.apiService.request('POST', endpoint, payload).pipe(
+      finalize(() => {
+        this.pendingApiCalls = Math.max(0, this.pendingApiCalls - 1);
+        this.isLoading = this.pendingApiCalls > 0;
+      }),
+    );
+  }
+
   /*
    * Load Scheme Details
    */
   loadViewSchemeDeta(schemeID: any) {
-    this.apiService.request('GET', `/schemeDataById/${schemeID}`).subscribe({
+    const payload = JSON.stringify({
+      is_token: '1',
+      scheme_id: schemeID,
+    });
+
+    console.log('schemeDataById payload:', payload);
+
+    // ------------------------------------------------------------
+    // API CALL
+    // ------------------------------------------------------------
+
+    this.requestWithLoader('/schemeDataById', payload).subscribe({
       next: (res: any) => {
         /*
          * If API returns scheme details
@@ -274,25 +301,23 @@ export class AddSchemeComponent {
     /*
      * Save API
      */
-    this.apiService
-      .request('POST', '/saveAndUpdateScheme', formData)
-      .subscribe({
-        next: (res: any) => {
-          if (res.status) {
-            this.router.navigate(['/admin/schemes/list'], {
-              state: {
-                message: res.message || 'Scheme saved successfully',
-              },
-            });
-          } else {
-            this.showMessage(res.message);
-          }
-        },
+    this.requestWithLoader('/saveAndUpdateScheme', formData).subscribe({
+      next: (res: any) => {
+        if (res.status) {
+          this.router.navigate(['/admin/schemes/list'], {
+            state: {
+              message: res.message || 'Scheme saved successfully',
+            },
+          });
+        } else {
+          this.showMessage(res.message);
+        }
+      },
 
-        error: () => {
-          this.showMessage('Something went wrong');
-        },
-      });
+      error: () => {
+        this.showMessage('Something went wrong');
+      },
+    });
   }
 
   /*

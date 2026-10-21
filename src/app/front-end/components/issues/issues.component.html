@@ -1,3 +1,8 @@
+<!-- Loader -->
+<div class="loader-overlay" *ngIf="isLoading">
+  <div class="loader" role="status" aria-label="Loading"></div>
+</div>
+
 <!-- ================= PUBLIC ISSUES HEADER ================= -->
 <section class="py-3">
   <div class="main-bg">
@@ -8,7 +13,7 @@
             <div class="pt-lg-5 pb-lg-3 pt-2 pb-2">
               <div class="row pt-3 justify-content-center">
                 <div class="col-lg-10 p-3 rounded-20">
-                  <h1 class="display-3 fw-bold text-white">Treding Issues</h1>
+                  <h1 class="display-3 fw-bold text-white">Letest Issues</h1>
                   <p class="text-white">
                     We empower farmers with sustainable practices, quality
                     seeds, and modern technologies to cultivate abundant
@@ -29,18 +34,29 @@
 <!-- ================= PUBLIC ISSUE CARDS ================= -->
 <section class="blog-wrap my-4">
   <div class="container">
-    <!-- Loader -->
-    <div class="issues-loader text-center py-5" *ngIf="loading()">
-      <div class="spinner-border theme-spinner" role="status">
-        <span class="visually-hidden"> Loading... </span>
-      </div>
+    <!-- Explore All Issues / Show Less Button -->
+    <div class="text-end mb-3" *ngIf="issues().length > 6">
+      <button
+        type="button"
+        class="btn explore-issues-btn"
+        (click)="toggleIssues()"
+      >
+        {{ showAllIssues ? "Show Less" : "Explore All Issues" }}
 
-      <p class="mt-3 mb-0">Loading Public Issues...</p>
+        <i
+          class="fa ms-2"
+          [ngClass]="showAllIssues ? 'fa-arrow-up' : 'fa-arrow-right'"
+        >
+        </i>
+      </button>
     </div>
 
     <!-- Issue Cards -->
-    <div class="row" *ngIf="!loading()">
-      <div class="col-lg-4 col-md-6 my-2" *ngFor="let issue of issues()">
+    <div class="row">
+      <div
+        class="col-lg-4 col-md-6 my-2"
+        *ngFor="let issue of showAllIssues ? issues() : issues().slice(0, 6)"
+      >
         <div class="border rounded-20 bg-white h-100 d-flex flex-column">
           <div class="blog-cate p-2 d-flex justify-content-end">
             <span class="category-badge">
@@ -52,7 +68,8 @@
             <img
               [src]="issue.issue_pic"
               class="img-fluid blog-img w-100"
-              [alt]="issue.issue_title" />
+              [alt]="issue.issue_title"
+            />
           </div>
 
           <div class="px-3 pt-3 d-flex flex-column flex-grow-1">
@@ -67,35 +84,33 @@
             <div class="mt-auto">
               <div class="row align-items-center justify-content-between pb-3">
                 <div class="col-auto">
-                  <a class="mb-0">
-                    <span class="mr-1">📅</span>
-                    {{ issue.created_on }}
-                  </a>
+                  <span>📅 {{ issue.created_on }}</span>
                 </div>
 
                 <div class="col-auto">
-                  <a
-                    [routerLink]="['/issue-details', issue.id]"
-                    class="vip-read-btn">
+                  <button
+                    type="button"
+                    class="vip-read-btn"
+                    (click)="viewIssue(issue.id)"
+                  >
                     Read More
-                    <!-- <i class="fa fa-arrow-right ms-1"></i> -->
-                  </a>
+                  </button>
                 </div>
               </div>
             </div>
-
           </div>
         </div>
       </div>
 
       <!-- No Data -->
-      <div class="col-12 text-center py-5" *ngIf="issues().length === 0">
+      <div
+        class="col-12 text-center py-5"
+        *ngIf="issues().length === 0 && !isLoading"
+      >
         <div class="vip-no-data">
           <i class="fa fa-users"></i>
-
           <h4>No Public Issues Found</h4>
-
-          <p>Try changing your search filters.</p>
+          <p>There are currently no public issues available.</p>
         </div>
       </div>
     </div>

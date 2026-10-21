@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { finalize } from 'rxjs/operators';
 import { ApiService } from 'src/app/services/api.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { LoaderService } from 'src/app/services/loader.service';
@@ -12,7 +13,6 @@ declare const $: any;
   styleUrls: ['./my-issues.component.scss'],
 })
 export class MyIssuesComponent implements OnInit {
-
   // =========================
   // Component Variables
   // =========================
@@ -28,6 +28,9 @@ export class MyIssuesComponent implements OnInit {
   categories: any[] = [];
   selectedCategory: string = '';
 
+  private pendingApiCalls = 0;
+  isLoading = false;
+
   constructor(
     private authService: AuthService,
     private apiService: ApiService,
@@ -35,7 +38,6 @@ export class MyIssuesComponent implements OnInit {
     private router: Router,
   ) {
     this.authService.user$.subscribe((user) => {
-
       this.loginUser = user;
 
       if (user) {
@@ -45,14 +47,12 @@ export class MyIssuesComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
     const state = history.state;
 
     // Load categories from master API
     this.loadCategories();
 
     if (state.message) {
-
       this.message = state.message;
       this.isMessage = true;
 
@@ -64,32 +64,38 @@ export class MyIssuesComponent implements OnInit {
     }
   }
 
+  private requestWithLoader(endpoint: string, payload: any): any {
+    this.pendingApiCalls++;
+    this.isLoading = true;
+
+    return this.apiService.request('POST', endpoint, payload).pipe(
+      finalize(() => {
+        this.pendingApiCalls = Math.max(0, this.pendingApiCalls - 1);
+        this.isLoading = this.pendingApiCalls > 0;
+      }),
+    );
+  }
+
   // =========================
   // Load Categories
   // =========================
 
   loadCategories(): void {
-
-    this.apiService
-      .request(
-        'POST',
+    this.requestWithLoader(
         '/masterData',
         JSON.stringify({
           master_id: 1,
           mode: 'web',
-        })
+        }),
       )
       .subscribe({
-
         next: (res: any) => {
-
           this.categories = res.master_data || [];
 
           console.log('Categories:', this.categories);
         },
 
         error: (err: any) => {
-
           console.error('Category loading failed:', err);
 
           this.categories = [];
@@ -102,7 +108,6 @@ export class MyIssuesComponent implements OnInit {
   // =========================
 
   loadMyIssues(user: any): void {
-
     this.loader.show();
 
     const payloadObj: any = {};
@@ -116,46 +121,34 @@ export class MyIssuesComponent implements OnInit {
 
     const payload = JSON.stringify(payloadObj);
 
-    this.apiService
-      .request('POST', '/myIssues', payload)
-      .subscribe({
+    this.requestWithLoader('/myIssues', payload).subscribe({
+      next: (res: any) => {
+        this.myIssues = res.my_issues || [];
 
-        next: (res: any) => {
+        console.log('myIssues:', this.myIssues);
 
-          this.myIssues = res.my_issues || [];
+        this.loader.hide();
 
-          console.log('myIssues:', this.myIssues);
+        setTimeout(() => {
+          this.initializeDataTable();
+        }, 0);
+      },
 
-          this.loader.hide();
+      error: (err: any) => {
+        if (err.status === 401) {
+          this.message = 'Token expired';
+          this.authService.logout();
+        } else if (err.status === 400) {
+          this.message = 'Invalid request data';
+        } else if (err.status === 500) {
+          this.message = 'Server error. Please try again later';
+        } else {
+          this.message = 'Something went wrong. Please try again later';
+        }
 
-          setTimeout(() => {
-            this.initializeDataTable();
-          }, 0);
-        },
-
-        error: (err: any) => {
-
-          if (err.status === 401) {
-
-            this.message = 'Token expired';
-            this.authService.logout();
-
-          } else if (err.status === 400) {
-
-            this.message = 'Invalid request data';
-
-          } else if (err.status === 500) {
-
-            this.message = 'Server error. Please try again later';
-
-          } else {
-
-            this.message = 'Something went wrong. Please try again later';
-          }
-
-          this.loader.hide();
-        },
-      });
+        this.loader.hide();
+      },
+    });
   }
 
   // =========================
@@ -163,7 +156,6 @@ export class MyIssuesComponent implements OnInit {
   // =========================
 
   onCategoryChange(event: Event): void {
-
     const selectElement = event.target as HTMLSelectElement;
 
     this.selectedCategory = selectElement.value;
@@ -176,7 +168,6 @@ export class MyIssuesComponent implements OnInit {
   // =========================
 
   filteredIssues(): any[] {
-
     const category = this.selectedCategory;
 
     if (!category) {
@@ -184,8 +175,7 @@ export class MyIssuesComponent implements OnInit {
     }
 
     return this.myIssues.filter(
-      (issue: any) =>
-        String(issue.category_id) === String(category)
+      (issue: any) => String(issue.category_id) === String(category),
     );
   }
 
@@ -194,24 +184,17 @@ export class MyIssuesComponent implements OnInit {
   // =========================
 
   initializeDataTable(): void {
-
     if ($.fn.DataTable.isDataTable('#myIssuesTable')) {
-
-      ($('#myIssuesTable') as any)
-        .DataTable()
-        .destroy();
+      ($('#myIssuesTable') as any).DataTable().destroy();
     }
 
     if (this.filteredIssues().length > 0) {
-
       setTimeout(() => {
-
         ($('#myIssuesTable') as any).DataTable({
           dom: 'Bfrtip',
           buttons: ['excel', 'pdf'],
           responsive: true,
         });
-
       }, 0);
     }
   }
@@ -221,7 +204,6 @@ export class MyIssuesComponent implements OnInit {
   // =========================
 
   handleEdit(issueObj: any): void {
-
     this.router.navigate(['/admin/issues/create'], {
       state: {
         issue: issueObj,
@@ -235,7 +217,6 @@ export class MyIssuesComponent implements OnInit {
   // =========================
 
   confirmDelete(id: string): void {
-
     if (confirm('Are you sure you want to delete this record?')) {
       this.deleteIssue(id);
     }
@@ -246,10 +227,9 @@ export class MyIssuesComponent implements OnInit {
   // =========================
 
   handleView(id: any): void {
-
     this.router.navigate(['/admin/issues/view-issue'], {
       state: {
-        issueID: id
+        issueID: id,
       },
     });
   }
@@ -259,33 +239,25 @@ export class MyIssuesComponent implements OnInit {
   // =========================
 
   deleteIssue(id: string): void {
-
     const payload = JSON.stringify({
       id: id,
       master_id: '9',
     });
 
-    this.apiService
-      .request('POST', '/deleteRecord', payload)
-      .subscribe({
+    this.requestWithLoader('/deleteRecord', payload).subscribe({
+      next: (res: any) => {
+        this.showMessage(res.message);
 
-        next: (res: any) => {
+        // Remove deleted issue
+        this.myIssues = this.myIssues.filter((issue: any) => issue.id !== id);
 
-          this.showMessage(res.message);
+        this.reloadDataTable();
+      },
 
-          // Remove deleted issue
-          this.myIssues = this.myIssues.filter(
-            (issue: any) => issue.id !== id
-          );
-
-          this.reloadDataTable();
-        },
-
-        error: (err: any) => {
-
-          console.error(err);
-        },
-      });
+      error: (err: any) => {
+        console.error(err);
+      },
+    });
   }
 
   // =========================
@@ -293,26 +265,18 @@ export class MyIssuesComponent implements OnInit {
   // =========================
 
   reloadDataTable(): void {
-
     if ($.fn.DataTable.isDataTable('#myIssuesTable')) {
-
-      ($('#myIssuesTable') as any)
-        .DataTable()
-        .destroy();
+      ($('#myIssuesTable') as any).DataTable().destroy();
     }
 
     setTimeout(() => {
-
       if (this.filteredIssues().length > 0) {
-
         ($('#myIssuesTable') as any).DataTable({
           dom: 'Bfrtip',
           buttons: ['excel', 'pdf'],
           responsive: true,
         });
-
       }
-
     }, 100);
   }
 
@@ -321,7 +285,6 @@ export class MyIssuesComponent implements OnInit {
   // =========================
 
   showMessage(msg: string): void {
-
     this.message = msg;
     this.isMessage = true;
 

@@ -147,3 +147,29 @@
     color: #fff;
     transform: translateY(-7px);
 }
+
+.explore-issues-btn {
+  background-color: #8e2790;
+  color: #fff;
+  // padding: 12px 28px;
+  border-radius: 30px;
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+  border: 2px solid #8e2790;
+  transition: all 0.3s ease;
+}
+
+.explore-issues-btn:hover {
+  background-color: #fff;
+  color: #8e2790;
+  box-shadow: 0 4px 12px rgba(142, 39, 144, 0.2);
+}
+
+.explore-issues-btn i {
+  transition: transform 0.3s ease;
+}
+
+.explore-issues-btn:hover i {
+  transform: translateX(4px);
+}

@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { filter, finalize } from 'rxjs/operators';
 
 import { ApiService } from 'src/app/services/api.service';
 import { AuthService } from 'src/app/services/auth.service';
@@ -37,11 +37,12 @@ export class ViewIssueComponent implements OnInit, OnDestroy {
   private routerSubscription?: Subscription;
   private userSubscription?: Subscription;
 
-  diamondCount = '10k';
-  bronzeCount = '5k';
+  diamondCount = 0;
+  bronzeCount = 0;
   isDiamondSelected = false;
   isBronzeSelected = false;
   isVoting = false;
+  private pendingApiCalls = 0;
 
   constructor(
     private apiService: ApiService,
@@ -80,6 +81,42 @@ export class ViewIssueComponent implements OnInit, OnDestroy {
 
         this.loadIssueFromState();
       });
+
+    this.loadVotingByIssueIdAndUserId();
+  }
+
+  private requestWithLoader(endpoint: string, payload: any): any {
+    this.pendingApiCalls++;
+    this.isLoading = true;
+
+    return this.apiService.request('POST', endpoint, payload).pipe(
+      finalize(() => {
+        this.pendingApiCalls = Math.max(0, this.pendingApiCalls - 1);
+        this.isLoading = this.pendingApiCalls > 0;
+      }),
+    );
+  }
+
+  loadVotingByIssueIdAndUserId() {
+    const payload = {
+      issue_id: this.issueID,
+      created_by: this.loginUser.userId,
+    };
+
+    this.requestWithLoader('/votingByIssueIdAndUserId', payload).subscribe({
+      next: (res: any) => {
+        this.isDiamondSelected = Number(res.voting.is_diamond || 0) === 1;
+
+        this.isBronzeSelected = Number(res.voting.is_bronze || 0) === 1;
+
+        // this.isVoting = false;
+      },
+      error: (err: any) => {
+        console.error('Voting API error:', err);
+        this.showMessage('Unable to update vote. Please try again.');
+        // this.isVoting = false;
+      },
+    });
   }
 
   saveVoting(voteType: 'diamond' | 'bronze'): void {
@@ -87,7 +124,9 @@ export class ViewIssueComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.isVoting = true;
+    // this.isVoting = true;
+
+    // this.loader.show();
 
     const payload = {
       issue_id: this.issueID,
@@ -95,30 +134,23 @@ export class ViewIssueComponent implements OnInit, OnDestroy {
       vote_type: voteType,
     };
 
-    this.apiService.request('POST', '/saveAndUpdateVoting', payload).subscribe({
+    this.requestWithLoader('/saveAndUpdateVoting', payload).subscribe({
       next: (res: any) => {
-        if (res?.status === true || res?.status === 'success') {
-          // Refresh counts from the server response
-          if (res.voting) {
-            // this.diamondCount = Number(res.voting.diamond_count || 0);
-            // this.bronzeCount = Number(res.voting.bronze_count || 0);
+        this.loadViewIssueDeta(this.issueID);
 
-            this.isDiamondSelected = Number(res.voting.is_diamond || 0) === 1;
+        this.loadVotingByIssueIdAndUserId();
 
-            this.isBronzeSelected = Number(res.voting.is_bronze || 0) === 1;
-          }
+        this.showMessage(res.message || 'Vote updated successfully.');
 
-          this.showMessage(res.message || 'Vote updated successfully.');
-        } else {
-          this.showMessage(res?.message || 'Unable to update vote.');
-        }
+        // this.isVoting = false;
 
-        this.isVoting = false;
+        // this.loader.hide();
       },
       error: (err: any) => {
         console.error('Voting API error:', err);
         this.showMessage('Unable to update vote. Please try again.');
-        this.isVoting = false;
+        // this.isVoting = false;
+        // this.loader.hide();
       },
     });
   }
@@ -128,6 +160,7 @@ export class ViewIssueComponent implements OnInit, OnDestroy {
   // =====================================================
 
   loadIssueFromState(): void {
+    this.isLoading = true;
     const state = history.state;
 
     const newIssueID = state?.issueID;
@@ -197,7 +230,7 @@ export class ViewIssueComponent implements OnInit, OnDestroy {
       mode: 'web',
     };
 
-    this.apiService.request('POST', '/masterData', payload).subscribe({
+    this.requestWithLoader('/masterData', payload).subscribe({
       next: (res: any) => {
         this.issueStatuses = res?.master_data || [];
       },
@@ -238,7 +271,7 @@ export class ViewIssueComponent implements OnInit, OnDestroy {
 
     console.log('Saving issue view:', payload);
 
-    this.apiService.request('POST', '/saveIssueViews', payload).subscribe({
+    this.requestWithLoader('/saveIssueViews', payload).subscribe({
       next: (res: any) => {
         console.log('Issue view saved:', res);
       },
@@ -262,20 +295,18 @@ export class ViewIssueComponent implements OnInit, OnDestroy {
 
     console.log('updateNotificationStatus payload :', payload);
 
-    this.apiService
-      .request('POST', '/updateNotificationStatus', payload)
-      .subscribe({
-        next: (res: any) => {
-          console.log('updateNotificationStatus:', res);
+    this.requestWithLoader('/updateNotificationStatus', payload).subscribe({
+      next: (res: any) => {
+        console.log('updateNotificationStatus:', res);
 
-          // Tell Header component to reload notifications
-          this.notificationService.refreshNotificationList();
-        },
+        // Tell Header component to reload notifications
+        this.notificationService.refreshNotificationList();
+      },
 
-        error: (err: any) => {
-          console.error('updatenotification error:', err);
-        },
-      });
+      error: (err: any) => {
+        console.error('updatenotification error:', err);
+      },
+    });
   }
 
   // =====================================================
@@ -283,11 +314,13 @@ export class ViewIssueComponent implements OnInit, OnDestroy {
   // =====================================================
 
   loadViewIssueDeta(issueID: any): void {
+    this.isLoading = true;
+
     if (!issueID) {
       return;
     }
 
-    this.loader.show();
+    // this.loader.show();
 
     console.log('Calling issue API:', `/issueDataById/${issueID}`);
 
@@ -298,31 +331,42 @@ export class ViewIssueComponent implements OnInit, OnDestroy {
 
     console.log('Issue API Payload:', payload);
 
-    this.apiService.request('POST', '/issueDataById', payload).subscribe({
-      next: (res: any) => {
-        console.log('Issue response:', res);
+    this.requestWithLoader('/issueDataById', payload)
+      .pipe(
+        finalize(() => {
+          this.isLoading = false;
+        }),
+      )
+      .subscribe({
+        next: (res: any) => {
+          console.log('Issue response:', res);
 
-        this.issueData = res?.issueData || {};
+          this.issueData = res?.issueData || {};
 
-        this.issueComments = res?.comments || [];
+          this.issueComments = res?.comments || [];
 
-        this.issueWorkflowList = res?.workflow || [];
+          this.issueWorkflowList = res?.workflow || [];
 
-        this.views = res?.views || 0;
+          this.views = res?.views || 0;
 
-        this.issue_images = res?.issue_images || [];
+          this.issue_images = res?.issue_images || [];
 
-        this.selectedStatusId = this.issueData?.status_id || '';
+          this.selectedStatusId = this.issueData?.status_id || '';
 
-        this.loader.hide();
-      },
+          this.diamondCount = res?.diamond_count;
 
-      error: (err: any) => {
-        console.error('Issue loading error:', err);
+          this.bronzeCount = res?.bronze_count;
 
-        this.loader.hide();
-      },
-    });
+          // this.loader.hide();
+        },
+
+        error: (err: any) => {
+          console.error('Issue loading error:', err);
+          this.isLoading = false;
+
+          // this.loader.hide();
+        },
+      });
   }
 
   // =====================================================
@@ -343,7 +387,7 @@ export class ViewIssueComponent implements OnInit, OnDestroy {
 
     this.loader.show();
 
-    this.apiService.request('POST', '/saveIssueWorkflow', payload).subscribe({
+    this.requestWithLoader('/saveIssueWorkflow', payload).subscribe({
       next: (res: any) => {
         this.showMessage(res.message);
 
@@ -353,7 +397,7 @@ export class ViewIssueComponent implements OnInit, OnDestroy {
 
         this.loadViewIssueDeta(this.issueID);
 
-        this.loader.hide();
+        // this.loader.hide();
 
         window.scrollTo({
           top: 0,
@@ -362,7 +406,7 @@ export class ViewIssueComponent implements OnInit, OnDestroy {
       },
 
       error: () => {
-        this.loader.hide();
+        // this.loader.hide();
       },
     });
   }
@@ -387,7 +431,7 @@ export class ViewIssueComponent implements OnInit, OnDestroy {
 
     this.loader.show();
 
-    this.apiService.request('POST', '/saveIssueComment', payload).subscribe({
+    this.requestWithLoader('/saveIssueComment', payload).subscribe({
       next: () => {
         this.issue_comment = '';
 

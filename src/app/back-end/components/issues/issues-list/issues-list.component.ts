@@ -1,9 +1,6 @@
-import {
-  Component,
-  OnDestroy,
-} from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 
-import { Subscription } from 'rxjs';
+import { finalize, Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 
 import { ApiService } from 'src/app/services/api.service';
@@ -18,7 +15,6 @@ declare const $: any;
   styleUrls: ['./issues-list.component.scss'],
 })
 export class IssuesListComponent implements OnDestroy {
-
   issuesList: any[] = [];
   loginUser: any = null;
   loading = false;
@@ -49,6 +45,8 @@ export class IssuesListComponent implements OnDestroy {
   readonly MLA_ROLE_ID = 4;
   readonly SARPANCH_ROLE_ID = 5;
   readonly GUEST_ROLE_ID = 7;
+  private pendingApiCalls = 0;
+  isLoading = false;
 
   // =====================================================
   // CONSTRUCTOR
@@ -58,7 +56,7 @@ export class IssuesListComponent implements OnDestroy {
     private authService: AuthService,
     private apiService: ApiService,
     public loader: LoaderService,
-    private router: Router
+    private router: Router,
   ) {
     this.userSubscription = this.authService.user$.subscribe({
       next: (user: any) => {
@@ -74,6 +72,18 @@ export class IssuesListComponent implements OnDestroy {
       },
     });
   }
+
+   private requestWithLoader(endpoint: string, payload: any): any {
+      this.pendingApiCalls++;
+      this.isLoading = true;
+  
+      return this.apiService.request('POST', endpoint, payload).pipe(
+        finalize(() => {
+          this.pendingApiCalls = Math.max(0, this.pendingApiCalls - 1);
+          this.isLoading = this.pendingApiCalls > 0;
+        }),
+      );
+    }
 
   // =====================================================
   // INITIALIZE FILTERS
@@ -159,14 +169,12 @@ export class IssuesListComponent implements OnDestroy {
   // =====================================================
 
   loadCategories(): void {
-    this.apiService
-      .request(
-        'POST',
+    this.requestWithLoader(
         '/masterData',
         JSON.stringify({
           master_id: 1,
           mode: 'web',
-        })
+        }),
       )
       .subscribe({
         next: (res: any) => {
@@ -192,15 +200,13 @@ export class IssuesListComponent implements OnDestroy {
       return;
     }
 
-    this.apiService
-      .request(
-        'POST',
+    this.requestWithLoader(
         '/dependanceMasterData',
         JSON.stringify({
           master_id: 4,
           dropdown_id: districtId,
           mode: 'web',
-        })
+        }),
       )
       .subscribe({
         next: (res: any) => {
@@ -240,15 +246,13 @@ export class IssuesListComponent implements OnDestroy {
       return;
     }
 
-    this.apiService
-      .request(
-        'POST',
+    this.requestWithLoader(
         '/dependanceMasterData',
         JSON.stringify({
           master_id: 5,
           dropdown_id: assemblyId,
           mode: 'web',
-        })
+        }),
       )
       .subscribe({
         next: (res: any) => {
@@ -286,15 +290,13 @@ export class IssuesListComponent implements OnDestroy {
       return;
     }
 
-    this.apiService
-      .request(
-        'POST',
+    this.requestWithLoader(
         '/dependanceMasterData',
         JSON.stringify({
           master_id: 6,
           dropdown_id: mandalId,
           mode: 'web',
-        })
+        }),
       )
       .subscribe({
         next: (res: any) => {
@@ -435,6 +437,8 @@ export class IssuesListComponent implements OnDestroy {
       category_id: this.selectedCategoryId || '',
     };
 
+    payloadObj.is_token = '1';
+
     if (user.stateID) {
       payloadObj.state_id = user.stateID;
     }
@@ -468,34 +472,32 @@ export class IssuesListComponent implements OnDestroy {
     const payload = JSON.stringify(payloadObj);
     console.log('All Issues Payload:', payload);
 
-    this.apiService
-      .request('POST', '/allIssues', payload)
-      .subscribe({
-        next: (res: any) => {
-          this.issuesList = res.all_issues || [];
-          this.loading = false;
-          this.loader.hide();
-          this.refreshDataTable();
-        },
-        error: (err: any) => {
-          console.error('All Issues Error:', err);
+    this.requestWithLoader('/allIssues', payload).subscribe({
+      next: (res: any) => {
+        this.issuesList = res.all_issues || [];
+        this.loading = false;
+        this.loader.hide();
+        this.refreshDataTable();
+      },
+      error: (err: any) => {
+        console.error('All Issues Error:', err);
 
-          if (err.status === 401) {
-            this.message = 'Token expired';
-            this.authService.logout();
-          } else if (err.status === 400) {
-            this.message = 'Invalid request data';
-          } else if (err.status === 500) {
-            this.message = 'Server error. Please try again later';
-          } else {
-            this.message = 'Something went wrong. Please try again later';
-          }
+        if (err.status === 401) {
+          this.message = 'Token expired';
+          this.authService.logout();
+        } else if (err.status === 400) {
+          this.message = 'Invalid request data';
+        } else if (err.status === 500) {
+          this.message = 'Server error. Please try again later';
+        } else {
+          this.message = 'Something went wrong. Please try again later';
+        }
 
-          this.loading = false;
-          this.loader.hide();
-          this.destroyDataTable();
-        },
-      });
+        this.loading = false;
+        this.loader.hide();
+        this.destroyDataTable();
+      },
+    });
   }
 
   // =====================================================
