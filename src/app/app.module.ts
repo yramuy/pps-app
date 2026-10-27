@@ -62,6 +62,7 @@ import { ContactFormComponent } from './back-end/components/contact-form/contact
 import { DiamondComponent } from './back-end/components/issues/diamond/diamond.component';
 import { BronzeComponent } from './back-end/components/issues/bronze/bronze.component';
 import { VotesByTypeComponent } from './back-end/components/issues/votes-by-type/votes-by-type.component';
+import { VotesByMeComponent } from './back-end/components/issues/votes-by-me/votes-by-me.component';
 
 @NgModule({
   declarations: [
@@ -119,7 +120,8 @@ import { VotesByTypeComponent } from './back-end/components/issues/votes-by-type
     ContactFormComponent,
     DiamondComponent,
     BronzeComponent,
-    VotesByTypeComponent
+    VotesByTypeComponent,
+    VotesByMeComponent
 
   ],
   imports: [

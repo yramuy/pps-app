@@ -32,6 +32,13 @@ export class WebsiteHeaderComponent {
   ) {}
 
   ngOnInit(): void {
+    if (this.authService.isTokenExpired()) {
+      this.authService.logout();
+
+      this.globalService.setIssueID(0);
+      this.globalService.setIsIssueLogin(false);
+    }
+
     this.loadIsLogin();
   }
 

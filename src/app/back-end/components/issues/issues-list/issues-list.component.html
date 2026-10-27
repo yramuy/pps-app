@@ -3,25 +3,18 @@
   <div class="loader" role="status" aria-label="Loading"></div>
 </div>
 
+<!-- Card Header -->
 <div class="card-header">
-  <h3 class="card-title text-white">
-    All Issues
-  </h3>
+  <h3 class="card-title text-white">All Issues</h3>
 </div>
 
-
 <div class="card-body">
-
-  <!-- ================================================= -->
-  <!-- ERROR MESSAGE -->
-  <!-- ================================================= -->
-
+  <!-- Error Message -->
   <div
     *ngIf="message"
     class="alert alert-danger alert-dismissible fade show"
     role="alert"
   >
-
     {{ message }}
 
     <button
@@ -29,31 +22,14 @@
       class="btn-close"
       aria-label="Close"
       (click)="message = ''"
-    >
-    </button>
-
+    ></button>
   </div>
 
-
-  <!-- ================================================= -->
-  <!-- FILTERS -->
-  <!-- ================================================= -->
-
+  <!-- Filters -->
   <div class="row mb-3">
-
-
-    <!-- ================================================= -->
-    <!-- CATEGORY -->
-    <!-- ================================================= -->
-
+    <!-- Category -->
     <div class="col-md-3 mb-3">
-
-      <label
-        for="categoryFilter"
-        class="form-label"
-      >
-        Category
-      </label>
+      <label for="categoryFilter" class="form-label">Category</label>
 
       <select
         id="categoryFilter"
@@ -62,293 +38,230 @@
         (change)="onCategoryChange($event)"
         [disabled]="isCategoryDisabled()"
       >
+        <option value="">All Categories</option>
 
-        <option value="">
-          All Categories
-        </option>
-
-        <option
-          *ngFor="let category of categories"
-          [value]="category.id"
-        >
+        <option *ngFor="let category of categories" [value]="category.id">
           {{ category.name }}
         </option>
-
       </select>
-
     </div>
 
-
-    <!-- ================================================= -->
-    <!-- ASSEMBLY -->
-    <!-- ================================================= -->
-
+    <!-- Assembly -->
     <div class="col-md-3 mb-3">
-
-      <label
-        for="assemblyFilter"
-        class="form-label"
-      >
-        Assembly
-      </label>
+      <label for="assemblyFilter" class="form-label">Assembly</label>
 
       <select
         id="assemblyFilter"
         class="form-control"
         [value]="selectedAssemblyId"
         (change)="onAssemblyChange($event)"
-        [disabled]="
-          isAssemblyDisabled() ||
-          assemblies.length === 0
-        "
+        [disabled]="isAssemblyDisabled() || assemblies.length === 0"
       >
+        <option value="">All Assemblies</option>
 
-        <!-- All is default for roles
-             that can change Assembly -->
-        <option value="">
-          All Assemblies
-        </option>
-
-
-        <option
-          *ngFor="let assembly of assemblies"
-          [value]="assembly.id"
-        >
+        <option *ngFor="let assembly of assemblies" [value]="assembly.id">
           {{ assembly.name }}
         </option>
-
       </select>
-
     </div>
 
-
-    <!-- ================================================= -->
-    <!-- MANDAL -->
-    <!-- ================================================= -->
-
+    <!-- Mandal -->
     <div class="col-md-3 mb-3">
-
-      <label
-        for="mandalFilter"
-        class="form-label"
-      >
-        Mandal
-      </label>
+      <label for="mandalFilter" class="form-label">Mandal</label>
 
       <select
         id="mandalFilter"
         class="form-control"
         [value]="selectedMandalId"
         (change)="onMandalChange($event)"
-        [disabled]="
-          isMandalDisabled() ||
-          mandals.length === 0
-        "
+        [disabled]="isMandalDisabled() || mandals.length === 0"
       >
+        <option value="">All Mandals</option>
 
-        <option value="">
-          All Mandals
-        </option>
-
-
-        <option
-          *ngFor="let mandal of mandals"
-          [value]="mandal.id"
-        >
+        <option *ngFor="let mandal of mandals" [value]="mandal.id">
           {{ mandal.name }}
         </option>
-
       </select>
-
     </div>
 
-
-    <!-- ================================================= -->
-    <!-- VILLAGE -->
-    <!-- ================================================= -->
-
+    <!-- Village -->
     <div class="col-md-3 mb-3">
-
-      <label
-        for="villageFilter"
-        class="form-label"
-      >
-        Village
-      </label>
+      <label for="villageFilter" class="form-label">Village</label>
 
       <select
         id="villageFilter"
         class="form-control"
         [value]="selectedVillageId"
         (change)="onVillageChange($event)"
-        [disabled]="
-          isVillageDisabled() ||
-          villages.length === 0
-        "
+        [disabled]="isVillageDisabled() || villages.length === 0"
       >
+        <option value="">All Villages</option>
 
-        <option value="">
-          All Villages
-        </option>
-
-
-        <option
-          *ngFor="let village of villages"
-          [value]="village.id"
-        >
+        <option *ngFor="let village of villages" [value]="village.id">
           {{ village.name }}
         </option>
-
       </select>
-
     </div>
-
   </div>
 
-
-  <!-- ================================================= -->
-  <!-- RESET -->
-  <!-- ================================================= -->
-
+  <!-- Reset Filters -->
   <div class="mb-3">
-
-    <button
-      type="button"
-      class="btn btn-secondary"
-      (click)="resetFilters()"
-    >
+    <button type="button" class="btn btn-secondary" (click)="resetFilters()">
+      <i class="fas fa-sync-alt me-1"></i>
       Reset Filters
     </button>
-
   </div>
 
-
-  <!-- ================================================= -->
-  <!-- ISSUES TABLE -->
-  <!-- ================================================= -->
-
-  <div class="table-responsive">
-
-    <table
-      id="issuesTable"
-      class="table table-bordered table-striped"
+  <!-- Issues Cards -->
+  <div class="issues-container mt-4">
+    <!-- No Issues Found -->
+    <div
+      *ngIf="!isLoading && issuesList.length === 0"
+      class="no-issues-card text-center py-5"
     >
+      <i class="fas fa-inbox no-issues-icon"></i>
+      <h5 class="mt-3">No Issues Found</h5>
+      <p class="text-muted mb-0">
+        No issues are available for the selected filters.
+      </p>
+    </div>
 
-      <thead>
+    <!-- Card Grid -->
+    <div class="row g-4">
+      <div class="col-12" *ngFor="let issue of issuesList; let i = index">
+        <div class="issue-card h-100">
+          <!-- Issue Image -->
+          <div class="issue-image-wrapper">
+            <img
+              *ngIf="getIssueImage(issue) as imageUrl"
+              [src]="imageUrl"
+              [alt]="issue.issue_title || 'Issue image'"
+              class="issue-image"
+              loading="lazy"
+              (error)="onIssueImageError($event)"
+            />
 
-        <tr>
+            <div *ngIf="!getIssueImage(issue)" class="issue-image-placeholder">
+              <i class="fas fa-image"></i>
+              <span>No Image Available</span>
+            </div>
+          </div>
 
-          <th>Sno</th>
+          <!-- Card Header -->
+          <!-- <div class="issue-card-header">
+            <div class="issue-category">
+              <i class="fas fa-folder-open me-2"></i>
+              {{ issue.category || "Uncategorized" }}
+            </div>
 
-          <th>Category</th>
+            <span class="issue-number"> #{{ i + 1 }} </span>
+          </div> -->
 
-          <th>Posted Date</th>
+          <!-- Card Body -->
+          <div class="issue-card-body">
+            <!-- Title -->
+            <h5 class="issue-title">
+              {{ issue.issue_title || "Untitled Issue" }}
+            </h5>
 
-          <th>Issue Title</th>
+            <!-- Description -->
+            <p class="issue-description">
+              {{ issue.issue_description || "No description available." }}
+            </p>
 
-          <th>Description</th>
+            <!-- Category -->
+            <div class="issue-detail issue-category-detail">
+              <i class="fas fa-folder-open"></i>
+              <span class="detail-label">Category:</span>
+              <span class="issue-category">
+                {{ issue.category || "Uncategorized" }}
+              </span>
+            </div>
 
-          <th>Assembly</th>
+            <!-- Posted Date -->
+            <div class="issue-detail">
+              <i class="fas fa-calendar-alt"></i>
+              <span class="detail-label">Posted:</span>
+              <span>
+                {{
+                  issue.post_date
+                    ? (issue.post_date | date: "dd MMM yyyy")
+                    : "N/A"
+                }}
+              </span>
+            </div>
 
-          <th>Mandal</th>
+            <!-- Assembly -->
+            <div class="issue-detail">
+              <i class="fas fa-landmark"></i>
+              <span class="detail-label">Assembly:</span>
+              <span>{{ issue.assembly || "N/A" }}</span>
+            </div>
 
-          <th>Village</th>
+            <!-- Mandal -->
+            <div class="issue-detail">
+              <i class="fas fa-map-marked-alt"></i>
+              <span class="detail-label">Mandal:</span>
+              <span>{{ issue.mandal || "N/A" }}</span>
+            </div>
 
-          <th>Tag Representative</th>
+            <!-- Village -->
+            <div class="issue-detail">
+              <i class="fas fa-home"></i>
+              <span class="detail-label">Village:</span>
+              <span>{{ issue.village || "N/A" }}</span>
+            </div>
 
-          <th>Status</th>
+            <!-- Representative -->
+            <div class="issue-detail">
+              <i class="fas fa-user-tie"></i>
+              <span class="detail-label">Representative:</span>
+              <span>{{ issue.full_name || "Not Assigned" }}</span>
+            </div>
+          </div>
 
-          <th>Actions</th>
+          <!-- Card Footer -->
+          <div class="issue-card-footer">
+            <!-- Views and Votes -->
+            <div class="issue-stats-group">
+              <!-- Views -->
+              <div class="issue-stat-card views-card" title="Total Views">
+                <i class="fas fa-eye"></i>
+                <span>{{ issue.views ?? 0 | number }} views</span>
+              </div>
 
-        </tr>
+              <!-- Diamond Votes -->
+              <div class="issue-stat-card diamond-card" title="Diamond Votes">
+                <i class="fas fa-gem"></i>
+                <span>{{ issue.diamond_votes ?? 0 | number }}</span>
+              </div>
 
-      </thead>
+              <!-- Bronze Votes -->
+              <div class="issue-stat-card bronze-card" title="Bronze Votes">
+                <i class="fas fa-medal"></i>
+                <span>{{ issue.bronze_votes ?? 0 | number }}</span>
+              </div>
+            </div>
 
+            <!-- Status -->
+            <span class="issue-status">
+              <span class="status-dot"></span>
+              {{ issue.status || "Unknown" }}
+            </span>
 
-      <tbody>
-
-        <tr
-          *ngFor="
-            let issue of issuesList;
-            let i = index
-          "
-        >
-
-          <td>
-            {{ i + 1 }}
-          </td>
-
-          <td>
-            {{ issue.category }}
-          </td>
-
-          <td>{{ issue.post_date}}</td>
-
-          <td class="description-cell">
-            {{ issue.issue_title }}
-          </td>
-
-          <td class="description-cell">
-            {{ issue.issue_description }}
-          </td>
-
-          <td>
-            {{ issue.assembly }}
-          </td>
-
-          <td>
-            {{ issue.mandal }}
-          </td>
-
-          <td>
-            {{ issue.village }}
-          </td>
-
-          <td>
-            {{ issue.full_name }}
-          </td>
-
-          <td>
-            {{ issue.status }}
-          </td>
-
-          <td>
-
+            <!-- View Issue Button -->
             <button
               type="button"
-              class="btn btn-info"
+              class="btn btn-view-issue"
               title="View Issue"
               (click)="handleView(issue.id)"
             >
-
-              <i class="fas fa-eye"></i>
-
+              <i class="fas fa-eye me-2"></i>
+              View Issue
             </button>
-
-          </td>
-
-        </tr>
-
-
-        <!-- No Issues -->
-        <tr
-          *ngIf="issuesList.length === 0"
-        >
-
-          <td
-            colspan="10"
-            class="text-center"
-          >
-            No issues found
-          </td>
-
-        </tr>
-
-      </tbody>
-
-    </table>
-
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-
 </div>
-

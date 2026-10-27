@@ -73,17 +73,17 @@ export class IssuesListComponent implements OnDestroy {
     });
   }
 
-   private requestWithLoader(endpoint: string, payload: any): any {
-      this.pendingApiCalls++;
-      this.isLoading = true;
-  
-      return this.apiService.request('POST', endpoint, payload).pipe(
-        finalize(() => {
-          this.pendingApiCalls = Math.max(0, this.pendingApiCalls - 1);
-          this.isLoading = this.pendingApiCalls > 0;
-        }),
-      );
-    }
+  private requestWithLoader(endpoint: string, payload: any): any {
+    this.pendingApiCalls++;
+    this.isLoading = true;
+
+    return this.apiService.request('POST', endpoint, payload).pipe(
+      finalize(() => {
+        this.pendingApiCalls = Math.max(0, this.pendingApiCalls - 1);
+        this.isLoading = this.pendingApiCalls > 0;
+      }),
+    );
+  }
 
   // =====================================================
   // INITIALIZE FILTERS
@@ -170,21 +170,20 @@ export class IssuesListComponent implements OnDestroy {
 
   loadCategories(): void {
     this.requestWithLoader(
-        '/masterData',
-        JSON.stringify({
-          master_id: 1,
-          mode: 'web',
-        }),
-      )
-      .subscribe({
-        next: (res: any) => {
-          this.categories = res.master_data || [];
-        },
-        error: (err: any) => {
-          console.error('Category loading failed:', err);
-          this.categories = [];
-        },
-      });
+      '/masterData',
+      JSON.stringify({
+        master_id: 1,
+        mode: 'web',
+      }),
+    ).subscribe({
+      next: (res: any) => {
+        this.categories = res.master_data || [];
+      },
+      error: (err: any) => {
+        console.error('Category loading failed:', err);
+        this.categories = [];
+      },
+    });
   }
 
   // =====================================================
@@ -201,35 +200,34 @@ export class IssuesListComponent implements OnDestroy {
     }
 
     this.requestWithLoader(
-        '/dependanceMasterData',
-        JSON.stringify({
-          master_id: 4,
-          dropdown_id: districtId,
-          mode: 'web',
-        }),
-      )
-      .subscribe({
-        next: (res: any) => {
-          this.assemblies = res.dependance_master_data || [];
+      '/dependanceMasterData',
+      JSON.stringify({
+        master_id: 4,
+        dropdown_id: districtId,
+        mode: 'web',
+      }),
+    ).subscribe({
+      next: (res: any) => {
+        this.assemblies = res.dependance_master_data || [];
 
-          // Set default Assembly based on role
-          if (this.isSarpanch() || this.isMLA()) {
-            this.selectedAssemblyId = String(this.loginUser.assemblyID || '');
+        // Set default Assembly based on role
+        if (this.isSarpanch() || this.isMLA()) {
+          this.selectedAssemblyId = String(this.loginUser.assemblyID || '');
 
-            console.log('Default Assembly:', this.selectedAssemblyId);
+          console.log('Default Assembly:', this.selectedAssemblyId);
 
-            // Load Mandals after Assembly is set
-            if (this.selectedAssemblyId) {
-              this.loadMandals(this.selectedAssemblyId);
-            }
+          // Load Mandals after Assembly is set
+          if (this.selectedAssemblyId) {
+            this.loadMandals(this.selectedAssemblyId);
           }
-          // For other roles (Admin, MP, Super Admin), Assembly stays as 'All' (empty)
-        },
-        error: (err: any) => {
-          console.error('Assembly loading failed:', err);
-          this.assemblies = [];
-        },
-      });
+        }
+        // For other roles (Admin, MP, Super Admin), Assembly stays as 'All' (empty)
+      },
+      error: (err: any) => {
+        console.error('Assembly loading failed:', err);
+        this.assemblies = [];
+      },
+    });
   }
 
   // =====================================================
@@ -247,35 +245,34 @@ export class IssuesListComponent implements OnDestroy {
     }
 
     this.requestWithLoader(
-        '/dependanceMasterData',
-        JSON.stringify({
-          master_id: 5,
-          dropdown_id: assemblyId,
-          mode: 'web',
-        }),
-      )
-      .subscribe({
-        next: (res: any) => {
-          this.mandals = res.dependance_master_data || [];
+      '/dependanceMasterData',
+      JSON.stringify({
+        master_id: 5,
+        dropdown_id: assemblyId,
+        mode: 'web',
+      }),
+    ).subscribe({
+      next: (res: any) => {
+        this.mandals = res.dependance_master_data || [];
 
-          // Set default Mandal based on role
-          if (this.isSarpanch()) {
-            this.selectedMandalId = String(this.loginUser.mandalID || '');
+        // Set default Mandal based on role
+        if (this.isSarpanch()) {
+          this.selectedMandalId = String(this.loginUser.mandalID || '');
 
-            console.log('Default Mandal:', this.selectedMandalId);
+          console.log('Default Mandal:', this.selectedMandalId);
 
-            // Load Villages after Mandal is set
-            if (this.selectedMandalId) {
-              this.loadVillages(this.selectedMandalId);
-            }
+          // Load Villages after Mandal is set
+          if (this.selectedMandalId) {
+            this.loadVillages(this.selectedMandalId);
           }
-          // For MLA and other roles, Mandal stays as 'All' (empty)
-        },
-        error: (err: any) => {
-          console.error('Mandal loading failed:', err);
-          this.mandals = [];
-        },
-      });
+        }
+        // For MLA and other roles, Mandal stays as 'All' (empty)
+      },
+      error: (err: any) => {
+        console.error('Mandal loading failed:', err);
+        this.mandals = [];
+      },
+    });
   }
 
   // =====================================================
@@ -291,29 +288,28 @@ export class IssuesListComponent implements OnDestroy {
     }
 
     this.requestWithLoader(
-        '/dependanceMasterData',
-        JSON.stringify({
-          master_id: 6,
-          dropdown_id: mandalId,
-          mode: 'web',
-        }),
-      )
-      .subscribe({
-        next: (res: any) => {
-          this.villages = res.dependance_master_data || [];
+      '/dependanceMasterData',
+      JSON.stringify({
+        master_id: 6,
+        dropdown_id: mandalId,
+        mode: 'web',
+      }),
+    ).subscribe({
+      next: (res: any) => {
+        this.villages = res.dependance_master_data || [];
 
-          // Set default Village for Sarpanch
-          if (this.isSarpanch()) {
-            this.selectedVillageId = String(this.loginUser.villageID || '');
+        // Set default Village for Sarpanch
+        if (this.isSarpanch()) {
+          this.selectedVillageId = String(this.loginUser.villageID || '');
 
-            console.log('Default Village:', this.selectedVillageId);
-          }
-        },
-        error: (err: any) => {
-          console.error('Village loading failed:', err);
-          this.villages = [];
-        },
-      });
+          console.log('Default Village:', this.selectedVillageId);
+        }
+      },
+      error: (err: any) => {
+        console.error('Village loading failed:', err);
+        this.villages = [];
+      },
+    });
   }
 
   // =====================================================
@@ -498,6 +494,45 @@ export class IssuesListComponent implements OnDestroy {
         this.destroyDataTable();
       },
     });
+  }
+
+  getIssueImage(issue: any): string | null {
+    if (!issue?.issue_pic) {
+      return null;
+    }
+
+    // Handle a single image URL
+    if (typeof issue.issue_pic === 'string') {
+      return issue.issue_pic;
+    }
+
+    // Handle an array if the API returns multiple images
+    if (Array.isArray(issue.issue_pic) && issue.issue_pic.length > 0) {
+      return typeof issue.issue_pic[0] === 'string'
+        ? issue.issue_pic[0]
+        : issue.issue_pic[0]?.url || null;
+    }
+
+    return null;
+  }
+
+  onIssueImageError(event: Event): void {
+    const img = event.target as HTMLImageElement;
+    img.style.display = 'none';
+
+    const placeholder = img.parentElement?.querySelector(
+      '.issue-image-placeholder',
+    ) as HTMLElement | null;
+
+    if (placeholder) {
+      placeholder.style.display = 'flex';
+    } else if (img.parentElement) {
+      const div = document.createElement('div');
+      div.className = 'issue-image-placeholder';
+      div.innerHTML =
+        '<i class="fas fa-image"></i><span>No Image Available</span>';
+      img.parentElement.appendChild(div);
+    }
   }
 
   // =====================================================

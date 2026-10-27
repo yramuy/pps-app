@@ -1,6 +1,7 @@
 import { AfterViewInit, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
+import { GlobalService } from 'src/app/services/global.service';
 
 declare var $: any;
 
@@ -21,6 +22,7 @@ export class SidebarComponent implements AfterViewInit {
   constructor(
     private authService: AuthService,
     public router: Router,
+    private globalService: GlobalService,
   ) { }
   
 
@@ -42,6 +44,15 @@ export class SidebarComponent implements AfterViewInit {
     // }
 
     //this.authService.loadUserFromStorage();
+
+    if (this.authService.isTokenExpired()) {
+      this.authService.logout();
+
+      this.globalService.setIssueID(0);
+      this.globalService.setIsIssueLogin(false);
+
+      this.router.navigate(['/admin/login']);
+    }
 
     this.isLoggedIn = this.authService.isLoggedIn();
 

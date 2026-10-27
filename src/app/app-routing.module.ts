@@ -1,5 +1,5 @@
 import { loginGuard } from './guards/login.guard';
-import { authGuard } from './guards/auth.guard';
+import { authChildGuard, authGuard } from './guards/auth.guard';
 
 // Admin
 import { LoginComponent } from './back-end/components/login/login.component';
@@ -52,6 +52,7 @@ import { HeroComponent } from './front-end/components/hero/hero.component';
 import { DiamondComponent } from './back-end/components/issues/diamond/diamond.component';
 import { BronzeComponent } from './back-end/components/issues/bronze/bronze.component';
 import { VotesByTypeComponent } from './back-end/components/issues/votes-by-type/votes-by-type.component';
+import { VotesByMeComponent } from './back-end/components/issues/votes-by-me/votes-by-me.component';
 
 const routes: Routes = [
   // Admin Login
@@ -66,6 +67,7 @@ const routes: Routes = [
     path: 'admin',
     component: LayoutComponent,
     canActivate: [authGuard],
+    canActivateChild: [authChildGuard],
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
 
@@ -110,6 +112,10 @@ const routes: Routes = [
       {
         path: 'issues/votesByType',
         component: VotesByTypeComponent,
+      },
+      {
+        path: 'issues/votesByMe',
+        component: VotesByMeComponent,
       },
       { path: 'issues/view-issue', component: ViewIssueComponent },
 

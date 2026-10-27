@@ -1,21 +1,32 @@
-// src/app/guards/auth.guard.ts
-
-import { CanActivateFn, Router } from '@angular/router';
-import { AuthService } from '../services/auth.service';
 import { inject } from '@angular/core';
+import { CanActivateFn, CanActivateChildFn, Router } from '@angular/router';
+import { AuthService } from '../services/auth.service';
+import { GlobalService } from '../services/global.service';
 
-export const authGuard: CanActivateFn = (route, state) => {
+function checkAuthentication(): boolean | ReturnType<Router['createUrlTree']> {
   const authService = inject(AuthService);
+  const globalService = inject(GlobalService);
   const router = inject(Router);
 
-  const user = authService.getUser();
+  if (
+    !authService.getToken() ||
+    authService.isTokenExpired() ||
+    !authService.getUser()
+  ) {
+    authService.logout();
+    globalService.setIssueID(0);
+    globalService.setIsIssueLogin(false);
 
-  if (user) {
-    return true; // ✅ allow
+    return router.createUrlTree(['/admin/login']);
   }
 
-  // ❌ redirect with return URL
-  return router.createUrlTree(['/login'], {
-    queryParams: { returnUrl: state.url },
-  });
+  return true;
+}
+
+export const authGuard: CanActivateFn = () => {
+  return checkAuthentication();
+};
+
+export const authChildGuard: CanActivateChildFn = () => {
+  return checkAuthentication();
 };

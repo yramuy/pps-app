@@ -55,6 +55,15 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit(): void {
+
+    if (this.authService.isTokenExpired()) {
+      this.authService.logout();
+
+      this.globalService.setIssueID(0);
+      this.globalService.setIsIssueLogin(false);
+
+      this.router.navigate(['/admin/login']);
+    }
     // =========================
     // User
     // =========================
@@ -286,7 +295,7 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
   // =========================
 
   goToWebsite(): void {
-    window.open('/', '_blank');
+    window.open('https://prasadit.com', '_blank');
   }
 
   // =========================
