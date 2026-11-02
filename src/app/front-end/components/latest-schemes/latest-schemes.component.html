@@ -1,0 +1,130 @@
+<!-- Loader -->
+<div class="loader-overlay" *ngIf="isLoading">
+  <div class="loader" role="status" aria-label="Loading"></div>
+</div>
+
+<!-- ================= PAGE HEADER ================= -->
+<div class="main-bg">
+  <div class="container">
+    <div class="pt-lg-3 pt-3 pb-lg-0 pb-3">
+      <div class="row align-items-center justify-content-center text-center">
+        <div class="col-lg-10">
+          <div class="pt-lg-5 pb-lg-3 pt-2 pb-2">
+            <div class="row pt-3 justify-content-center">
+              <div class="col-lg-10 p-3 rounded-20">
+                <h1 class="display-3 fw-bold text-white">Government Schemes</h1>
+
+                <p class="text-white">
+                  Government schemes provide support in areas such as
+                  agriculture, education, healthcare, housing, employment,
+                  infrastructure, and social development to help communities
+                  access essential services and opportunities.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="about" class="pt-4"></div>
+  </div>
+</div>
+
+<!-- LATEST SCHEME CARDS -->
+<section class="blog-wrap my-4">
+  <div class="container">
+    <!-- Explore All Schemes -->
+    <div class="text-end mb-3">
+      <button
+        type="button"
+        class="btn explore-issues-btn"
+        (click)="navigateToAllSchemes()"
+      >
+        Explore All Schemes
+        <i class="fa fa-arrow-right ms-2"></i>
+      </button>
+    </div>
+
+    <!-- Scheme Cards -->
+    <div class="row">
+      <div
+        class="col-lg-4 col-md-6 my-2"
+        *ngFor="let scheme of schemes.slice(0, 6)"
+      >
+        <div
+          class="scheme-card border rounded-20 bg-white"
+          (click)="viewScheme(scheme.id)"
+          role="link"
+          tabindex="0"
+          (keydown.enter)="viewScheme(scheme.id)"
+          (keydown.space)="$event.preventDefault(); viewScheme(scheme.id)"
+          [attr.aria-label]="'View scheme: ' + scheme.scheme_title"
+        >
+          <!-- Scheme Image -->
+          <div class="scheme-image-wrapper">
+            <img
+              [src]="scheme.scheme_pic"
+              class="scheme-img"
+              [alt]="scheme.scheme_title"
+            />
+          </div>
+
+          <!-- Scheme Content -->
+          <div class="scheme-content px-3 pt-3">
+            <!-- Scheme Type -->
+            <span class="scheme-type-badge">
+              {{ scheme.scheme_type_name }}
+            </span>
+
+            <!-- Scheme Title -->
+            <h3 class="scheme-title mt-3 mb-2">
+              {{ scheme.scheme_title }}
+            </h3>
+
+            <!-- Description: Two Lines -->
+            <p class="scheme-description mb-0">
+              {{ scheme.scheme_description }}
+            </p>
+          </div>
+          <!-- Scheme Card Footer -->
+          <div
+            class="scheme-card-footer d-flex align-items-center justify-content-between flex-wrap gap-2 px-3 pb-3 mt-auto"
+          >
+            <!-- Calendar Icon and Date -->
+            <div class="scheme-date">
+              <img
+                src="assets/images/calender.svg"
+                width="17"
+                height="17"
+                alt="Calendar"
+              />
+              <span>{{ scheme.created_on }}</span>
+            </div>
+
+            <!-- Read More Button -->
+            <a
+              [routerLink]="['/scheme-details', scheme.id]"
+              class="button border py-2 px-3"
+              (click)="$event.stopPropagation()"
+            >
+              Read More
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- No Data -->
+      <div
+        class="col-12 text-center py-5"
+        *ngIf="schemes.length === 0 && !isLoading"
+      >
+        <div class="vip-no-data">
+          <i class="fa fa-book"></i>
+          <h4>No Government Schemes Found</h4>
+          <p>There are currently no schemes available.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

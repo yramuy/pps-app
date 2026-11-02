@@ -1,37 +1,691 @@
-.table-responsive {
-    overflow-x: auto;
+
+/* Main Section */
+.blog-section {
+  width: 100%;
 }
 
-#myIssuesTable {
-    width: 100% !important;
-    min-width: 1300px;
+/* Main Card */
+.blog-card {
+  border: none;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 3px 15px rgba(0, 0, 0, 0.07);
 }
 
-#myIssuesTable th,
-#myIssuesTable td {
-    white-space: nowrap;
+/* Header */
+.blog-card-header {
+  display: flex;
+  align-items: center;
+  min-height: 76px;
+  padding: 15px 22px;
+  background: linear-gradient(135deg, #2c2c54, #1e1e3f);
+  color: #fff;
+  border-bottom: none;
 }
 
-.description-cell {
-    white-space: normal !important;
-    word-break: break-word;
-    overflow-wrap: break-word;
-    max-width: 300px;
-    min-width: 250px;
-    vertical-align: top;
-}
-.action-buttons {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px; /* Space between buttons */
+.blog-card-header h3 {
+  font-size: 19px;
+  font-weight: 600;
 }
 
-.action-buttons .btn {
-    width: 36px;
-    height: 36px;
-    padding: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.blog-card-header small {
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 12px;
 }
+
+.blog-header-icon {
+  width: 43px;
+  height: 43px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.13);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: 20px;
+  color: #fff;
+}
+
+.blog-card-body {
+  padding: 14px;
+  background: #fff;
+}
+
+/* Filter Section */
+.filter-section {
+  padding: 10px 14px;
+  margin-bottom: 16px;
+  background: #faf8fc;
+  border: 1px solid #eee7f2;
+  border-radius: 8px;
+}
+
+.filter-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  color: #812b99;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.filter-section .form-label {
+  display: block;
+  margin-bottom: 4px;
+  color: #555;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.filter-section .form-control {
+  height: 34px;
+  min-height: 34px;
+  padding: 5px 10px;
+  border: 1px solid #ddd4e4;
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+.filter-section .mb-3 {
+  margin-bottom: 8px !important;
+}
+
+.reset-filter-btn {
+  min-height: 32px;
+  padding: 6px 12px;
+  border: 1px solid #812b99;
+  border-radius: 6px;
+  background: #fff;
+  color: #812b99;
+  font-size: 12px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.reset-filter-btn:hover {
+  background: #812b99;
+  color: #fff;
+}
+
+/* Issues Container */
+.issues-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Issue Card */
+.vote-issue-card {
+  display: flex;
+  align-items: stretch;
+  gap: 18px;
+  padding: 14px;
+  background: #fff;
+  border: 1px solid #e9e5ed;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: all 0.2s ease;
+}
+
+.vote-issue-card:hover {
+  border-color: #c9a4d4;
+  box-shadow: 0 5px 16px rgba(129, 43, 153, 0.09);
+}
+
+/* Image */
+.blog-image-section {
+  flex: 0 0 220px;
+  width: 220px;
+}
+
+.blog-image-wrapper {
+  position: relative;
+  width: 100%;
+  height: 250px;
+  overflow: hidden;
+  border-radius: 8px;
+  background: #f4f0f6;
+}
+
+.blog-image {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.blog-image-placeholder {
+  width: 100%;
+  height: 100%;
+  min-height: 175px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #f4eff7, #e8ddec);
+  color: #9a83a2;
+}
+
+.blog-image-placeholder i {
+  font-size: 35px;
+}
+
+.blog-image-placeholder span {
+  font-size: 12px;
+}
+
+.image-category-badge {
+  position: absolute;
+  bottom: 9px;
+  left: 9px;
+  padding: 5px 10px;
+  border-radius: 5px;
+  background: rgba(44, 44, 84, 0.88);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* Content */
+.blog-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Metadata */
+.blog-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-bottom: 10px;
+}
+
+.meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 8px;
+  border-radius: 5px;
+  background: #f5f3f7;
+  color: #686477;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.meta-item small {
+  font-size: 10px;
+  color: #777;
+}
+
+.issue-view-count i {
+  color: #68758a;
+}
+
+.diamond-vote-count i {
+  color: #0879c9;
+}
+
+.bronze-vote-count i {
+  color: #99602e;
+}
+
+/* Status */
+.issue-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  padding: 5px 10px;
+  border-radius: 20px;
+  background: #eaf7ef;
+  color: #23834b;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #28a45b;
+}
+
+/* Title and Description */
+.issue-title {
+  margin: 0 0 8px;
+  color: #292640;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.issue-description {
+  display: -webkit-box;
+  margin: 0 0 12px;
+  overflow: hidden;
+  color: #686477;
+  font-size: 13px;
+  line-height: 1.6;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+/* Issue Information */
+.issue-info-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.issue-info-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  padding: 8px;
+  border: 1px solid #f0edf3;
+  border-radius: 6px;
+  background: #fcfbfd;
+}
+
+.issue-info-item > i {
+  flex-shrink: 0;
+  color: #812b99;
+  font-size: 15px;
+}
+
+.issue-info-item div {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.issue-info-item small {
+  margin-bottom: 2px;
+  color: #96909d;
+  font-size: 10px;
+}
+
+.issue-info-item strong {
+  overflow: hidden;
+  color: #403a4a;
+  font-size: 11px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Footer */
+.issue-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px solid #f0edf3;
+}
+
+.created-by-info {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: #777184;
+  font-size: 12px;
+}
+
+.created-by-info i {
+  color: #812b99;
+  font-size: 17px;
+}
+
+.issue-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 76px;
+  padding: 6px 10px;
+  border: none;
+  border-radius: 5px;
+  font-size: 11px;
+}
+
+/* Empty State */
+.empty-state {
+  padding: 45px 15px;
+  text-align: center;
+  border: 1px dashed #d9c9df;
+  border-radius: 10px;
+  background: #fcfafd;
+}
+
+.empty-icon {
+  margin-bottom: 12px;
+  color: #b49abb;
+  font-size: 42px;
+}
+
+.empty-state h5 {
+  margin-bottom: 6px;
+  color: #40364a;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.empty-state p {
+  margin: 0;
+  color: #898391;
+  font-size: 13px;
+}
+
+/* Loader */
+.loader-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.loader {
+  width: 42px;
+  height: 42px;
+  border: 4px solid #e9dced;
+  border-top-color: #812b99;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive */
+@media (max-width: 1100px) {
+  .issue-info-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .blog-image-section {
+    flex-basis: 190px;
+    width: 190px;
+  }
+
+  .blog-image-wrapper {
+    height: 165px;
+  }
+
+  .issue-status {
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 767px) {
+  .blog-card-body {
+    padding: 10px;
+  }
+
+  .vote-issue-card {
+    flex-direction: column;
+    gap: 12px;
+    padding: 12px;
+  }
+
+  .blog-image-section {
+    flex: auto;
+    width: 100%;
+  }
+
+  .blog-image-wrapper {
+    height: 190px;
+  }
+
+  .blog-meta {
+    gap: 6px;
+  }
+
+  .issue-card-footer {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .issue-actions {
+    width: 100%;
+  }
+
+  .action-btn {
+    flex: 1;
+  }
+}
+
+@media (max-width: 480px) {
+  .blog-card-header {
+    padding: 12px;
+  }
+
+  .blog-card-header h3 {
+    font-size: 16px;
+  }
+
+  .blog-header-icon {
+    width: 38px;
+    height: 38px;
+  }
+
+  .blog-image-wrapper {
+    height: 165px;
+  }
+
+  .issue-title {
+    font-size: 15px;
+  }
+
+  .issue-description {
+    font-size: 12px;
+  }
+
+  .issue-info-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 7px;
+  }
+
+  .meta-item {
+    padding: 4px 6px;
+    font-size: 10px;
+  }
+
+  .action-btn {
+    min-width: 0;
+    padding: 7px 6px;
+    font-size: 10px;
+  }
+}
+/* Whole issue card clickable */
+.vote-issue-card {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.vote-issue-card:hover {
+  border-color: #812b99;
+  box-shadow: 0 5px 16px rgba(129, 43, 153, 0.12);
+  transform: translateY(-2px);
+}
+
+/* Description - single line with dots */
+.issue-description {
+  display: block;
+  width: 100%;
+  margin: 0 0 12px;
+  overflow: hidden;
+  color: #686477;
+  font-size: 13px;
+  line-height: 1.6;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* Action buttons should retain normal click behavior */
+.issue-actions,
+.action-btn {
+  cursor: pointer;
+}
+
+/* Metadata container */
+.blog-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 16px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+}
+
+/* Common metadata item */
+.meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: #343044;
+  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
+
+  i {
+    font-size: 16px;
+  }
+
+  strong {
+    font-size: 15px;
+    font-weight: 800;
+  }
+
+  small {
+    font-size: 12px;
+    font-weight: 700;
+    color: #666174;
+  }
+}
+
+/* Issue number */
+.issue-number {
+  color: #555064;
+}
+
+/* Date */
+.issue-date {
+  color: #454052;
+}
+
+/* Views */
+.issue-view-count {
+  color: #1769aa;
+
+  i {
+    color: #1769aa;
+  }
+}
+
+/* Diamond votes */
+.diamond-vote-count {
+  color: #0879c9;
+
+  i {
+    color: #0879c9;
+  }
+
+  small {
+    color: #0879c9;
+  }
+}
+
+/* Bronze votes */
+.bronze-vote-count {
+  color: #99602e;
+
+  i {
+    color: #99602e;
+  }
+
+  small {
+    color: #99602e;
+  }
+}
+
+/* Status badge */
+.issue-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 12px;
+  background: #e8f5ed;
+  border: 1px solid #b9e2c7;
+  border-radius: 20px;
+  color: #18743b;
+  font-size: 13px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.status-dot {
+  width: 9px;
+  height: 9px;
+  background: #20a653;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Mobile responsive */
+@media (max-width: 767px) {
+  .blog-meta {
+    gap: 10px;
+    padding: 10px;
+  }
+
+  .meta-item {
+    font-size: 13px;
+
+    i {
+      font-size: 14px;
+    }
+
+    strong {
+      font-size: 14px;
+    }
+
+    small {
+      font-size: 11px;
+    }
+  }
+
+  .issue-status {
+    font-size: 12px;
+    padding: 5px 10px;
+  }
+}
+
+

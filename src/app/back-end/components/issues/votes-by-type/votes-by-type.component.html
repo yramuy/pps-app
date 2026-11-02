@@ -6,16 +6,16 @@
 
 <section class="blog-section py-4">
   <div class="container-fluid">
-
     <div class="card blog-card">
 
       <!-- Header -->
       <div class="card-header blog-card-header">
         <div class="d-flex align-items-center gap-3">
           <div class="blog-header-icon">
-            <i class="fas"
-              [ngClass]="selectedVoteType === 'diamond' ? 'fa-gem' : 'fa-medal'">
-            </i>
+            <i
+              class="fas"
+              [ngClass]="selectedVoteType === 'diamond' ? 'fa-gem' : 'fa-medal'"
+            ></i>
           </div>
 
           <div>
@@ -58,12 +58,16 @@
         <section
           class="vote-issue-card mb-3"
           *ngFor="let issue of diamondIssues; let i = index"
+          role="link"
+          tabindex="0"
+          (click)="readMore(issue.issue_id)"
+          (keydown.enter)="readMore(issue.issue_id)"
         >
 
-          <!-- Left: Image and Vote Statistics -->
+          <!-- Left: Issue Image -->
           <div class="vote-issue-left">
-
             <div class="blog-image-wrapper">
+
               <img
                 [src]="issue.image || 'assets/images/political-pic.jpg'"
                 [alt]="issue.issue_title || 'Issue image'"
@@ -72,130 +76,152 @@
 
               <span
                 class="blog-category"
-                [ngClass]="selectedVoteType === 'diamond'
-                  ? 'diamond-category'
-                  : 'bronze-category'"
+                [ngClass]="
+                  selectedVoteType === 'diamond'
+                    ? 'diamond-category'
+                    : 'bronze-category'
+                "
               >
-                <i class="fas me-1"
-                  [ngClass]="selectedVoteType === 'diamond'
-                    ? 'fa-gem'
-                    : 'fa-medal'">
-                </i>
+                <i
+                  class="fas me-1"
+                  [ngClass]="
+                    selectedVoteType === 'diamond' ? 'fa-gem' : 'fa-medal'
+                  "
+                ></i>
 
-                {{ selectedVoteType === 'diamond'
-                  ? 'Diamond Issue'
-                  : 'Bronze Issue' }}
+                {{
+                  selectedVoteType === 'diamond'
+                    ? 'Diamond Issue'
+                    : 'Bronze Issue'
+                }}
               </span>
+
             </div>
-
-            <!-- Vote Statistics -->
-            <div
-              class="vote-stat-card"
-              [ngClass]="selectedVoteType === 'diamond'
-                ? 'diamond-stat'
-                : 'bronze-stat'"
-            >
-              <div class="vote-stat-icon">
-                <i class="fas"
-                  [ngClass]="selectedVoteType === 'diamond'
-                    ? 'fa-gem'
-                    : 'fa-medal'">
-                </i>
-              </div>
-
-              <div class="vote-stat-info">
-                <span class="vote-stat-label">
-                  {{ selectedVoteType === 'diamond'
-                    ? 'Diamond Votes'
-                    : 'Bronze Votes' }}
-                </span>
-
-                <h4 class="vote-count">
-                  {{
-                    (selectedVoteType === 'diamond'
-                      ? issue.diamond_votes
-                      : issue.bronze_votes) ?? 0
-                  }}
-                </h4>
-
-                <span class="vote-stat-caption">
-                  Total votes received
-                </span>
-              </div>
-
-              <div class="vote-verified-icon">
-                <i class="fas fa-check-circle"></i>
-              </div>
-            </div>
-
           </div>
 
           <!-- Right: Issue Details -->
           <div class="vote-issue-content">
 
-            <!-- Title and Metadata -->
+            <!-- Metadata -->
             <div class="blog-meta">
-              <span>
-                <i class="far fa-calendar-alt me-1"></i>
-                {{ issue.post_date
-                  ? (issue.post_date | date:'dd MMM yyyy')
-                  : 'N/A' }}
+
+              <span class="meta-item">
+                <i class="far fa-calendar-alt"></i>
+                {{
+                  issue.post_date
+                    ? (issue.post_date | date: 'dd MMM yyyy')
+                    : 'N/A'
+                }}
               </span>
 
-              <span *ngIf="issue.views != null">
-                <i class="far fa-eye me-1"></i>
+              <span class="meta-item" *ngIf="issue.views != null">
+                <i class="far fa-eye"></i>
                 {{ issue.views | number }} views
               </span>
+
+              <span
+                class="meta-item vote-meta"
+                [ngClass]="
+                  selectedVoteType === 'diamond'
+                    ? 'diamond-vote-meta'
+                    : 'bronze-vote-meta'
+                "
+              >
+                <i
+                  class="fas"
+                  [ngClass]="
+                    selectedVoteType === 'diamond' ? 'fa-gem' : 'fa-medal'
+                  "
+                ></i>
+
+                <strong>
+                  {{
+                    (selectedVoteType === 'diamond'
+                      ? issue.diamond_votes
+                      : issue.bronze_votes) ?? 0
+                  }}
+                </strong>
+
+                {{
+                  selectedVoteType === 'diamond'
+                    ? 'Diamond votes'
+                    : 'Bronze votes'
+                }}
+              </span>
+
             </div>
 
-            <h2 class="blog-title">
+            <!-- Title -->
+            <h2
+              class="blog-title"
+              [title]="issue.issue_title || 'Untitled Issue'"
+            >
               {{ issue.issue_title || 'Untitled Issue' }}
             </h2>
 
-            <p class="blog-description">
+            <!-- Description: Single Line -->
+            <p
+              class="blog-description"
+              [title]="issue.issue_description || 'No description available.'"
+            >
               {{ issue.issue_description || 'No description available.' }}
             </p>
 
-            <!-- Details -->
+            <!-- All Location Details: Single Row -->
             <div class="issue-info-grid">
 
+              <!-- Category -->
               <div class="issue-info-item">
                 <i class="fas fa-folder"></i>
                 <div>
                   <small>Category</small>
-                  <span>{{ issue.category || 'N/A' }}</span>
+                  <span [title]="issue.category || 'N/A'">
+                    {{ issue.category || 'N/A' }}
+                  </span>
                 </div>
               </div>
 
+              <!-- Assembly -->
               <div class="issue-info-item">
                 <i class="fas fa-landmark"></i>
                 <div>
                   <small>Assembly</small>
-                  <span>{{ issue.assembly_name || 'N/A' }}</span>
+                  <span [title]="issue.assembly_name || 'N/A'">
+                    {{ issue.assembly_name || 'N/A' }}
+                  </span>
                 </div>
               </div>
 
+              <!-- Mandal -->
               <div class="issue-info-item">
                 <i class="fas fa-map-marker-alt"></i>
                 <div>
                   <small>Mandal</small>
-                  <span>{{ issue.mandal_name || 'N/A' }}</span>
+                  <span [title]="issue.mandal_name || 'N/A'">
+                    {{ issue.mandal_name || 'N/A' }}
+                  </span>
                 </div>
               </div>
 
+              <!-- Village -->
               <div class="issue-info-item">
                 <i class="fas fa-home"></i>
                 <div>
                   <small>Village</small>
-                  <span>{{ issue.village_name || 'N/A' }}</span>
+                  <span [title]="issue.village_name || 'N/A'">
+                    {{ issue.village_name || 'N/A' }}
+                  </span>
                 </div>
               </div>
 
+              <!-- Representative -->
               <div class="issue-info-item">
                 <i class="fas fa-user-tie"></i>
                 <div>
                   <small>Representative</small>
-                  <span>{{ issue.full_name || 'Not Assigned' }}</span>
+                  <span [title]="issue.full_name || 'Not Assigned'">
+                    {{ issue.full_name || 'Not Assigned' }}
+                  </span>
                 </div>
               </div>
 
@@ -207,7 +233,7 @@
               <button
                 type="button"
                 class="btn blog-read-btn"
-                (click)="readMore(issue.issue_id)"
+                (click)="readMore(issue.issue_id); $event.stopPropagation()"
               >
                 Read More
                 <i class="fas fa-arrow-right ms-2"></i>
@@ -216,7 +242,7 @@
               <button
                 type="button"
                 class="btn blog-gift-btn"
-                (click)="sendGift(issue)"
+                (click)="sendGift(issue); $event.stopPropagation()"
               >
                 <i class="fas fa-gift me-2"></i>
                 Send Gift
@@ -232,21 +258,18 @@
           class="empty-issues"
           *ngIf="!isLoading && diamondIssues.length === 0"
         >
-          <i class="fas"
-            [ngClass]="selectedVoteType === 'diamond'
-              ? 'fa-gem'
-              : 'fa-medal'">
-          </i>
+          <i
+            class="fas"
+            [ngClass]="selectedVoteType === 'diamond' ? 'fa-gem' : 'fa-medal'"
+          ></i>
 
           <h6>
-            No {{ selectedVoteType === 'diamond'
-              ? 'Diamond'
-              : 'Bronze' }} Issues Found
+            No
+            {{ selectedVoteType === 'diamond' ? 'Diamond' : 'Bronze' }}
+            Issues Found
           </h6>
 
-          <p>
-            There are no issues available for this vote type yet.
-          </p>
+          <p>There are no issues available for this vote type yet.</p>
         </div>
 
       </div>

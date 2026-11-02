@@ -3,203 +3,267 @@
   <div class="loader" role="status" aria-label="Loading"></div>
 </div>
 
-<section class="content">
+<section class="blog-section py-4">
   <div class="container-fluid">
-    <div class="card">
+    <div class="card blog-card">
+      <!-- Header -->
+      <div class="card-header blog-card-header">
+        <div class="d-flex align-items-center gap-3">
+          <div class="blog-header-icon">
+            <i class="fas fa-clipboard-list"></i>
+          </div>
 
-      <div class="card-header">
-        <h3 class="card-title text-white">Created By Me</h3>
+          <div>
+            <h3 class="mb-0 text-white">Created By Me</h3>
+            <small>Manage and track your created issues</small>
+          </div>
+        </div>
       </div>
 
-      <!-- Loader -->
-      <!-- <div
-        id="pageLoader"
-        *ngIf="loader.loading$ | async"
-        class="text-center p-3">
-
-        <div class="spinner-border text-primary"></div>
-      </div> -->
-
-      <div class="card-body">
-
+      <div class="card-body blog-card-body">
         <!-- Message -->
         <div
           *ngIf="isMessage"
           class="alert alert-info alert-dismissible fade show"
-          role="alert">
-
+          role="alert"
+        >
           {{ message }}
 
+          <button
+            type="button"
+            class="btn-close"
+            aria-label="Close"
+            (click)="isMessage = false"
+          ></button>
         </div>
 
-        <!-- Category Filter -->
-        <div class="row mb-3">
-
-          <div class="col-md-4">
-
-            <label for="categoryFilter" class="form-label">
-              Category
-            </label>
-
-            <select
-              id="categoryFilter"
-              class="form-control"
-              [value]="selectedCategory"
-              (change)="onCategoryChange($event)">
-
-              <option value="">
-                All Categories
-              </option>
-
-              <option
-                *ngFor="let category of categories"
-                [value]="category.id">
-
-                {{ category.name }}
-
-              </option>
-
-            </select>
-
+        <!-- Filters -->
+        <div class="filter-section">
+          <div class="filter-heading">
+            <i class="fas fa-filter"></i>
+            <span>Filter Issues</span>
           </div>
 
+          <div class="row align-items-end">
+            <div class="col-md-4 col-sm-6 mb-3">
+              <label for="categoryFilter" class="form-label"> Category </label>
+
+              <select
+                id="categoryFilter"
+                class="form-control"
+                [value]="selectedCategory"
+                (change)="onCategoryChange($event)"
+              >
+                <option value="">All Categories</option>
+
+                <option
+                  *ngFor="let category of categories"
+                  [value]="category.id"
+                >
+                  {{ category.name }}
+                </option>
+              </select>
+            </div>
+
+            <div class="col-md-auto col-sm-6 mb-3">
+              <button
+                type="button"
+                class="btn reset-filter-btn"
+                (click)="resetFilters()"
+              >
+                <i class="fas fa-redo-alt me-2"></i>
+                Reset Filters
+              </button>
+            </div>
+          </div>
         </div>
 
-        <!-- Issues Table -->
-        <div class="table-responsive">
+        <!-- Issues -->
+        <div class="issues-container">
+          <!-- Empty State -->
+          <div
+            *ngIf="filteredIssues().length === 0 && !isLoading"
+            class="empty-state"
+          >
+            <div class="empty-icon">
+              <i class="fas fa-folder-open"></i>
+            </div>
 
-          <table
-            id="myIssuesTable"
-            class="table table-bordered table-striped">
+            <h5>No Issues Found</h5>
+            <p>You have not created any issues matching this filter.</p>
+          </div>
 
-            <thead>
+          <!-- Issue Cards -->
+          <div
+            class="vote-issue-card"
+            *ngFor="let issue of filteredIssues(); let i = index"
+            role="button"
+            tabindex="0"
+            title="Click to view issue"
+            (click)="handleView(issue.id)"
+            (keydown.enter)="handleView(issue.id)"
+            (keydown.space)="handleView(issue.id); $event.preventDefault()"
+          >
+            <!-- Image -->
+            <div class="blog-image-section">
+              <div class="blog-image-wrapper">
+                <img
+                  *ngIf="getIssueImage(issue) && !issue.imageLoadError"
+                  [src]="getIssueImage(issue)"
+                  [alt]="issue.issue_title || 'Issue image'"
+                  class="blog-image"
+                  loading="lazy"
+                  (error)="onIssueImageError($event, issue)"
+                />
 
-              <tr>
+                <div
+                  *ngIf="!getIssueImage(issue) || issue.imageLoadError"
+                  class="blog-image-placeholder"
+                >
+                  <i class="fas fa-image"></i>
+                  <span>No Image Available</span>
+                </div>
 
-                <th width="60">S.No</th>
+                <div class="image-category-badge">
+                  {{ issue.category || "General" }}
+                </div>
+              </div>
+            </div>
 
-                <th>Category</th>
+            <!-- Content -->
+            <div class="blog-content">
+              <!-- Metadata -->
+              <div class="blog-meta">
+                <span class="meta-item issue-number">
+                  <i class="fas fa-hashtag"></i>
+                  <strong>{{ i + 1 }}</strong>
+                </span>
 
-                <th>Posted Date</th>
+                <span class="meta-item issue-date">
+                  <i class="far fa-calendar-alt"></i>
+                  <strong>
+                    {{
+                      issue.post_date
+                        ? (issue.post_date | date: "dd MMM yyyy")
+                        : "N/A"
+                    }}
+                  </strong>
+                </span>
 
-                <th>Issue Title</th>
+                <span class="meta-item issue-view-count">
+                  <i class="fas fa-eye"></i>
+                  <strong>{{ issue.views || 0 }}</strong>
+                  <small>Views</small>
+                </span>
 
-                <th>Description</th>
+                <span class="meta-item diamond-vote-count">
+                  <i class="fas fa-gem"></i>
+                  <strong>{{ issue.diamond_votes || 0 }}</strong>
+                  <small>Diamond</small>
+                </span>
 
-                <th>Mandal</th>
+                <span class="meta-item bronze-vote-count">
+                  <i class="fas fa-medal"></i>
+                  <strong>{{ issue.bronze_votes || 0 }}</strong>
+                  <small>Bronze</small>
+                </span>
 
-                <th>Village</th>
+                <span class="issue-status">
+                  <span class="status-dot"></span>
+                  <strong>{{ issue.status || "Unknown" }}</strong>
+                </span>
+              </div>
 
-                <th>Status</th>
+              <!-- Title -->
+              <h4 class="issue-title">
+                {{ issue.issue_title || "Untitled Issue" }}
+              </h4>
 
-                <th width="150" class="text-center">
-                  Actions
-                </th>
+              <!-- Description -->
+              <p class="issue-description">
+                {{ issue.issue_description || "No description available." }}
+              </p>
 
-              </tr>
-
-            </thead>
-
-            <tbody>
-
-              <tr
-                *ngFor="
-                  let issue of filteredIssues();
-                  let i = index
-                ">
-
-                <td>
-                  {{ i + 1 }}
-                </td>
-
-                <td>
-                  {{ issue.category }}
-                </td>
-
-                <td>{{ issue.post_date}}</td>
-
-                <td>
-                  {{ issue.issue_title }}
-                </td>
-
-                <td class="description-cell">
-                  {{ issue.issue_description }}
-                </td>
-
-                <td>
-                  {{ issue.mandal }}
-                </td>
-
-                <td>
-                  {{ issue.village }}
-                </td>
-
-                <td>
-                  {{ issue.status }}
-                </td>
-
-                <td class="text-center">
-
-                  <div class="action-buttons">
-
-                    <!-- Edit -->
-                    <button
-                      type="button"
-                      class="btn btn-success btn-sm"
-                      (click)="handleEdit(issue)"
-                      title="Edit">
-
-                      <i class="fas fa-edit"></i>
-
-                    </button>
-
-                    <!-- Delete -->
-                    <button
-                      type="button"
-                      class="btn btn-danger btn-sm"
-                      (click)="confirmDelete(issue.id)"
-                      title="Delete">
-
-                      <i class="fas fa-trash"></i>
-
-                    </button>
-
-                    <!-- View -->
-                    <button
-                      type="button"
-                      class="btn btn-info btn-sm"
-                      (click)="handleView(issue.id)"
-                      title="View">
-
-                      <i class="fas fa-eye"></i>
-
-                    </button>
-
+              <!-- Location Details -->
+              <div class="issue-info-grid">
+                <div class="issue-info-item">
+                  <i class="fas fa-layer-group"></i>
+                  <div>
+                    <small>Category</small>
+                    <strong>{{ issue.category || "N/A" }}</strong>
                   </div>
+                </div>
 
-                </td>
+                <div class="issue-info-item">
+                  <i class="fas fa-map-marked-alt"></i>
+                  <div>
+                    <small>Assembly</small>
+                    <strong>{{ issue.assembly || "N/A" }}</strong>
+                  </div>
+                </div>
 
-              </tr>
+                <div class="issue-info-item">
+                  <i class="fas fa-map"></i>
+                  <div>
+                    <small>Mandal</small>
+                    <strong>{{ issue.mandal || "N/A" }}</strong>
+                  </div>
+                </div>
 
-              <!-- No Data -->
-              <tr *ngIf="filteredIssues().length === 0">
+                <div class="issue-info-item">
+                  <i class="fas fa-map-pin"></i>
+                  <div>
+                    <small>Village</small>
+                    <strong>{{ issue.village || "N/A" }}</strong>
+                  </div>
+                </div>
+              </div>
 
-                <td
-                  colspan="8"
-                  class="text-center">
+              <!-- Actions -->
+              <div class="issue-card-footer">
+                <div class="created-by-info">
+                  <!-- <i class="fas fa-user-circle"></i>
+                  <span>Created By Me</span> -->
+                </div>
 
-                  No issues found
+                <div class="issue-actions">
+                  <!-- Edit -->
+                  <button
+                    type="button"
+                    class="btn btn-success btn-sm action-btn"
+                    title="Edit Issue"
+                    (click)="$event.stopPropagation(); handleEdit(issue)"
+                  >
+                    <i class="fas fa-edit"></i>
+                    <span>Edit</span>
+                  </button>
 
-                </td>
+                  <!-- Delete -->
+                  <button
+                    type="button"
+                    class="btn btn-danger btn-sm action-btn"
+                    title="Delete Issue"
+                    (click)="$event.stopPropagation(); confirmDelete(issue.id)"
+                  >
+                    <i class="fas fa-trash"></i>
+                    <span>Delete</span>
+                  </button>
 
-              </tr>
-
-            </tbody>
-
-          </table>
-
+                  <!-- View -->
+                  <button
+                    type="button"
+                    class="btn btn-info btn-sm action-btn"
+                    title="View Issue"
+                    (click)="$event.stopPropagation(); handleView(issue.id)"
+                  >
+                    <i class="fas fa-eye"></i>
+                    <span>View</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-
       </div>
     </div>
   </div>

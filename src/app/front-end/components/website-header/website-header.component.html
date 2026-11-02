@@ -44,24 +44,25 @@
         Contact Us
       </a>
 
-      <a
-       
-        class="button-login px-3 py-2"
-        (click)="handleLoginClick()"
-      >
+      <a class="button-login px-3 py-2" (click)="handleLoginClick()">
         {{ isLogin }}
       </a>
 
-      <a 
-      target="_blank"
-      routerLink="/admin/account" 
-      class="img-login px-1 py-1" 
-      *ngIf="isProfile">
+      <a
+        class="img-login px-1 py-1"
+        *ngIf="isProfile"
+        href="javascript:void(0)"
+        (click)="goToAccount()"
+        aria-label="Go to admin account"
+      >
         <div class="image">
-          <img src="{{ user?.profile_pic }}" class="img-circle" />
+          <img
+            [src]="user?.profile_pic"
+            class="img-circle"
+            alt="User Profile"
+          />
         </div>
       </a>
-
     </nav>
 
     <!-- Mobile Menu -->

@@ -1,131 +1,49 @@
 
-/* Loader */
-.loader-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 1050;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(255, 255, 255, 0.75);
-}
-
-/* Main */
-.blog-section {
-  background: #f7f8fc;
-  min-height: 100vh;
-}
-
-.blog-card {
-  overflow: hidden;
-  border: 1px solid #e8e5ed;
-  border-radius: 14px;
-  box-shadow: 0 4px 18px rgba(35, 24, 50, 0.05);
-}
-
-/* Header */
-.blog-card-header {
-  padding: 20px 24px;
-  color: #fff;
-  background: linear-gradient(135deg, #2c2c54, #1e1e3f);
-  border: 0;
-}
-
-.blog-card-header h5 {
-  font-size: 21px;
-  font-weight: 700;
-}
-
-.blog-card-header small {
-  color: #f0dff6;
-  font-size: 13px;
-}
-
-.blog-header-icon {
-  display: flex;
-  width: 54px;
-  height: 54px;
-  flex-shrink: 0;
-  align-items: center;
-  justify-content: center;
-  background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 12px;
-  font-size: 25px;
-}
-
-/* Body */
-.blog-card-body {
-  padding: 24px;
-}
-
-/* Filter */
-.vote-type-filter {
-  padding: 17px 20px;
-  background: #fff;
-  border: 1px solid #e2e7f1;
-  border-radius: 10px;
-}
-
-.vote-type-filter .form-label {
-  display: block;
-  color: #39334b;
-  font-size: 14px;
-}
-
-.vote-type-select {
-  min-height: 42px;
-  border-color: #dce2ed;
-  border-radius: 7px;
-  box-shadow: none;
-}
-
-.vote-type-select:focus {
-  border-color: #963cb0;
-  box-shadow: 0 0 0 3px rgba(150, 60, 176, 0.1);
-}
-
-/* Horizontal issue card */
+/* Main Issue Card */
 .vote-issue-card {
   display: flex;
   align-items: stretch;
-  gap: 22px;
-  padding: 18px;
+  gap: 18px;
+  padding: 14px;
+  margin-bottom: 14px;
   background: #fff;
-  border: 1px solid #e4e8f1;
+  border: 1px solid #e9e5ef;
   border-radius: 12px;
-  box-shadow: 0 3px 12px rgba(35, 24, 50, 0.04);
+  box-shadow: 0 2px 8px rgba(35, 24, 50, 0.04);
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
 }
 
 .vote-issue-card:hover {
-  border-color: #d8c5e2;
-  box-shadow: 0 7px 22px rgba(35, 24, 50, 0.08);
+  border-color: #d7bce4;
+  box-shadow: 0 5px 16px rgba(58, 32, 75, 0.08);
 }
 
-/* Left column */
+.vote-issue-card:focus-visible {
+  outline: 2px solid #812b99;
+  outline-offset: 3px;
+}
+
+/* Left Image */
 .vote-issue-left {
-  flex: 0 0 340px;
-  width: 340px;
+  flex: 0 0 220px;
+  width: 220px;
   min-width: 0;
-  padding-right: 18px;
-  border-right: 1px solid #eeeaf4;
 }
 
-/* Image */
 .blog-image-wrapper {
   position: relative;
   width: 100%;
-  height: 230px;
+  height: 250px;
   overflow: hidden;
-  background: #f0edf4;
-  border-radius: 8px;
+  background: #f3eef6;
+  border-radius: 9px;
 }
 
 .blog-image {
   display: block;
   width: 100%;
-  height: 230px;
+  height: 100%;
   object-fit: cover;
   object-position: center;
   transition: transform 0.3s ease;
@@ -135,217 +53,188 @@
   transform: scale(1.03);
 }
 
-/* Image badge */
+/* Image Category Badge */
 .blog-category {
   position: absolute;
-  top: 12px;
-  left: 12px;
+  top: 9px;
+  left: 9px;
   display: inline-flex;
   align-items: center;
-  padding: 7px 12px;
+  padding: 6px 9px;
   color: #fff;
   border-radius: 20px;
-  font-size: 12px;
-  font-weight: 600;
+  font-size: 10px;
+  font-weight: 700;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
 }
 
 .diamond-category {
-  background: #7d2998;
+  background: #0879c9;
 }
 
 .bronze-category {
-  background: #98602e;
+  background: #99602e;
 }
 
-/* Vote statistic */
-.vote-stat-card {
-  display: flex;
-  align-items: center;
-  gap: 13px;
-  margin-top: 12px;
-  padding: 16px;
-  border-radius: 9px;
-}
-
-.diamond-stat {
-  background: linear-gradient(110deg, #f6efff, #fbf8ff);
-  border: 1px solid #eee1fa;
-}
-
-.bronze-stat {
-  background: linear-gradient(110deg, #fff4e8, #fffaf4);
-  border: 1px solid #f2dfc9;
-}
-
-.vote-stat-icon {
-  display: flex;
-  width: 48px;
-  height: 48px;
-  flex-shrink: 0;
-  align-items: center;
-  justify-content: center;
-  color: #812b99;
-  background: #ead9fa;
-  border-radius: 50%;
-  font-size: 22px;
-}
-
-.bronze-stat .vote-stat-icon {
-  color: #98602e;
-  background: #f5dfc8;
-}
-
-.vote-stat-info {
-  flex: 1;
-  min-width: 0;
-}
-
-.vote-stat-label,
-.vote-stat-caption {
-  display: block;
-}
-
-.vote-stat-label {
-  color: #42334f;
-  font-size: 12px;
-  font-weight: 700;
-}
-
-.vote-count {
-  margin: 2px 0;
-  color: #78278f;
-  font-size: 25px;
-  font-weight: 800;
-  line-height: 1.2;
-}
-
-.bronze-stat .vote-count {
-  color: #98602e;
-}
-
-.vote-stat-caption {
-  color: #82758e;
-  font-size: 11px;
-}
-
-.vote-verified-icon {
-  color: #8a40a4;
-  font-size: 25px;
-}
-
-.bronze-stat .vote-verified-icon {
-  color: #98602e;
-}
-
-/* Right content */
+/* Right Content */
 .vote-issue-content {
   display: flex;
   flex: 1;
   flex-direction: column;
   min-width: 0;
-  padding: 3px 0;
 }
 
-/* Date and views */
+/* Metadata */
 .blog-meta {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 18px;
-  margin-bottom: 12px;
-  color: #6e6980;
-  font-size: 12px;
+  gap: 7px;
+  width: 100%;
+  margin-bottom: 9px;
+}
+
+.meta-item {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 5px;
+  padding: 5px 8px;
+  color: #686477;
+  background: #f7f6fa;
+  border: 1px solid #eeebf3;
+  border-radius: 6px;
+  font-size: 10px;
   font-weight: 600;
+  line-height: 1.3;
 }
 
-.blog-meta span + span {
-  padding-left: 16px;
-  border-left: 1px solid #e4dfeb;
+.meta-item > i {
+  color: #7f719a;
 }
 
-.blog-meta i {
-  color: #8b3b9d;
+.vote-meta {
+  font-weight: 700;
 }
 
-/* Title */
+.vote-meta strong {
+  font-size: 11px;
+}
+
+.diamond-vote-meta {
+  color: #0879c9;
+  background: #eef7ff;
+  border-color: #d6ebff;
+}
+
+.diamond-vote-meta > i {
+  color: #0879c9;
+}
+
+.bronze-vote-meta {
+  color: #99602e;
+  background: #fff5e9;
+  border-color: #f1dfc9;
+}
+
+.bronze-vote-meta > i {
+  color: #99602e;
+}
+
+/* Issue Title */
 .blog-title {
-  margin: 0 0 10px;
+  margin: 0 0 6px;
   color: #29213b;
-  font-size: 21px;
-  font-weight: 750;
-  line-height: 1.4;
-  overflow-wrap: anywhere;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.35;
+
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
-/* Description */
+/* Description - Single Line with Dots */
 .blog-description {
-  display: -webkit-box;
-  margin: 0 0 20px;
+  display: block;
+  width: 100%;
+  margin: 0 0 12px;
   overflow: hidden;
   color: #777487;
-  font-size: 13px;
-  line-height: 1.7;
-  overflow-wrap: anywhere;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
+  font-size: 12px;
+  line-height: 1.5;
+
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
-/* Issue detail grid */
+/* Location Details - All in One Row */
 .issue-info-grid {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 14px 10px;
-  margin-bottom: 20px;
+  gap: 7px;
+  width: 100%;
+  margin-bottom: 10px;
+  min-width: 0;
 }
 
+/* Individual Location Item */
 .issue-info-item {
   display: flex;
-  align-items: flex-start;
-  gap: 9px;
+  align-items: center;
+  gap: 7px;
   min-width: 0;
-  padding-right: 8px;
-  border-right: 1px solid #eeeaf3;
-}
-
-.issue-info-item:last-child {
-  border-right: 0;
+  padding: 8px;
+  background: #faf9fc;
+  border: 1px solid #f0edf5;
+  border-radius: 7px;
+  overflow: hidden;
 }
 
 .issue-info-item > i {
   flex-shrink: 0;
-  margin-top: 3px;
-  color: #7f719a;
-  font-size: 14px;
+  color: #85349d;
+  font-size: 12px;
 }
 
 .issue-info-item div {
   display: flex;
   flex-direction: column;
+  flex: 1;
   min-width: 0;
-  gap: 5px;
+  gap: 3px;
+  overflow: hidden;
 }
 
 .issue-info-item small {
   color: #888197;
-  font-size: 11px;
+  font-size: 9px;
+  line-height: 1.2;
+  white-space: nowrap;
 }
 
 .issue-info-item span {
+  display: block;
+  width: 100%;
+  overflow: hidden;
   color: #43384f;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
-  overflow-wrap: anywhere;
+  line-height: 1.3;
+
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
-/* Action buttons */
+/* Action Buttons */
 .blog-actions {
   display: flex;
   align-items: center;
   justify-content: flex-end;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 8px;
   margin-top: auto;
-  padding-top: 5px;
+  padding-top: 3px;
 }
 
 .blog-read-btn,
@@ -353,14 +242,19 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 40px;
-  padding: 9px 17px;
-  border-radius: 7px;
-  font-size: 12px;
+  gap: 5px;
+  min-height: 34px;
+  padding: 7px 13px;
+  border-radius: 6px;
+  font-size: 11px;
   font-weight: 700;
+  line-height: 1.3;
+  white-space: nowrap;
+  cursor: pointer;
   transition: all 0.2s ease;
 }
 
+/* Read More */
 .blog-read-btn {
   color: #fff;
   background: #812b99;
@@ -371,142 +265,177 @@
   color: #fff;
   background: #652077;
   border-color: #652077;
-  box-shadow: 0 3px 9px rgba(129, 43, 153, 0.2);
+  box-shadow: 0 3px 8px rgba(129, 43, 153, 0.2);
 }
 
+/* Send Gift */
 .blog-gift-btn {
-  color: #812b99;
-  background: #fff;
-  border: 1px solid #dfc6ea;
+  color: #5b4100;
+  background: #ffc928;
+  border: 1px solid #ffc928;
 }
 
 .blog-gift-btn:hover {
-  color: #652077;
-  background: #f8effc;
-  border-color: #c9a6dc;
+  color: #4a3400;
+  background: #f0b800;
+  border-color: #f0b800;
+  box-shadow: 0 3px 8px rgba(240, 184, 0, 0.25);
 }
 
-/* Empty state */
+.blog-read-btn:focus-visible,
+.blog-gift-btn:focus-visible {
+  outline: 2px solid #812b99;
+  outline-offset: 2px;
+}
+
+/* Empty State */
 .empty-issues {
-  padding: 36px 20px;
+  padding: 40px 15px;
   text-align: center;
-  background: #fff;
-  border: 1px dashed #d4ddec;
-  border-radius: 12px;
+  color: #777487;
 }
 
 .empty-issues > i {
   margin-bottom: 12px;
-  color: #85349d;
-  font-size: 38px;
+  color: #812b99;
+  font-size: 35px;
 }
 
 .empty-issues h6 {
-  margin-bottom: 8px;
-  color: #393047;
-  font-size: 15px;
+  color: #29213b;
   font-weight: 700;
-}
-
-.empty-issues p {
-  margin-bottom: 0;
-  color: #888397;
-  font-size: 12px;
 }
 
 /* Tablet */
 @media (max-width: 1100px) {
   .vote-issue-left {
-    flex-basis: 290px;
-    width: 290px;
+    flex: 0 0 190px;
+    width: 190px;
+  }
+
+  .blog-image-wrapper {
+    height: 165px;
   }
 
   .issue-info-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 5px;
   }
 
-  .issue-info-item:nth-child(3) {
-    border-right: 0;
+  .issue-info-item {
+    gap: 5px;
+    padding: 6px;
+  }
+
+  .issue-info-item span {
+    font-size: 10px;
   }
 }
 
-/* Small tablet */
-@media (max-width: 767px) {
-  .blog-card-body {
-    padding: 15px;
+/* Small Desktop / Tablet */
+@media (max-width: 900px) {
+  .vote-issue-card {
+    gap: 12px;
   }
 
+  .vote-issue-left {
+    flex: 0 0 160px;
+    width: 160px;
+  }
+
+  .blog-image-wrapper {
+    height: 155px;
+  }
+
+  .issue-info-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  .issue-info-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* Mobile */
+@media (max-width: 767px) {
   .vote-issue-card {
     flex-direction: column;
-    gap: 18px;
-    padding: 14px;
+    gap: 12px;
+    padding: 12px;
   }
 
   .vote-issue-left {
     flex: 0 0 auto;
     width: 100%;
-    padding-right: 0;
-    border-right: 0;
   }
 
-  .blog-image-wrapper,
-  .blog-image {
-    height: 250px;
-  }
-
-  .vote-issue-content {
-    padding-top: 0;
+  .blog-image-wrapper {
+    height: 190px;
   }
 
   .blog-title {
-    font-size: 19px;
+    font-size: 17px;
   }
 
+  /* Keep all five details in one row */
   .issue-info-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .issue-info-item:nth-child(3) {
-    border-right: 1px solid #eeeaf3;
-  }
-
-  .issue-info-item:nth-child(2n) {
-    border-right: 0;
-  }
-}
-
-/* Mobile */
-@media (max-width: 480px) {
-  .blog-card-header {
-    padding: 16px;
-  }
-
-  .blog-card-header h5 {
-    font-size: 18px;
-  }
-
-  .blog-header-icon {
-    width: 45px;
-    height: 45px;
-    font-size: 21px;
-  }
-
-  .blog-image-wrapper,
-  .blog-image {
-    height: 210px;
-  }
-
-  .issue-info-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 15px 8px;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(105px, 1fr));
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-bottom: 5px;
   }
 
   .issue-info-item {
-    gap: 7px;
+    flex-direction: row;
+    align-items: center;
+    min-width: 105px;
+  }
+
+  .blog-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+  .blog-card-body {
+    padding: 10px;
+  }
+
+  .blog-image-wrapper {
+    height: 165px;
+  }
+
+  .blog-meta {
+    gap: 5px;
+  }
+
+  .meta-item {
+    padding: 5px 6px;
+    font-size: 9px;
+  }
+
+  .blog-title {
+    font-size: 16px;
+  }
+
+  .blog-description {
+    font-size: 11px;
+  }
+
+  .issue-info-grid {
+    grid-template-columns: repeat(5, minmax(100px, 1fr));
+    gap: 5px;
+  }
+
+  .issue-info-item {
+    padding: 7px 6px;
   }
 
   .issue-info-item span {
-    font-size: 11px;
+    font-size: 10px;
   }
 
   .blog-actions {
@@ -515,10 +444,103 @@
 
   .blog-actions button {
     flex: 1;
-    padding: 9px 10px;
+  }
+}
+
+/* Metadata container */
+.blog-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  width: 100%;
+  margin-bottom: 16px;
+  padding: 0;
+  background: transparent;
+  border: none;
+}
+
+/* Common metadata */
+.meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: #454052;
+  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
+
+  i {
+    font-size: 16px;
+  }
+}
+
+/* Date */
+.meta-item:first-child {
+  color: #454052;
+}
+
+/* Views */
+.meta-item:nth-child(2) {
+  color: #1769aa;
+
+  i {
+    color: #1769aa;
+  }
+}
+
+/* Vote metadata */
+.vote-meta {
+  font-size: 14px;
+  font-weight: 700;
+
+  strong {
+    font-size: 16px;
+    font-weight: 800;
+  }
+}
+
+/* Diamond */
+.diamond-vote-meta {
+  color: #0879c9;
+
+  i {
+    color: #0879c9;
   }
 
-  .vote-stat-card {
-    padding: 13px;
+  strong {
+    color: #0879c9;
+  }
+}
+
+/* Bronze */
+.bronze-vote-meta {
+  color: #99602e;
+
+  i {
+    color: #99602e;
+  }
+
+  strong {
+    color: #99602e;
+  }
+}
+
+/* Mobile responsive */
+@media (max-width: 767px) {
+  .blog-meta {
+    gap: 10px 14px;
+  }
+
+  .meta-item {
+    font-size: 13px;
+
+    i {
+      font-size: 14px;
+    }
+  }
+
+  .vote-meta strong {
+    font-size: 14px;
   }
 }

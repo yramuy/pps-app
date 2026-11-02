@@ -1,146 +1,302 @@
+
 <!-- Loader -->
 <div class="loader-overlay" *ngIf="isLoading">
   <div class="loader" role="status" aria-label="Loading"></div>
 </div>
 
-<section class="content">
+<section class="blog-section py-4">
   <div class="container-fluid">
-    <div class="card">
-      <div class="card-header">
-        <h3 class="card-title text-white">Assigned To Me</h3>
+    <div class="card blog-card">
+
+      <!-- Header -->
+      <div class="card-header blog-card-header">
+        <div class="d-flex align-items-center gap-3">
+          <div class="blog-header-icon">
+            <i class="fas fa-tasks"></i>
+          </div>
+
+          <div>
+            <h5 class="mb-1 text-white">Assigned To Me</h5>
+            <small>View and manage issues assigned to you</small>
+          </div>
+        </div>
       </div>
 
-      <div class="card-body">
+      <div class="card-body blog-card-body">
+
         <!-- Filters -->
-        <div class="row mb-3">
-          <!-- Category -->
-          <div class="col-md-3 mb-3">
-            <label for="categoryFilter" class="form-label"> Category </label>
+        <div class="filter-section mb-4">
 
-            <select
-              id="categoryFilter"
-              class="form-control"
-              [value]="selectedCategoryId"
-              (change)="onCategoryChange($event)"
-            >
-              <option value="">All Categories</option>
-
-              <option *ngFor="let category of categories" [value]="category.id">
-                {{ category.name }}
-              </option>
-            </select>
+          <div class="filter-heading">
+            <i class="fas fa-filter me-2"></i>
+            Filter Assigned Issues
           </div>
 
-          <!-- Assembly -->
-          <div class="col-md-3 mb-3">
-            <label for="assemblyFilter" class="form-label"> Assembly </label>
+          <div class="row">
 
-            <select
-              id="assemblyFilter"
-              class="form-control"
-              [value]="selectedAssemblyId"
-              (change)="onAssemblyChange($event)"
-              [disabled]="assemblies.length === 0"
-            >
-              <option value="">All Assemblies</option>
+            <!-- Category -->
+            <div class="col-md-3 col-sm-6 mb-3">
+              <label for="categoryFilter" class="form-label">
+                Category
+              </label>
 
-              <option *ngFor="let assembly of assemblies" [value]="assembly.id">
-                {{ assembly.name }}
-              </option>
-            </select>
+              <select
+                id="categoryFilter"
+                class="form-select"
+                [value]="selectedCategoryId"
+                (change)="onCategoryChange($event)"
+              >
+                <option value="">All Categories</option>
+
+                <option
+                  *ngFor="let category of categories"
+                  [value]="category.id"
+                >
+                  {{ category.name }}
+                </option>
+              </select>
+            </div>
+
           </div>
 
-          <!-- Mandal -->
-          <div class="col-md-3 mb-3">
-            <label for="mandalFilter" class="form-label"> Mandal </label>
-
-            <select
-              id="mandalFilter"
-              class="form-control"
-              [value]="selectedMandalId"
-              (change)="onMandalChange($event)"
-              [disabled]="mandals.length === 0"
+          <!-- Reset Filters -->
+          <div class="filter-footer">
+            <button
+              type="button"
+              class="btn reset-filter-btn"
+              (click)="resetFilters()"
             >
-              <option value="">All Mandals</option>
-
-              <option *ngFor="let mandal of mandals" [value]="mandal.id">
-                {{ mandal.name }}
-              </option>
-            </select>
+              <i class="fas fa-sync-alt me-2"></i>
+              Reset Filters
+            </button>
           </div>
 
-          <!-- Village -->
-          <div class="col-md-3 mb-3">
-            <label for="villageFilter" class="form-label"> Village </label>
-
-            <select
-              id="villageFilter"
-              class="form-control"
-              [value]="selectedVillageId"
-              (change)="onVillageChange($event)"
-              [disabled]="villages.length === 0"
-            >
-              <option value="">All Villages</option>
-
-              <option *ngFor="let village of villages" [value]="village.id">
-                {{ village.name }}
-              </option>
-            </select>
-          </div>
         </div>
 
-        <!-- Reset filters -->
-        <div class="mb-3">
-          <button
-            type="button"
-            class="btn btn-secondary"
-            (click)="resetFilters()"
+        <!-- Error Message -->
+        <div
+          *ngIf="message()"
+          class="alert alert-warning"
+        >
+          <i class="fas fa-exclamation-circle me-2"></i>
+          {{ message() }}
+        </div>
+
+        <!-- Issues Container -->
+        <div class="issues-container">
+
+          <!-- Empty State -->
+          <div
+            *ngIf="!isLoading && assignedToMeIssues().length === 0"
+            class="empty-issues"
           >
-            Reset Filters
-          </button>
-        </div>
+            <i class="fas fa-inbox"></i>
 
-        <div class="table-responsive">
-          <table
-            id="assignedToMeIssuesTable"
-            class="table table-bordered table-striped"
+            <h6>No Assigned Issues Found</h6>
+
+            <p>
+              No issues are assigned to you for the selected filters.
+            </p>
+          </div>
+
+          <!-- Assigned Issue Cards -->
+          <section
+            class="vote-issue-card mb-3"
+            *ngFor="let issue of assignedToMeIssues(); let i = index"
+            (click)="handleView(issue.id)"
+            role="button"
+            tabindex="0"
+            (keydown.enter)="handleView(issue.id)"
+            (keydown.space)="$event.preventDefault(); handleView(issue.id)"
           >
-            <thead>
-              <tr>
-                <th>Sno</th>
-                <th>Category</th>
-                <th>Posted Date</th>
-                <th>Issue Title</th>
-                <th>Description</th>
-                <th>Madal</th>
-                <th>Village</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
 
-            <tbody>
-              <tr *ngFor="let issue of assignedToMeIssues(); let i = index">
-                <td>{{ i + 1 }}</td>
-                <td>{{ issue.category }}</td>
-                <td>{{ issue.post_date }}</td>
-                <td class="description-cell">{{ issue.issue_title }}</td>
-                <td class="description-cell">{{ issue.issue_description }}</td>
-                <td>{{ issue.mandal }}</td>
-                <td>{{ issue.village }}</td>
-                <td>{{ issue.status }}</td>
-                <td>
-                  <button class="btn btn-info" (click)="handleView(issue.id)">
-                    <i class="fas fa-eye"></i>
-                  </button>
-                </td>
-              </tr>
-              <tr *ngIf="assignedToMeIssues().length === 0">
-                <td colspan="5">No issues found</td>
-              </tr>
-            </tbody>
-          </table>
+            <!-- Left: Issue Image -->
+            <div class="vote-issue-left">
+
+              <div class="blog-image-wrapper">
+
+                <!-- Issue Image -->
+                <img
+                  *ngIf="getIssueImage(issue) && !issue.imageLoadError"
+                  [src]="getIssueImage(issue)"
+                  [alt]="issue.issue_title || 'Issue image'"
+                  class="blog-image"
+                  loading="lazy"
+                  (error)="onIssueImageError($event, issue)"
+                />
+
+                <!-- Image Placeholder -->
+                <div
+                  *ngIf="!getIssueImage(issue) || issue.imageLoadError"
+                  class="blog-image-placeholder"
+                >
+                  <i class="fas fa-image"></i>
+                  <span>No Image Available</span>
+                </div>
+
+                <!-- Category Badge -->
+                <span class="blog-category">
+                  <i class="fas fa-folder-open me-1"></i>
+                  {{ issue.category || 'Uncategorized' }}
+                </span>
+
+              </div>
+
+            </div>
+
+            <!-- Right: Issue Content -->
+            <div class="vote-issue-content">
+
+              <!-- Metadata -->
+              <div class="blog-meta">
+
+                <!-- Serial Number -->
+                <span class="meta-item">
+                  <i class="fas fa-hashtag"></i>
+                  {{ i + 1 }}
+                </span>
+
+                <!-- Posted Date -->
+                <span class="meta-item">
+                  <i class="far fa-calendar-alt"></i>
+                  {{
+                    issue.post_date
+                      ? (issue.post_date | date:'dd MMM yyyy')
+                      : 'N/A'
+                  }}
+                </span>
+
+                <!-- Views -->
+                <span class="meta-item issue-view-count">
+                  <i class="fas fa-eye"></i>
+                  {{ issue.views || 0 }}
+                  <small>Views</small>
+                </span>
+
+                <!-- Diamond Votes -->
+                <span class="meta-item diamond-vote-count">
+                  <i class="fas fa-gem"></i>
+                  {{ issue.diamond_votes || 0 }}
+                  <small>Diamond</small>
+                </span>
+
+                <!-- Bronze Votes -->
+                <span class="meta-item bronze-vote-count">
+                  <i class="fas fa-medal"></i>
+                  {{ issue.bronze_votes || 0 }}
+                  <small>Bronze</small>
+                </span>
+
+                <!-- Status -->
+                <span class="issue-status">
+                  <span class="status-dot"></span>
+                  {{ issue.status || 'Unknown' }}
+                </span>
+
+              </div>
+
+              <!-- Title -->
+              <h2
+                class="blog-title"
+                [title]="issue.issue_title || 'Untitled Issue'"
+              >
+                {{ issue.issue_title || 'Untitled Issue' }}
+              </h2>
+
+              <!-- Description -->
+              <p
+                class="blog-description"
+                [title]="issue.issue_description || 'No description available.'"
+              >
+                {{ issue.issue_description || 'No description available.' }}
+              </p>
+
+              <!-- Location Details -->
+              <div class="issue-info-grid">
+
+                <!-- Category -->
+                <div class="issue-info-item">
+                  <i class="fas fa-folder"></i>
+
+                  <div>
+                    <small>Category</small>
+                    <span [title]="issue.category || 'Uncategorized'">
+                      {{ issue.category || 'Uncategorized' }}
+                    </span>
+                  </div>
+                </div>
+
+                <!-- Assembly -->
+                <div class="issue-info-item">
+                  <i class="fas fa-landmark"></i>
+
+                  <div>
+                    <small>Assembly</small>
+                    <span [title]="issue.assembly || 'N/A'">
+                      {{ issue.assembly || 'N/A' }}
+                    </span>
+                  </div>
+                </div>
+
+                <!-- Mandal -->
+                <div class="issue-info-item">
+                  <i class="fas fa-map-marker-alt"></i>
+
+                  <div>
+                    <small>Mandal</small>
+                    <span [title]="issue.mandal || 'N/A'">
+                      {{ issue.mandal || 'N/A' }}
+                    </span>
+                  </div>
+                </div>
+
+                <!-- Village -->
+                <div class="issue-info-item">
+                  <i class="fas fa-home"></i>
+
+                  <div>
+                    <small>Village</small>
+                    <span [title]="issue.village || 'N/A'">
+                      {{ issue.village || 'N/A' }}
+                    </span>
+                  </div>
+                </div>
+
+                <!-- Representative -->
+                <div class="issue-info-item">
+                  <i class="fas fa-user-tie"></i>
+
+                  <div>
+                    <small>Representative</small>
+                    <span [title]="issue.full_name || 'Not Assigned'">
+                      {{ issue.full_name || 'Not Assigned' }}
+                    </span>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- Footer -->
+              <div class="issue-card-footer">
+
+                <button
+                  type="button"
+                  class="btn blog-read-btn"
+                  title="View Issue"
+                  (click)="$event.stopPropagation(); handleView(issue.id)"
+                >
+                  View Issue
+                  <i class="fas fa-arrow-right ms-2"></i>
+                </button>
+
+              </div>
+
+            </div>
+
+          </section>
+
         </div>
+
       </div>
     </div>
   </div>

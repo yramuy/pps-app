@@ -1,295 +1,366 @@
-import { Component, OnInit } from '@angular/core';
+
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { finalize } from 'rxjs/operators';
+
 import { ApiService } from 'src/app/services/api.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { LoaderService } from 'src/app/services/loader.service';
-
-declare const $: any;
 
 @Component({
   selector: 'app-my-issues',
   templateUrl: './my-issues.component.html',
   styleUrls: ['./my-issues.component.scss'],
 })
-export class MyIssuesComponent implements OnInit {
-  // =========================
-  // Component Variables
-  // =========================
+export class MyIssuesComponent implements OnInit, OnDestroy {
 
+  // Issues
   myIssues: any[] = [];
   loginUser: any = null;
 
-  loading: boolean = false;
-  message: string = '';
-  isMessage: boolean = false;
+  // Loading and messages
+  loading = false;
+  isLoading = false;
+  message = '';
+  isMessage = false;
 
   // Category filter
   categories: any[] = [];
-  selectedCategory: string = '';
+  selectedCategory = '';
 
   private pendingApiCalls = 0;
-  isLoading = false;
+  private userSubscription?: Subscription;
+  private messageTimeout?: ReturnType<typeof setTimeout>;
 
   constructor(
     private authService: AuthService,
     private apiService: ApiService,
     public loader: LoaderService,
-    private router: Router,
-  ) {
-    this.authService.user$.subscribe((user) => {
-      this.loginUser = user;
+    private router: Router
+  ) {}
 
-      if (user) {
-        this.loadMyIssues(user);
+  ngOnInit(): void {
+
+    // Load categories
+    this.loadCategories();
+
+    // Display navigation message if available
+    const state = history.state;
+
+    if (state?.message) {
+      this.showMessage(state.message);
+
+      history.replaceState(
+        {
+          ...history.state,
+          message: null
+        },
+        ''
+      );
+    }
+
+    // Get logged-in user
+    this.userSubscription = this.authService.user$.subscribe({
+      next: (user: any) => {
+
+        this.loginUser = user;
+
+        if (user?.userId) {
+          this.loadMyIssues(user);
+        } else {
+          this.myIssues = [];
+        }
+
+      },
+      error: (err: any) => {
+        console.error('User subscription failed:', err);
       }
     });
   }
 
-  ngOnInit(): void {
-    const state = history.state;
+  ngOnDestroy(): void {
+    this.userSubscription?.unsubscribe();
 
-    // Load categories from master API
-    this.loadCategories();
-
-    if (state.message) {
-      this.message = state.message;
-      this.isMessage = true;
-
-      history.replaceState({}, '');
-
-      setTimeout(() => {
-        this.isMessage = false;
-      }, 3000);
+    if (this.messageTimeout) {
+      clearTimeout(this.messageTimeout);
     }
   }
 
+  // =====================================
+  // API Request with Loader
+  // =====================================
+
   private requestWithLoader(endpoint: string, payload: any): any {
+
     this.pendingApiCalls++;
     this.isLoading = true;
 
     return this.apiService.request('POST', endpoint, payload).pipe(
       finalize(() => {
-        this.pendingApiCalls = Math.max(0, this.pendingApiCalls - 1);
+
+        this.pendingApiCalls = Math.max(
+          0,
+          this.pendingApiCalls - 1
+        );
+
         this.isLoading = this.pendingApiCalls > 0;
-      }),
+
+      })
     );
   }
 
-  // =========================
+  // =====================================
   // Load Categories
-  // =========================
+  // =====================================
 
   loadCategories(): void {
-    this.requestWithLoader(
-        '/masterData',
-        JSON.stringify({
-          master_id: 1,
-          mode: 'web',
-        }),
-      )
-      .subscribe({
-        next: (res: any) => {
-          this.categories = res.master_data || [];
 
-          console.log('Categories:', this.categories);
-        },
+    const payload = JSON.stringify({
+      master_id: 1,
+      mode: 'web'
+    });
 
-        error: (err: any) => {
-          console.error('Category loading failed:', err);
+    this.requestWithLoader('/masterData', payload).subscribe({
 
-          this.categories = [];
-        },
-      });
+      next: (res: any) => {
+        this.categories = res?.master_data || [];
+      },
+
+      error: (err: any) => {
+        console.error('Category loading failed:', err);
+        this.categories = [];
+      }
+
+    });
   }
 
-  // =========================
+  // =====================================
   // Load My Issues
-  // =========================
+  // =====================================
 
   loadMyIssues(user: any): void {
+
     this.loader.show();
 
-    const payloadObj: any = {};
-
-    if (user?.userId) {
-      payloadObj.created_by = user.userId;
-    }
-
-    // Initially load all categories
-    payloadObj.category_id = '';
+    const payloadObj: any = {
+      created_by: user.userId,
+      category_id: ''
+    };
 
     const payload = JSON.stringify(payloadObj);
 
     this.requestWithLoader('/myIssues', payload).subscribe({
-      next: (res: any) => {
-        this.myIssues = res.my_issues || [];
 
-        console.log('myIssues:', this.myIssues);
+      next: (res: any) => {
+
+        this.myIssues = res?.my_issues || [];
+
+        console.log('My Issues:', this.myIssues);
 
         this.loader.hide();
 
-        setTimeout(() => {
-          this.initializeDataTable();
-        }, 0);
       },
 
       error: (err: any) => {
-        if (err.status === 401) {
-          this.message = 'Token expired';
-          this.authService.logout();
-        } else if (err.status === 400) {
-          this.message = 'Invalid request data';
-        } else if (err.status === 500) {
-          this.message = 'Server error. Please try again later';
-        } else {
-          this.message = 'Something went wrong. Please try again later';
-        }
+
+        console.error('My issues loading failed:', err);
 
         this.loader.hide();
-      },
+
+        if (err.status === 401) {
+
+          this.message = 'Token expired';
+          this.isMessage = true;
+
+          this.authService.logout();
+
+        } else if (err.status === 400) {
+
+          this.showMessage('Invalid request data');
+
+        } else if (err.status === 500) {
+
+          this.showMessage('Server error. Please try again later');
+
+        } else {
+
+          this.showMessage('Something went wrong. Please try again later');
+
+        }
+
+      }
+
     });
   }
 
-  // =========================
+  // =====================================
   // Category Filter
-  // =========================
+  // =====================================
 
   onCategoryChange(event: Event): void {
+
     const selectElement = event.target as HTMLSelectElement;
 
     this.selectedCategory = selectElement.value;
 
-    this.reloadDataTable();
   }
 
-  // =========================
+  // =====================================
+  // Reset Filters
+  // =====================================
+
+  resetFilters(): void {
+
+    this.selectedCategory = '';
+
+  }
+
+  // =====================================
   // Filter Issues
-  // =========================
+  // =====================================
 
   filteredIssues(): any[] {
+
     const category = this.selectedCategory;
 
     if (!category) {
       return this.myIssues;
     }
 
-    return this.myIssues.filter(
-      (issue: any) => String(issue.category_id) === String(category),
+    return this.myIssues.filter((issue: any) =>
+      String(issue.category_id) === String(category)
     );
+
   }
 
-  // =========================
-  // Initialize DataTable
-  // =========================
+  // =====================================
+  // Get Issue Image
+  // =====================================
 
-  initializeDataTable(): void {
-    if ($.fn.DataTable.isDataTable('#myIssuesTable')) {
-      ($('#myIssuesTable') as any).DataTable().destroy();
-    }
+  getIssueImage(issue: any): string | null {
 
-    if (this.filteredIssues().length > 0) {
-      setTimeout(() => {
-        ($('#myIssuesTable') as any).DataTable({
-          dom: 'Bfrtip',
-          buttons: ['excel', 'pdf'],
-          responsive: true,
-        });
-      }, 0);
-    }
+    return issue?.issue_pic || null;
+
   }
 
-  // =========================
-  // Edit
-  // =========================
+  // =====================================
+  // Issue Image Error
+  // =====================================
+
+  onIssueImageError(event: Event, issue: any): void {
+
+    issue.imageLoadError = true;
+
+  }
+
+  // =====================================
+  // Edit Issue
+  // =====================================
 
   handleEdit(issueObj: any): void {
+
     this.router.navigate(['/admin/issues/create'], {
       state: {
         issue: issueObj,
-        isEdit: true,
-      },
+        isEdit: true
+      }
     });
+
   }
 
-  // =========================
+  // =====================================
+  // View Issue
+  // =====================================
+
+  handleView(id: any): void {
+
+    this.router.navigate(['/admin/issues/view-issue'], {
+      state: {
+        issueID: id
+      }
+    });
+
+  }
+
+  // =====================================
   // Delete Confirmation
-  // =========================
+  // =====================================
 
   confirmDelete(id: string): void {
+
     if (confirm('Are you sure you want to delete this record?')) {
       this.deleteIssue(id);
     }
+
   }
 
-  // =========================
-  // View
-  // =========================
-
-  handleView(id: any): void {
-    this.router.navigate(['/admin/issues/view-issue'], {
-      state: {
-        issueID: id,
-      },
-    });
-  }
-
-  // =========================
+  // =====================================
   // Delete Issue
-  // =========================
+  // =====================================
 
   deleteIssue(id: string): void {
+
     const payload = JSON.stringify({
       id: id,
-      master_id: '9',
+      master_id: '9'
     });
 
     this.requestWithLoader('/deleteRecord', payload).subscribe({
+
       next: (res: any) => {
-        this.showMessage(res.message);
 
-        // Remove deleted issue
-        this.myIssues = this.myIssues.filter((issue: any) => issue.id !== id);
+        this.showMessage(
+          res?.message || 'Issue deleted successfully'
+        );
 
-        this.reloadDataTable();
+        // Remove deleted issue from current list
+        this.myIssues = this.myIssues.filter(
+          (issue: any) => String(issue.id) !== String(id)
+        );
+
       },
 
       error: (err: any) => {
-        console.error(err);
-      },
-    });
-  }
 
-  // =========================
-  // Reload DataTable
-  // =========================
+        console.error('Delete issue failed:', err);
 
-  reloadDataTable(): void {
-    if ($.fn.DataTable.isDataTable('#myIssuesTable')) {
-      ($('#myIssuesTable') as any).DataTable().destroy();
-    }
+        if (err.status === 401) {
 
-    setTimeout(() => {
-      if (this.filteredIssues().length > 0) {
-        ($('#myIssuesTable') as any).DataTable({
-          dom: 'Bfrtip',
-          buttons: ['excel', 'pdf'],
-          responsive: true,
-        });
+          this.showMessage('Token expired');
+          this.authService.logout();
+
+        } else {
+
+          this.showMessage(
+            err?.error?.message || 'Unable to delete issue. Please try again.'
+          );
+
+        }
+
       }
-    }, 100);
+
+    });
+
   }
 
-  // =========================
+  // =====================================
   // Show Message
-  // =========================
+  // =====================================
 
   showMessage(msg: string): void {
+
     this.message = msg;
     this.isMessage = true;
 
-    setTimeout(() => {
+    if (this.messageTimeout) {
+      clearTimeout(this.messageTimeout);
+    }
+
+    this.messageTimeout = setTimeout(() => {
       this.isMessage = false;
     }, 3000);
+
   }
+
 }

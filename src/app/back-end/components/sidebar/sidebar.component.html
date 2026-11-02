@@ -201,6 +201,18 @@
               </a>
             </li>
 
+            <li class="nav-item">
+              <a
+                routerLink="/admin/issues/list"
+                routerLinkActive="menu-open"
+                class="nav-link"
+                [class.active]="isMenuActive('/admin/issues/list')"
+              >
+                <i class="nav-icon fas fa-clipboard-list"></i>
+                <p>ALL Issues</p>
+              </a>
+            </li>
+
             <li class="nav-item" *ngIf="user?.roleId != '7'">
               <a
                 routerLink="/admin/issues/votesByType"
@@ -237,17 +249,7 @@
               </a>
             </li> -->
 
-            <li class="nav-item">
-              <a
-                routerLink="/admin/issues/list"
-                routerLinkActive="menu-open"
-                class="nav-link"
-                [class.active]="isMenuActive('/admin/issues/list')"
-              >
-                <i class="nav-icon fas fa-clipboard-list"></i>
-                <p>ALL Issues</p>
-              </a>
-            </li>
+            
           </ul>
         </li>
 

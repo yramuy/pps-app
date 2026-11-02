@@ -1,37 +1,798 @@
-.table-responsive {
+
+/* =========================================================
+   Main Section
+========================================================= */
+
+.blog-section {
+  width: 100%;
+}
+
+.blog-card {
+  overflow: hidden;
+  border: 1px solid #e9e5ef;
+  border-radius: 12px;
+  box-shadow: 0 3px 14px rgba(35, 24, 50, 0.05);
+}
+
+.blog-card-header {
+  display: flex;
+  align-items: center;
+  min-height: 76px;
+  padding: 15px 22px;
+  color: #fff;
+  background: linear-gradient(135deg, #2c2c54, #1e1e3f);
+  border-bottom: 0;
+}
+
+.blog-header-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 43px;
+  height: 43px;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  font-size: 20px;
+}
+
+.blog-card-header h5 {
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.blog-card-header small {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 12px;
+}
+
+.blog-card-body {
+  padding: 14px;
+  background: #fff;
+}
+
+/* =========================================================
+   Filters - Compact Design
+========================================================= */
+
+.filter-section {
+  padding: 10px 14px;
+  margin-bottom: 16px !important;
+  background: #faf8fc;
+  border: 1px solid #eee7f2;
+  border-radius: 8px;
+}
+
+.filter-heading {
+  margin-bottom: 8px;
+  color: #812b99;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.filter-section .row {
+  margin-bottom: 0;
+}
+
+.filter-section .form-label {
+  margin-bottom: 4px;
+  color: #40364b;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.filter-section .form-select {
+  height: 34px;
+  min-height: 34px;
+  padding: 5px 10px;
+  color: #51475c;
+  background-color: #fff;
+  border: 1px solid #e5dce9;
+  border-radius: 7px;
+  font-size: 12px;
+  box-shadow: none;
+}
+
+.filter-section .form-select:focus {
+  border-color: #a65bb7;
+  box-shadow: 0 0 0 3px rgba(129, 43, 153, 0.08);
+}
+
+.filter-section .form-select:disabled {
+  background-color: #f0edf2;
+  cursor: not-allowed;
+}
+
+.filter-section .mb-3 {
+  margin-bottom: 8px !important;
+}
+
+.filter-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 4px;
+}
+
+.reset-filter-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 32px;
+  padding: 6px 12px;
+  color: #6c6174;
+  background: #fff;
+  border: 1px solid #ddd3e3;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.reset-filter-btn:hover {
+  color: #fff;
+  background: #812b99;
+  border-color: #812b99;
+}
+
+/* =========================================================
+   Issues Container
+========================================================= */
+
+.issues-container {
+  width: 100%;
+}
+
+/* =========================================================
+   Main Horizontal Issue Card
+========================================================= */
+
+.vote-issue-card {
+  display: flex;
+  align-items: stretch;
+  gap: 18px;
+  width: 100%;
+  min-width: 0;
+  padding: 14px;
+  background: #fff;
+  border: 1px solid #e9e5ef;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(35, 24, 50, 0.04);
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+/*
+.vote-issue-card:hover {
+  border-color: #812b99;
+  box-shadow: 0 5px 16px rgba(58, 32, 75, 0.12);
+}
+
+.vote-issue-card:focus-visible {
+  outline: 2px solid #812b99;
+  outline-offset: 3px;
+}
+*/
+
+/* =========================================================
+   Left Image
+========================================================= */
+
+.vote-issue-left {
+  flex: 0 0 220px;
+  width: 220px;
+  min-width: 0;
+}
+
+.blog-image-wrapper {
+  position: relative;
+  width: 100%;
+  height: 250px;
+  overflow: hidden;
+  background: #f3eef6;
+  border-radius: 9px;
+}
+
+.blog-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 0.3s ease;
+}
+
+.vote-issue-card:hover .blog-image {
+  transform: scale(1.03);
+}
+
+/* Image Placeholder */
+
+.blog-image-placeholder {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  min-height: 180px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #89919e;
+  background: linear-gradient(135deg, #f6f2f9, #ece7f1);
+  font-size: 12px;
+}
+
+.blog-image-placeholder i {
+  color: #8e2790;
+  font-size: 32px;
+}
+
+.blog-image-placeholder span {
+  font-size: 12px;
+}
+
+/* Image Category */
+
+.blog-category {
+  position: absolute;
+  top: 9px;
+  left: 9px;
+  display: inline-flex;
+  align-items: center;
+  max-width: calc(100% - 18px);
+  padding: 6px 9px;
+  overflow: hidden;
+  color: #fff;
+  background: #812b99;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+}
+
+/* =========================================================
+   Right Content
+========================================================= */
+
+.vote-issue-content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* =========================================================
+   Metadata
+========================================================= */
+
+.blog-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 7px;
+  width: 100%;
+  margin-bottom: 9px;
+}
+
+.meta-item {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 5px;
+  padding: 5px 8px;
+  color: #686477;
+  background: #f7f6fa;
+  border: 1px solid #eeebf3;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+.meta-item i {
+  color: #7f719a;
+}
+
+.meta-item small {
+  color: #7b8492;
+  font-size: 10px;
+}
+
+/* Views */
+
+.issue-view-count i {
+  color: #687386;
+}
+
+/* Diamond Votes */
+
+.diamond-vote-count,
+.diamond-vote-count i {
+  color: #0879c9;
+}
+
+/* Bronze Votes */
+
+.bronze-vote-count,
+.bronze-vote-count i {
+  color: #99602e;
+}
+
+/* =========================================================
+   Status
+========================================================= */
+
+.issue-status {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 6px;
+  padding: 5px 9px;
+  color: #3d7250;
+  background: #eff8f1;
+  border: 1px solid #d9efde;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.status-dot {
+  width: 7px;
+  height: 7px;
+  flex-shrink: 0;
+  background: #22a052;
+  border-radius: 50%;
+}
+
+/* =========================================================
+   Issue Title
+========================================================= */
+
+.blog-title {
+  margin: 0 0 6px;
+  overflow: hidden;
+  color: #29213b;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* =========================================================
+   Description
+========================================================= */
+
+.blog-description {
+  display: block;
+  width: 100%;
+  margin: 0 0 12px;
+  overflow: hidden;
+  color: #777487;
+  font-size: 12px;
+  line-height: 1.5;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* =========================================================
+   Location Details - Five Columns
+========================================================= */
+
+.issue-info-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 7px;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.issue-info-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  padding: 8px;
+  overflow: hidden;
+  background: #faf9fc;
+  border: 1px solid #f0edf5;
+  border-radius: 7px;
+}
+
+.issue-info-item > i {
+  flex-shrink: 0;
+  color: #85349d;
+  font-size: 12px;
+}
+
+.issue-info-item div {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  gap: 3px;
+  overflow: hidden;
+}
+
+.issue-info-item small {
+  overflow: hidden;
+  color: #888197;
+  font-size: 9px;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.issue-info-item span {
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  color: #43384f;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.3;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* =========================================================
+   Footer
+========================================================= */
+
+.issue-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  width: 100%;
+  margin-top: auto;
+  padding-top: 5px;
+}
+
+/* View Issue Button */
+
+.blog-read-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  padding: 7px 13px;
+  color: #fff;
+  background: #812b99;
+  border: 1px solid #812b99;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.blog-read-btn:hover {
+  color: #fff;
+  background: #652077;
+  border-color: #652077;
+  box-shadow: 0 3px 8px rgba(129, 43, 153, 0.2);
+}
+
+/* =========================================================
+   Empty State
+========================================================= */
+
+.empty-issues {
+  padding: 45px 15px;
+  text-align: center;
+  background: #faf9fc;
+  border: 1px dashed #ded5e5;
+  border-radius: 12px;
+}
+
+.empty-issues > i {
+  margin-bottom: 12px;
+  color: #9b8ba5;
+  font-size: 40px;
+}
+
+.empty-issues h6 {
+  margin-bottom: 6px;
+  color: #29213b;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.empty-issues p {
+  margin-bottom: 0;
+  color: #777487;
+  font-size: 12px;
+}
+
+/* =========================================================
+   Tablet - Below 1100px
+========================================================= */
+
+@media (max-width: 1100px) {
+  .vote-issue-left {
+    flex: 0 0 190px;
+    width: 190px;
+  }
+
+  .blog-image-wrapper {
+    height: 165px;
+  }
+
+  .issue-info-grid {
+    gap: 5px;
+  }
+
+  .issue-info-item {
+    gap: 5px;
+    padding: 6px;
+  }
+
+  .issue-info-item span {
+    font-size: 10px;
+  }
+}
+
+/* =========================================================
+   Small Desktop / Tablet - Below 900px
+========================================================= */
+
+@media (max-width: 900px) {
+  .vote-issue-card {
+    gap: 12px;
+  }
+
+  .vote-issue-left {
+    flex: 0 0 160px;
+    width: 160px;
+  }
+
+  .blog-image-wrapper {
+    height: 155px;
+  }
+
+  .issue-info-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* =========================================================
+   Mobile - Below 767px
+========================================================= */
+
+@media (max-width: 767px) {
+  .blog-card-body {
+    padding: 12px;
+  }
+
+  .filter-section {
+    padding: 10px;
+  }
+
+  .vote-issue-card {
+    flex-direction: column;
+    gap: 12px;
+    padding: 12px;
+  }
+
+  .vote-issue-left {
+    flex: 0 0 auto;
+    width: 100%;
+  }
+
+  .blog-image-wrapper {
+    height: 190px;
+  }
+
+  .blog-meta {
+    gap: 10px;
+  }
+
+  .meta-item {
+    font-size: 11px;
+  }
+
+  .blog-title {
+    font-size: 17px;
+  }
+
+  .issue-info-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(105px, 1fr));
     overflow-x: auto;
-}
+    overflow-y: hidden;
+    padding-bottom: 5px;
+  }
 
-#assignedToMeIssuesTable {
-    width: 100% !important;
-    min-width: 1300px;
-}
-
-#assignedToMeIssuesTable th,
-#assignedToMeIssuesTable td {
-    white-space: nowrap;
-}
-
-.description-cell {
-    white-space: normal !important;
-    word-break: break-word;
-    overflow-wrap: break-word;
-    max-width: 300px;
-    min-width: 250px;
-    vertical-align: top;
-}
-.action-buttons {
-    display: flex;
+  .issue-info-item {
+    flex-direction: row;
     align-items: center;
-    justify-content: center;
-    gap: 10px; /* Space between buttons */
+    min-width: 105px;
+  }
+
+  .issue-card-footer {
+    width: 100%;
+    justify-content: flex-end;
+  }
 }
 
-.action-buttons .btn {
-    width: 36px;
-    height: 36px;
-    padding: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+/* =========================================================
+   Small Mobile - Below 480px
+========================================================= */
+
+@media (max-width: 480px) {
+  .blog-image-wrapper {
+    height: 165px;
+  }
+
+  .blog-meta {
+    gap: 5px;
+  }
+
+  .meta-item {
+    padding: 5px 6px;
+    font-size: 9px;
+  }
+
+  .meta-item small {
+    font-size: 9px;
+  }
+
+  .issue-status {
+    min-height: 27px;
+    padding: 5px 7px;
+    font-size: 9px;
+  }
+
+  .blog-title {
+    font-size: 16px;
+  }
+
+  .blog-description {
+    font-size: 11px;
+  }
+
+  .issue-info-grid {
+    grid-template-columns: repeat(5, minmax(100px, 1fr));
+    gap: 5px;
+  }
+
+  .issue-info-item {
+    padding: 7px 6px;
+  }
+
+  .issue-info-item span {
+    font-size: 10px;
+  }
+
+  .issue-card-footer {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .blog-read-btn {
+    width: 100%;
+  }
+}
+.blog-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 16px;
+  padding: 0;
+  background: transparent;
+  border: none;
+}
+
+/* Common metadata */
+.meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: #343044;
+  font-size: 15px;
+  font-weight: 700;
+  white-space: nowrap;
+
+  i {
+    font-size: 17px;
+  }
+
+  small {
+    font-size: 13px;
+    font-weight: 700;
+    color: inherit;
+  }
+}
+
+/* Serial number and date */
+.meta-item:first-child,
+.meta-item:nth-child(2) {
+  color: #454052;
+}
+
+/* Views */
+.issue-view-count {
+  color: #1769aa;
+
+  i {
+    color: #1769aa;
+  }
+}
+
+/* Diamond votes */
+.diamond-vote-count {
+  color: #0879c9;
+
+  i {
+    color: #0879c9;
+  }
+}
+
+/* Bronze votes */
+.bronze-vote-count {
+  color: #99602e;
+
+  i {
+    color: #99602e;
+  }
+}
+
+/* Push status to the right */
+.issue-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-left: auto;
+  padding: 5px 12px;
+  background: transparent;
+  border: 1px solid #b9e2c7;
+  border-radius: 20px;
+  color: #18743b;
+  font-size: 14px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.status-dot {
+  width: 9px;
+  height: 9px;
+  background: #20a653;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Mobile */
+@media (max-width: 767px) {
+  .blog-meta {
+    gap: 10px 14px;
+  }
+
+  .meta-item {
+    font-size: 13px;
+
+    i {
+      font-size: 15px;
+    }
+
+    small {
+      font-size: 12px;
+    }
+  }
+
+  .issue-status {
+    font-size: 12px;
+    padding: 4px 9px;
+  }
 }

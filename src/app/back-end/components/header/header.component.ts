@@ -20,8 +20,8 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
 
   notificationCount = 0;
   notificationList: any[] = [];
-
   user: any;
+  websiteUrl = this.getWebsiteUrl();
 
   // =========================
   // Biography
@@ -47,7 +47,7 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
     private authService: AuthService,
     private apiService: ApiService,
     private notificationService: NotificationService,
-    private globalService: GlobalService
+    private globalService: GlobalService,
   ) {}
 
   ngAfterViewInit(): void {
@@ -55,7 +55,6 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit(): void {
-
     if (this.authService.isTokenExpired()) {
       this.authService.logout();
 
@@ -136,6 +135,18 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
           this.loadNotificationList();
         }
       });
+  }
+
+  private getWebsiteUrl(): string {
+    const hostname = window.location.hostname;
+
+    // Local development
+    if (hostname === 'localhost' || hostname === '127.0.0.1') {
+      return 'http://localhost:4200/';
+    }
+
+    // Production server
+    return 'https://prasadit.com/pps-app/';
   }
 
   // =========================

@@ -1,5 +1,4 @@
 import { Component, OnDestroy, signal } from '@angular/core';
-
 import { finalize, Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 
@@ -7,8 +6,6 @@ import { ApiService } from 'src/app/services/api.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { LoaderService } from 'src/app/services/loader.service';
 import { NotificationService } from '../../../../services/notification.service';
-
-declare const $: any;
 
 @Component({
   selector: 'app-assigned-to-me-issues',
@@ -27,7 +24,7 @@ export class AssignedToMeIssuesComponent implements OnDestroy {
   message = signal('');
 
   // =========================================================
-  // Dropdown data
+  // Dropdown Data
   // =========================================================
 
   categories: any[] = [];
@@ -36,7 +33,7 @@ export class AssignedToMeIssuesComponent implements OnDestroy {
   villages: any[] = [];
 
   // =========================================================
-  // Selected filters
+  // Selected Filters
   // =========================================================
 
   selectedCategoryId = '';
@@ -49,9 +46,12 @@ export class AssignedToMeIssuesComponent implements OnDestroy {
   // =========================================================
 
   private userSubscription?: Subscription;
+  private pendingApiCalls = 0;
+
+  isLoading = false;
 
   // =========================================================
-  // ROLE IDS
+  // Role IDs
   // =========================================================
 
   readonly SUPER_ADMIN_ROLE_ID = 1;
@@ -60,9 +60,6 @@ export class AssignedToMeIssuesComponent implements OnDestroy {
   readonly MLA_ROLE_ID = 4;
   readonly SARPANCH_ROLE_ID = 5;
   readonly GUEST_ROLE_ID = 7;
-
-  private pendingApiCalls = 0;
-  isLoading = false;
 
   // =========================================================
   // Constructor
@@ -75,10 +72,6 @@ export class AssignedToMeIssuesComponent implements OnDestroy {
     private router: Router,
     private notificationService: NotificationService,
   ) {
-    // =======================================================
-    // Get logged-in user
-    // =======================================================
-
     this.userSubscription = this.authService.user$.subscribe({
       next: (user: any) => {
         console.log('LOGIN USER:', user);
@@ -89,22 +82,13 @@ export class AssignedToMeIssuesComponent implements OnDestroy {
           return;
         }
 
-        // -------------------------------------------------
-        // Set login user's location
-        // -------------------------------------------------
-
+        // Set login user's default location
         this.setLoginLocationFilters(user);
 
-        // -------------------------------------------------
         // Load Categories
-        // -------------------------------------------------
-
         this.loadCategories();
 
-        // -------------------------------------------------
-        // Load Assemblies based on District
-        // -------------------------------------------------
-
+        // Load Assembly hierarchy
         if (user.districtID) {
           this.loadAssemblies(user.districtID);
         } else {
@@ -118,17 +102,21 @@ export class AssignedToMeIssuesComponent implements OnDestroy {
     });
   }
 
+  // =========================================================
+  // API Request With Loader
+  // =========================================================
+
   private requestWithLoader(endpoint: string, payload: any): any {
-      this.pendingApiCalls++;
-      this.isLoading = true;
-  
-      return this.apiService.request('POST', endpoint, payload).pipe(
-        finalize(() => {
-          this.pendingApiCalls = Math.max(0, this.pendingApiCalls - 1);
-          this.isLoading = this.pendingApiCalls > 0;
-        }),
-      );
-    }
+    this.pendingApiCalls++;
+    this.isLoading = true;
+
+    return this.apiService.request('POST', endpoint, payload).pipe(
+      finalize(() => {
+        this.pendingApiCalls = Math.max(0, this.pendingApiCalls - 1);
+        this.isLoading = this.pendingApiCalls > 0;
+      }),
+    );
+  }
 
   // =========================================================
   // Set Login Location Filters
@@ -149,7 +137,7 @@ export class AssignedToMeIssuesComponent implements OnDestroy {
   }
 
   // =========================================================
-  // ROLE CHECKS
+  // Role Checks
   // =========================================================
 
   isSuperAdmin(): boolean {
@@ -177,54 +165,20 @@ export class AssignedToMeIssuesComponent implements OnDestroy {
   }
 
   // =========================================================
-  // FILTER DISABLED CONDITIONS
+  // Filter Disabled Conditions
   // =========================================================
 
-  // Category is always enabled
   isCategoryDisabled(): boolean {
     return false;
   }
-
-  // ---------------------------------------------------------
-  // Assembly
-  //
-  // Super Admin -> Enabled
-  // Admin       -> Enabled
-  // MP          -> Enabled
-  // MLA         -> Disabled
-  // Sarpanch    -> Disabled
-  // Guest       -> Disabled
-  // ---------------------------------------------------------
 
   isAssemblyDisabled(): boolean {
     return this.isMLA() || this.isSarpanch() || this.isGuest();
   }
 
-  // ---------------------------------------------------------
-  // Mandal
-  //
-  // Super Admin -> Enabled
-  // Admin       -> Enabled
-  // MP          -> Enabled
-  // MLA         -> Enabled
-  // Sarpanch    -> Disabled
-  // Guest       -> Disabled
-  // ---------------------------------------------------------
-
   isMandalDisabled(): boolean {
     return this.isSarpanch() || this.isGuest();
   }
-
-  // ---------------------------------------------------------
-  // Village
-  //
-  // Super Admin -> Enabled
-  // Admin       -> Enabled
-  // MP          -> Enabled
-  // MLA         -> Enabled
-  // Sarpanch    -> Enabled
-  // Guest       -> Disabled
-  // ---------------------------------------------------------
 
   isVillageDisabled(): boolean {
     return this.isGuest();
@@ -238,23 +192,21 @@ export class AssignedToMeIssuesComponent implements OnDestroy {
 
   loadCategories(): void {
     this.requestWithLoader(
-        '/masterData',
-        JSON.stringify({
-          master_id: 1,
-          mode: 'web',
-        }),
-      )
-      .subscribe({
-        next: (res: any) => {
-          this.categories = res.master_data || [];
-        },
+      '/masterData',
+      JSON.stringify({
+        master_id: 1,
+        mode: 'web',
+      }),
+    ).subscribe({
+      next: (res: any) => {
+        this.categories = res.master_data || [];
+      },
 
-        error: (err: any) => {
-          console.error('Category loading failed:', err);
-
-          this.categories = [];
-        },
-      });
+      error: (err: any) => {
+        console.error('Category loading failed:', err);
+        this.categories = [];
+      },
+    });
   }
 
   // =========================================================
@@ -264,72 +216,62 @@ export class AssignedToMeIssuesComponent implements OnDestroy {
   // =========================================================
 
   loadAssemblies(districtId: any): void {
-    // -------------------------------------------------------
-    // Clear dropdown arrays.
-    //
-    // DO NOT clear selected IDs here.
-    // -------------------------------------------------------
-
     this.assemblies = [];
     this.mandals = [];
     this.villages = [];
 
     if (!districtId) {
+      this.loadAssignedToMeIssues(this.loginUser());
       return;
     }
 
     this.requestWithLoader(
-        '/dependanceMasterData',
-        JSON.stringify({
-          master_id: 4,
-          dropdown_id: districtId,
-          mode: 'web',
-        }),
-      )
-      .subscribe({
-        next: (res: any) => {
-          this.assemblies = res.dependance_master_data || [];
+      '/dependanceMasterData',
+      JSON.stringify({
+        master_id: 4,
+        dropdown_id: districtId,
+        mode: 'web',
+      }),
+    ).subscribe({
+      next: (res: any) => {
+        this.assemblies = res.dependance_master_data || [];
 
-          const user = this.loginUser();
+        const user = this.loginUser();
 
-          // -------------------------------------------------
-          // Restore login user's Assembly
-          // -------------------------------------------------
+        // Restore login user's Assembly during initial load/reset
+        if (user?.assemblyID) {
+          this.selectedAssemblyId = String(user.assemblyID);
 
-          if (user?.assemblyID) {
-            this.selectedAssemblyId = String(user.assemblyID);
+          this.loadMandals(this.selectedAssemblyId, true);
+        } else {
+          this.selectedAssemblyId = '';
+          this.selectedMandalId = '';
+          this.selectedVillageId = '';
 
-            console.log('Login Assembly:', this.selectedAssemblyId);
+          this.loadAssignedToMeIssues(user);
+        }
+      },
 
-            // ------------------------------------------------
-            // Load Mandals
-            // ------------------------------------------------
+      error: (err: any) => {
+        console.error('Assembly loading failed:', err);
 
-            this.loadMandals(this.selectedAssemblyId);
-          } else {
-            this.selectedAssemblyId = '';
-            this.selectedMandalId = '';
-            this.selectedVillageId = '';
-
-            this.loadAssignedToMeIssues(user);
-          }
-        },
-
-        error: (err: any) => {
-          console.error('Assembly loading failed:', err);
-
-          this.assemblies = [];
-        },
-      });
+        this.assemblies = [];
+        this.loadAssignedToMeIssues(this.loginUser());
+      },
+    });
   }
 
   // =========================================================
   // Load Mandals
   // API: /dependanceMasterData
   // master_id = 5
+  //
+  // restoreLoginSelection:
+  // true  = Initial load/reset
+  // false = User manually changed Assembly
   // =========================================================
 
-  loadMandals(assemblyId: any): void {
+  loadMandals(assemblyId: any, restoreLoginSelection: boolean = true): void {
     this.mandals = [];
     this.villages = [];
 
@@ -337,110 +279,100 @@ export class AssignedToMeIssuesComponent implements OnDestroy {
       this.selectedMandalId = '';
       this.selectedVillageId = '';
 
+      this.loadAssignedToMeIssues(this.loginUser());
+
       return;
     }
 
     this.requestWithLoader(
-        '/dependanceMasterData',
-        JSON.stringify({
-          master_id: 5,
-          dropdown_id: assemblyId,
-          mode: 'web',
-        }),
-      )
-      .subscribe({
-        next: (res: any) => {
-          this.mandals = res.dependance_master_data || [];
+      '/dependanceMasterData',
+      JSON.stringify({
+        master_id: 5,
+        dropdown_id: assemblyId,
+        mode: 'web',
+      }),
+    ).subscribe({
+      next: (res: any) => {
+        this.mandals = res.dependance_master_data || [];
 
-          const user = this.loginUser();
+        const user = this.loginUser();
 
-          // -------------------------------------------------
+        if (restoreLoginSelection && user?.mandalID) {
           // Restore login user's Mandal
-          // -------------------------------------------------
+          this.selectedMandalId = String(user.mandalID);
 
-          if (user?.mandalID) {
-            this.selectedMandalId = String(user.mandalID);
+          this.loadVillages(this.selectedMandalId, true);
+        } else {
+          // Do not restore old Mandal after Assembly change
+          this.selectedMandalId = '';
+          this.selectedVillageId = '';
 
-            console.log('Login Mandal:', this.selectedMandalId);
+          this.loadAssignedToMeIssues(user);
+        }
+      },
 
-            // ------------------------------------------------
-            // Load Villages
-            // ------------------------------------------------
+      error: (err: any) => {
+        console.error('Mandal loading failed:', err);
 
-            this.loadVillages(this.selectedMandalId);
-          } else {
-            this.selectedMandalId = '';
-            this.selectedVillageId = '';
-
-            this.loadAssignedToMeIssues(user);
-          }
-        },
-
-        error: (err: any) => {
-          console.error('Mandal loading failed:', err);
-
-          this.mandals = [];
-        },
-      });
+        this.mandals = [];
+        this.loadAssignedToMeIssues(this.loginUser());
+      },
+    });
   }
 
   // =========================================================
   // Load Villages
   // API: /dependanceMasterData
   // master_id = 6
+  //
+  // restoreLoginSelection:
+  // true  = Initial load/reset
+  // false = User manually changed Mandal
   // =========================================================
 
-  loadVillages(mandalId: any): void {
+  loadVillages(mandalId: any, restoreLoginSelection: boolean = true): void {
     this.villages = [];
 
     if (!mandalId) {
       this.selectedVillageId = '';
 
+      this.loadAssignedToMeIssues(this.loginUser());
+
       return;
     }
 
     this.requestWithLoader(
-        '/dependanceMasterData',
-        JSON.stringify({
-          master_id: 6,
-          dropdown_id: mandalId,
-          mode: 'web',
-        }),
-      )
-      .subscribe({
-        next: (res: any) => {
-          this.villages = res.dependance_master_data || [];
+      '/dependanceMasterData',
+      JSON.stringify({
+        master_id: 6,
+        dropdown_id: mandalId,
+        mode: 'web',
+      }),
+    ).subscribe({
+      next: (res: any) => {
+        this.villages = res.dependance_master_data || [];
 
-          const user = this.loginUser();
+        const user = this.loginUser();
 
-          // -------------------------------------------------
+        if (restoreLoginSelection && user?.villageID) {
           // Restore login user's Village
-          // -------------------------------------------------
+          this.selectedVillageId = String(user.villageID);
+        } else {
+          // Do not restore old Village after Mandal change
+          this.selectedVillageId = '';
+        }
 
-          if (user?.villageID) {
-            this.selectedVillageId = String(user.villageID);
+        this.loadAssignedToMeIssues(user);
+      },
 
-            console.log('Login Village:', this.selectedVillageId);
-          } else {
-            this.selectedVillageId = '';
-          }
+      error: (err: any) => {
+        console.error('Village loading failed:', err);
 
-          // -------------------------------------------------
-          // All dropdowns loaded.
-          // Now load issues.
-          // -------------------------------------------------
+        this.villages = [];
 
-          this.loadAssignedToMeIssues(user);
-        },
-
-        error: (err: any) => {
-          console.error('Village loading failed:', err);
-
-          this.villages = [];
-
-          this.loadAssignedToMeIssues(this.loginUser());
-        },
-      });
+        this.loadAssignedToMeIssues(this.loginUser());
+      },
+    });
   }
 
   // =========================================================
@@ -460,12 +392,7 @@ export class AssignedToMeIssuesComponent implements OnDestroy {
   // =========================================================
 
   onAssemblyChange(event: Event): void {
-    // -------------------------------------------------------
-    // Role protection
-    // -------------------------------------------------------
-
     if (this.isAssemblyDisabled()) {
-      // Restore login value
       const user = this.loginUser();
 
       this.selectedAssemblyId = user?.assemblyID ? String(user.assemblyID) : '';
@@ -473,16 +400,9 @@ export class AssignedToMeIssuesComponent implements OnDestroy {
       return;
     }
 
-    // -------------------------------------------------------
-    // Selected Assembly
-    // -------------------------------------------------------
-
     this.selectedAssemblyId = (event.target as HTMLSelectElement).value;
 
-    // -------------------------------------------------------
     // Reset dependent filters
-    // -------------------------------------------------------
-
     this.selectedMandalId = '';
     this.selectedVillageId = '';
 
@@ -491,12 +411,9 @@ export class AssignedToMeIssuesComponent implements OnDestroy {
 
     console.log('Selected Assembly:', this.selectedAssemblyId);
 
-    // -------------------------------------------------------
-    // Load Mandals
-    // -------------------------------------------------------
-
     if (this.selectedAssemblyId) {
-      this.loadMandals(this.selectedAssemblyId);
+      // Important: Do not restore login user's Mandal
+      this.loadMandals(this.selectedAssemblyId, false);
     } else {
       this.loadAssignedToMeIssues(this.loginUser());
     }
@@ -507,10 +424,6 @@ export class AssignedToMeIssuesComponent implements OnDestroy {
   // =========================================================
 
   onMandalChange(event: Event): void {
-    // -------------------------------------------------------
-    // Role protection
-    // -------------------------------------------------------
-
     if (this.isMandalDisabled()) {
       const user = this.loginUser();
 
@@ -519,28 +432,17 @@ export class AssignedToMeIssuesComponent implements OnDestroy {
       return;
     }
 
-    // -------------------------------------------------------
-    // Selected Mandal
-    // -------------------------------------------------------
-
     this.selectedMandalId = (event.target as HTMLSelectElement).value;
 
-    // -------------------------------------------------------
     // Reset Village
-    // -------------------------------------------------------
-
     this.selectedVillageId = '';
-
     this.villages = [];
 
     console.log('Selected Mandal:', this.selectedMandalId);
 
-    // -------------------------------------------------------
-    // Load Villages
-    // -------------------------------------------------------
-
     if (this.selectedMandalId) {
-      this.loadVillages(this.selectedMandalId);
+      // Important: Do not restore login user's Village
+      this.loadVillages(this.selectedMandalId, false);
     } else {
       this.loadAssignedToMeIssues(this.loginUser());
     }
@@ -551,10 +453,6 @@ export class AssignedToMeIssuesComponent implements OnDestroy {
   // =========================================================
 
   onVillageChange(event: Event): void {
-    // -------------------------------------------------------
-    // Role protection
-    // -------------------------------------------------------
-
     if (this.isVillageDisabled()) {
       const user = this.loginUser();
 
@@ -562,10 +460,6 @@ export class AssignedToMeIssuesComponent implements OnDestroy {
 
       return;
     }
-
-    // -------------------------------------------------------
-    // Selected Village
-    // -------------------------------------------------------
 
     this.selectedVillageId = (event.target as HTMLSelectElement).value;
 
@@ -581,30 +475,19 @@ export class AssignedToMeIssuesComponent implements OnDestroy {
   resetFilters(): void {
     const user = this.loginUser();
 
-    // -------------------------------------------------------
-    // Category = All
-    // -------------------------------------------------------
+    if (!user) {
+      return;
+    }
 
+    // Reset Category
     this.selectedCategoryId = '';
 
-    // -------------------------------------------------------
-    // IMPORTANT:
-    // Always restore login location.
-    // -------------------------------------------------------
-
+    // Restore login user's location
     this.selectedAssemblyId = user?.assemblyID ? String(user.assemblyID) : '';
 
     this.selectedMandalId = user?.mandalID ? String(user.mandalID) : '';
 
     this.selectedVillageId = user?.villageID ? String(user.villageID) : '';
-
-    // -------------------------------------------------------
-    // Clear dropdown arrays
-    // -------------------------------------------------------
-
-    this.assemblies = [];
-    this.mandals = [];
-    this.villages = [];
 
     console.log('RESET FILTERS:', {
       category: this.selectedCategoryId,
@@ -613,10 +496,7 @@ export class AssignedToMeIssuesComponent implements OnDestroy {
       village: this.selectedVillageId,
     });
 
-    // -------------------------------------------------------
-    // Reload hierarchy
-    // -------------------------------------------------------
-
+    // Reload dropdown hierarchy
     if (user?.districtID) {
       this.loadAssemblies(user.districtID);
     } else {
@@ -637,115 +517,69 @@ export class AssignedToMeIssuesComponent implements OnDestroy {
     this.loading.set(true);
     this.message.set('');
 
-    this.loader.show();
-
-    // =======================================================
     // Build API payload
-    // =======================================================
-
     const payloadObj: any = {};
 
-    // -------------------------------------------------------
     // Assigned User
-    // -------------------------------------------------------
-
     if (user?.userId) {
       payloadObj.assigned_to = user.userId;
     }
 
-    // -------------------------------------------------------
     // Category
-    // -------------------------------------------------------
-
     payloadObj.category_id = this.selectedCategoryId || '';
 
-    // =======================================================
     // State
-    // =======================================================
-
     if (user?.stateID) {
       payloadObj.state_id = user.stateID;
     }
 
-    // =======================================================
     // District
-    // =======================================================
-
     if (user?.districtID) {
       payloadObj.district_id = user.districtID;
     }
 
-    // =======================================================
-    // Assembly
-    // =======================================================
-
+    // Assembly - use only selected value
     if (this.selectedAssemblyId) {
       payloadObj.assembly_id = this.selectedAssemblyId;
-    } else if (user?.assemblyID) {
-      payloadObj.assembly_id = user.assemblyID;
     }
 
-    // =======================================================
-    // Mandal
-    // =======================================================
-
+    // Mandal - use only selected value
     if (this.selectedMandalId) {
       payloadObj.mandal_id = this.selectedMandalId;
-    } else if (user?.mandalID) {
-      payloadObj.mandal_id = user.mandalID;
     }
 
-    // =======================================================
-    // Village
-    // =======================================================
-
+    // Village - use only selected value
     if (this.selectedVillageId) {
       payloadObj.village_id = this.selectedVillageId;
-    } else if (user?.villageID) {
-      payloadObj.village_id = user.villageID;
     }
-
-    // =======================================================
-    // JSON Payload
-    // =======================================================
 
     const payload = JSON.stringify(payloadObj);
 
     console.log('Assigned To Me Payload:', payload);
 
-    // =======================================================
-    // API Request
-    // =======================================================
-
     this.requestWithLoader('/assignedToMeIssues', payload).subscribe({
-      // ===================================================
-      // Success
-      // ===================================================
-
       next: (res: any) => {
-        this.assignedToMeIssues.set(res.assignedToMe_issues || []);
+        const issues = res.assignedToMe_issues || [];
 
-        this.notificationService.setNotificationCount(res.assignedToMe_issues);
+        this.assignedToMeIssues.set(issues);
 
-        console.log('assignedToMeIssues:', this.assignedToMeIssues());
+        this.notificationService.setNotificationCount(issues);
 
-        // this.loading.set(false);
+        console.log('Assigned To Me Issues:', issues);
 
-        // this.loader.hide();
+        // Image field debugging
+        if (issues.length > 0) {
+          console.log('ASSIGNED ISSUE IMAGE DATA:', issues[0]);
+        }
 
-        this.refreshDataTable();
+        this.loading.set(false);
       },
-
-      // ===================================================
-      // Error
-      // ===================================================
 
       error: (err: any) => {
         console.error('Assigned issues loading failed:', err);
 
         if (err.status === 401) {
           this.message.set('Token expired');
-
           this.authService.logout();
         } else if (err.status === 400) {
           this.message.set('Invalid request data');
@@ -755,52 +589,32 @@ export class AssignedToMeIssuesComponent implements OnDestroy {
           this.message.set('Something went wrong. Please try again later');
         }
 
-        // this.loading.set(false);
-
-        // this.loader.hide();
-
-        this.destroyDataTable();
+        this.assignedToMeIssues.set([]);
+        this.loading.set(false);
       },
     });
   }
 
   // =========================================================
-  // Refresh DataTable
+  // Get Issue Image
   // =========================================================
 
-  private refreshDataTable(): void {
-    this.destroyDataTable();
+  getIssueImage(issue: any): string | null {
+    if (!issue?.issue_pic) {
+      return null;
+    }
 
-    setTimeout(() => {
-      if (
-        this.assignedToMeIssues().length > 0 &&
-        typeof $ !== 'undefined' &&
-        $.fn.DataTable &&
-        !$.fn.DataTable.isDataTable('#assignedToMeIssuesTable')
-      ) {
-        ($('#assignedToMeIssuesTable') as any).DataTable({
-          dom: 'Bfrtip',
-
-          buttons: ['excel', 'pdf'],
-
-          responsive: true,
-        });
-      }
-    }, 0);
+    return issue.issue_pic;
   }
 
   // =========================================================
-  // Destroy DataTable
+  // Image Error
   // =========================================================
 
-  private destroyDataTable(): void {
-    if (
-      typeof $ !== 'undefined' &&
-      $.fn.DataTable &&
-      $.fn.DataTable.isDataTable('#assignedToMeIssuesTable')
-    ) {
-      ($('#assignedToMeIssuesTable') as any).DataTable().destroy();
-    }
+  onIssueImageError(event: Event, issue: any): void {
+    issue.imageLoadError = true;
+
+    console.error('Issue image failed to load:', issue);
   }
 
   // =========================================================
@@ -821,7 +635,5 @@ export class AssignedToMeIssuesComponent implements OnDestroy {
 
   ngOnDestroy(): void {
     this.userSubscription?.unsubscribe();
-
-    this.destroyDataTable();
   }
 }

@@ -63,6 +63,8 @@ import { DiamondComponent } from './back-end/components/issues/diamond/diamond.c
 import { BronzeComponent } from './back-end/components/issues/bronze/bronze.component';
 import { VotesByTypeComponent } from './back-end/components/issues/votes-by-type/votes-by-type.component';
 import { VotesByMeComponent } from './back-end/components/issues/votes-by-me/votes-by-me.component';
+import { LatestIssuesComponent } from './front-end/components/latest-issues/latest-issues.component';
+import { LatestSchemesComponent } from './front-end/components/latest-schemes/latest-schemes.component';
 
 @NgModule({
   declarations: [
@@ -121,7 +123,9 @@ import { VotesByMeComponent } from './back-end/components/issues/votes-by-me/vot
     DiamondComponent,
     BronzeComponent,
     VotesByTypeComponent,
-    VotesByMeComponent
+    VotesByMeComponent,
+    LatestIssuesComponent,
+    LatestSchemesComponent
 
   ],
   imports: [

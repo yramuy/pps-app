@@ -13,7 +13,7 @@
             <div class="pt-lg-5 pb-lg-3 pt-2 pb-2">
               <div class="row pt-3 justify-content-center">
                 <div class="col-lg-10 p-3 rounded-20">
-                  <h1 class="display-3 fw-bold text-white">Letest Issues</h1>
+                  <h1 class="display-3 fw-bold text-white">All Issues</h1>
                   <p class="text-white">
                     We empower farmers with sustainable practices, quality
                     seeds, and modern technologies to cultivate abundant
@@ -31,72 +31,133 @@
   </div>
 </section>
 
-<!-- ================= PUBLIC ISSUE CARDS ================= -->
+<!-- FEATURED FIRST ISSUE -->
+<section class="featured-issue-section my-4" *ngIf="issues().length > 0">
+  <div class="container">
+    <div
+      class="row align-items-center bg-light p-3 rounded-20 featured-issue"
+      (click)="viewIssue(issues()[0].id)"
+      role="link"
+      tabindex="0"
+      (keydown.enter)="viewIssue(issues()[0].id)"
+    >
+      <!-- Featured Image -->
+      <div class="col-lg-4 col-md-5 mb-3 mb-md-0">
+        <img
+          [src]="issues()[0].issue_pic"
+          class="img-fluid rounded-20 featured-issue-img"
+          [alt]="issues()[0].issue_title"
+        />
+      </div>
+
+      <!-- Featured Content -->
+      <div class="col-lg-8 col-md-7">
+        <span class="featured-category mb-2">
+          {{ issues()[0].category }}
+        </span>
+
+        <h2 class="featured-title mt-2">
+          {{ issues()[0].issue_title }}
+        </h2>
+
+        <p class="featured-description">
+          {{ issues()[0].issue_description }}
+        </p>
+
+        <div
+          class="d-flex align-items-center justify-content-between flex-wrap gap-3"
+        >
+          <button
+            type="button"
+            class="button border py-2 px-3"
+            (click)="$event.stopPropagation(); viewIssue(issues()[0].id)"
+          >
+            Read More
+          </button>
+
+          <p class="featured-date mb-0">
+            <img
+              src="assets/images/calender.svg"
+              width="17"
+              alt="Calendar"
+              class="me-1"
+            />
+            {{ issues()[0].created_on }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REMAINING ISSUE CARDS -->
 <section class="blog-wrap my-4">
   <div class="container">
-    <!-- Explore All Issues / Show Less Button -->
-    <div class="text-end mb-3" *ngIf="issues().length > 6">
-      <button
-        type="button"
-        class="btn explore-issues-btn"
-        (click)="toggleIssues()"
-      >
-        {{ showAllIssues ? "Show Less" : "Explore All Issues" }}
-
-        <i
-          class="fa ms-2"
-          [ngClass]="showAllIssues ? 'fa-arrow-up' : 'fa-arrow-right'"
-        >
-        </i>
-      </button>
-    </div>
-
-    <!-- Issue Cards -->
     <div class="row">
       <div
         class="col-lg-4 col-md-6 my-2"
-        *ngFor="let issue of showAllIssues ? issues() : issues().slice(0, 6)"
+        *ngFor="let issue of issues().slice(1)"
       >
-        <div class="border rounded-20 bg-white h-100 d-flex flex-column">
-          <div class="blog-cate p-2 d-flex justify-content-end">
-            <span class="category-badge">
+        <div
+          class="blog-card issue-card border rounded-20 bg-white h-100"
+          (click)="viewIssue(issue.id)"
+          role="link"
+          tabindex="0"
+          (keydown.enter)="viewIssue(issue.id)"
+          (keydown.space)="$event.preventDefault(); viewIssue(issue.id)"
+          [attr.aria-label]="'View issue: ' + issue.issue_title"
+        >
+          <!-- Category -->
+          <div class="blog-cate p-2">
+            <p class="bg-white border rounded-20 px-2 text-end mb-0">
               {{ issue.category }}
-            </span>
+            </p>
           </div>
 
-          <div>
+          <!-- Issue Image -->
+          <div class="blog-image-wrapper">
             <img
               [src]="issue.issue_pic"
-              class="img-fluid blog-img w-100"
+              class="img-fluid blog-img"
               [alt]="issue.issue_title"
             />
           </div>
 
-          <div class="px-3 pt-3 d-flex flex-column flex-grow-1">
+          <!-- Issue Content -->
+          <div class="blog-content px-3 pt-3">
             <p class="fs-5 fw-bold mb-2">
               {{ issue.issue_title }}
             </p>
 
-            <p class="mb-3">
+            <p class="issue-description mb-3">
               {{ issue.issue_description }}
             </p>
+          </div>
 
-            <div class="mt-auto">
-              <div class="row align-items-center justify-content-between pb-3">
-                <div class="col-auto">
-                  <span>📅 {{ issue.created_on }}</span>
-                </div>
+          <!-- Footer -->
+          <div
+            class="row align-items-center justify-content-between px-2 pb-3 mt-auto"
+          >
+            <div class="col-auto">
+              <p class="mb-0">
+                <img
+                  src="assets/images/calender.svg"
+                  width="17"
+                  alt="Calendar"
+                  class="me-1"
+                />
+                {{ issue.created_on }}
+              </p>
+            </div>
 
-                <div class="col-auto">
-                  <button
-                    type="button"
-                    class="vip-read-btn"
-                    (click)="viewIssue(issue.id)"
-                  >
-                    Read More
-                  </button>
-                </div>
-              </div>
+            <div class="col-auto">
+              <a
+                [routerLink]="['/issue-details', issue.id]"
+                class="button border py-2 px-3"
+                (click)="$event.stopPropagation()"
+              >
+                Read More
+              </a>
             </div>
           </div>
         </div>

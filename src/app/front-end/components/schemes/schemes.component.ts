@@ -1,5 +1,6 @@
 
 import { Component, signal } from '@angular/core';
+import { Router } from '@angular/router';
 import { finalize } from 'rxjs/operators';
 import { ApiService } from 'src/app/services/api.service';
 import { AuthService } from 'src/app/services/auth.service';
@@ -25,6 +26,7 @@ export class SchemesComponent {
   constructor(
     private authService: AuthService,
     private apiService: ApiService,
+    private router: Router
   ) {
     this.loadTopFiveSchemes();
   }
@@ -44,6 +46,10 @@ export class SchemesComponent {
       }),
     );
   }
+
+  viewScheme(schemeId: number | string): void {
+  this.router.navigate(['/scheme-details', schemeId]);
+}
 
   loadTopFiveSchemes() {
     this.loading.set(true);

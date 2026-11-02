@@ -53,6 +53,7 @@ import { DiamondComponent } from './back-end/components/issues/diamond/diamond.c
 import { BronzeComponent } from './back-end/components/issues/bronze/bronze.component';
 import { VotesByTypeComponent } from './back-end/components/issues/votes-by-type/votes-by-type.component';
 import { VotesByMeComponent } from './back-end/components/issues/votes-by-me/votes-by-me.component';
+import { LatestIssuesComponent } from './front-end/components/latest-issues/latest-issues.component';
 
 const routes: Routes = [
   // Admin Login
@@ -145,6 +146,7 @@ const routes: Routes = [
       { path: '', component: HomeComponent },
       { path: 'about', component: AboutComponent },
       { path: 'issues', component: IssuesComponent },
+      { path: 'latest-issues', component: LatestIssuesComponent },
       { path: 'schemes', component: SchemesComponent },
       // { path: 'contact', component: ContactComponent },
       { path: 'contact-us', component: ContactUsComponent },

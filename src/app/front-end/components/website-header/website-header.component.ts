@@ -50,6 +50,16 @@ export class WebsiteHeaderComponent {
     this.isProfile = this.authService.isLoggedIn();
   }
 
+  goToAccount(): void {
+    if (!this.authService.isLoggedIn()) {
+      this.router.navigate(['/admin/login']);
+      return;
+    }
+
+    this.closeMenu();
+    this.router.navigate(['/admin/account']);
+  }
+
   handleLoginClick(): void {
     if (this.authService.isLoggedIn()) {
       const confirmed = window.confirm('Are you sure you want to logout?');
