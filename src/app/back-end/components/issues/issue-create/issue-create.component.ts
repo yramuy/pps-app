@@ -594,6 +594,10 @@ export class IssueCreateComponent {
       this.removeExistingVideoFlag ? '1' : '0',
     );
 
+    const frontendUrl = window.location.hostname === 'localhost' ? 'http://localhost:4200':'https://prasadit.com/pps-app';
+
+    formData.append('frontend_url', frontendUrl);
+
     this.requestWithLoader('/saveAndUpdateIssue', formData)
       .pipe(
         finalize(() => {

@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { filter, finalize } from 'rxjs/operators';
 
@@ -50,6 +50,7 @@ export class ViewIssueComponent implements OnInit, OnDestroy {
     private router: Router,
     public loader: LoaderService,
     private notificationService: NotificationService,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
@@ -160,43 +161,50 @@ export class ViewIssueComponent implements OnInit, OnDestroy {
   // =====================================================
 
   loadIssueFromState(): void {
-    this.isLoading = true;
-    const state = history.state;
 
-    const newIssueID = state?.issueID;
+  this.isLoading = true;
 
-    console.log('Navigation State:', state);
+  const state = history.state;
 
-    console.log('Navigation State Issue ID:', newIssueID);
+  // First check Angular navigation state
+  let newIssueID = state?.issueID;
 
-    if (!newIssueID) {
-      console.log('No issue ID found');
-      return;
-    }
-
-    console.log('Loading Issue ID:', newIssueID);
-
-    // Update current issue
-    this.issueID = newIssueID;
-
-    // Clear previous issue data
-    this.resetIssueData();
-
-    // Load new issue data
-    this.loadViewIssueDeta(this.issueID);
-
-    // Load statuses
-    this.loadStatuses();
-
-    // Save view
-    if (this.loginUser?.userId) {
-      this.saveIssueView();
-    }
-
-    // update Notification status
-
-    this.updateNotificationStatus();
+  // If navigation state is empty, check query parameter
+  if (!newIssueID) {
+    newIssueID = this.route.snapshot.queryParamMap.get('issueID');
   }
+
+  console.log('Navigation State:', state);
+  console.log('Navigation State Issue ID:', newIssueID);
+
+  if (!newIssueID) {
+    console.log('No issue ID found');
+    this.isLoading = false;
+    return;
+  }
+
+  console.log('Loading Issue ID:', newIssueID);
+
+  // Update current issue
+  this.issueID = Number(newIssueID);
+
+  // Clear previous issue data
+  this.resetIssueData();
+
+  // Load new issue data
+  this.loadViewIssueDeta(this.issueID);
+
+  // Load statuses
+  this.loadStatuses();
+
+  // Save view
+  if (this.loginUser?.userId) {
+    this.saveIssueView();
+  }
+
+  // Update notification status
+  this.updateNotificationStatus();
+}
 
   // =====================================================
   // Reset Issue Data
