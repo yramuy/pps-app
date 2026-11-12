@@ -435,6 +435,8 @@ export class IssuesListComponent implements OnDestroy {
 
     payloadObj.is_token = '1';
 
+    payloadObj.login_user_id = user.userId;
+
     if (user.stateID) {
       payloadObj.state_id = user.stateID;
     }

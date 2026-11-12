@@ -83,6 +83,7 @@
                 name="user_role_id"
                 [(ngModel)]="user.user_role_id"
                 #user_role_id="ngModel"
+                (change)="onUserRoleChange(user.user_role_id)"
                 required>
 
                 <option value>
@@ -104,6 +105,35 @@
                   user_role_id.invalid
                 ">
                 User Role is required
+              </small>
+
+            </div>
+
+            <!-- Leader Type -->
+            <div class="col-md-6 mb-3" *ngIf="user.user_role_id != '7'">
+
+              <label>
+                Leader Type
+                <span class="text-danger">*</span>
+              </label>
+
+              <select
+                class="form-control"
+                name="leader_type"
+                [(ngModel)]="user.leader_type"
+                #leader_type="ngModel"
+                required>
+
+                <option value>-- Select Leader Type --</option>
+                <option value="Present">Present</option>
+                <option value="Past">Past</option>
+
+              </select>
+
+              <small
+                class="text-danger"
+                *ngIf="userForm.submitted && leader_type.invalid">
+                Leader Type is required
               </small>
 
             </div>
@@ -722,8 +752,6 @@
               </select>
 
             </div>
-
-            
 
           </div>
 

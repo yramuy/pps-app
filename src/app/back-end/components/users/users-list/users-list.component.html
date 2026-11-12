@@ -1,3 +1,12 @@
+<!-- Loader -->
+<div class="loader-overlay" *ngIf="isLoading">
+  <div
+    class="loader"
+    role="status"
+    aria-label="Loading">
+  </div>
+</div>
+
 <section class="content user-list-page">
   <div class="container-fluid">
     <div class="card">
@@ -6,9 +15,9 @@
         <h3 class="card-title text-white">User List</h3>
       </div>
 
-      <div id="pageLoader" *ngIf="loader.loading$ | async">
+      <!-- <div id="pageLoader" *ngIf="loader.loading$ | async">
         <div class="spinner-border text-primary"></div>
-      </div>
+      </div> -->
 
       <div class="card-body">
 
@@ -35,6 +44,25 @@
             </select>
           </div>
 
+          <!-- Leader Type -->
+          <div class="col-md-3 mb-2">
+            <label for="leaderTypeFilter" class="form-label">
+              Leader Type
+            </label>
+
+            <select
+              id="leaderTypeFilter"
+              class="form-control"
+              [value]="selectedLeaderType"
+              (change)="onLeaderTypeChange($event)">
+
+              <option value>All Leader Types</option>
+              <option value="Present">Present</option>
+              <option value="Past">Past</option>
+
+            </select>
+          </div>
+
           <!-- Reset -->
           <div class="col-md-2 mb-2">
             <button
@@ -45,8 +73,8 @@
             </button>
           </div>
 
-          <!-- Add User - Right -->
-          <div class="col-md-7 mb-2 d-flex justify-content-end">
+          <!-- Add User -->
+          <div class="col-md-4 mb-2 d-flex justify-content-end">
             <button
               type="button"
               class="btn btn-primary"
@@ -76,6 +104,7 @@
                 <th>Sno</th>
                 <th>Profile Pic</th>
                 <th>Role</th>
+                <th>Leader Type</th>
                 <th>User Name</th>
                 <th>Full Name</th>
                 <th>State</th>
@@ -112,6 +141,7 @@
                 </td>
 
                 <td>{{ user.role }}</td>
+                <td>{{ user.leader_type || '--' }}</td>
                 <td>{{ user.user_name }}</td>
                 <td>{{ user.full_name }}</td>
                 <td>{{ user.state }}</td>

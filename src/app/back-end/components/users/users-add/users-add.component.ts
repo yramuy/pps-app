@@ -90,6 +90,8 @@ export class UsersAddComponent {
 
     user_role_id: '',
 
+    leader_type: '',
+
     full_name: '',
 
     user_name: '',
@@ -245,6 +247,12 @@ export class UsersAddComponent {
     this.authService.user$.subscribe((lUser) => {
       this.loginUser = lUser;
     });
+  }
+
+  onUserRoleChange(roleId: any) {
+    if (String(roleId) === '7') {
+      this.user.leader_type = '';
+    }
   }
 
   // =========================================================
@@ -612,6 +620,14 @@ export class UsersAddComponent {
     formData.set('areas_of_interest', this.user.areas_of_interest ?? '');
 
     formData.set('achievements', this.user.achievements ?? '');
+
+    // Leader Type
+    formData.set(
+      'leader_type',
+      String(this.user.user_role_id) === '7'
+        ? ''
+        : (this.user.leader_type ?? ''),
+    );
 
     // =====================================================
     // PROFILE IMAGE
