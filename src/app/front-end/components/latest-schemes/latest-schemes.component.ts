@@ -63,4 +63,5 @@ export class LatestSchemesComponent {
   navigateToAllSchemes(): void {
     this.router.navigate(['/schemes']);
   }
+  
 }

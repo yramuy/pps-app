@@ -1,3 +1,4 @@
+
 <!-- Loader -->
 <div class="loader-overlay" *ngIf="isLoading">
   <div class="loader" role="status" aria-label="Loading"></div>
@@ -31,37 +32,120 @@
   </div>
 </section>
 
-<!-- FEATURED FIRST ISSUE -->
-<section class="featured-issue-section my-4" *ngIf="issues().length > 0">
+<!-- ================= TOP PAGINATION ================= -->
+<section
+  class="container mt-4"
+  *ngIf="totalPages > 1 && !isLoading"
+>
+  <div class="top-pagination-wrapper">
+
+    <span class="pagination-info">
+      Page {{ currentPage }} of {{ totalPages }}
+    </span>
+
+    <nav aria-label="Top pagination">
+      <ul class="pagination mb-0">
+
+        <!-- Previous -->
+        <li class="page-item" [class.disabled]="currentPage === 1">
+          <button
+            type="button"
+            class="page-link"
+            (click)="previousPage()"
+            [disabled]="currentPage === 1"
+            aria-label="Previous page"
+          >
+            <i class="fas fa-chevron-left"></i>
+          </button>
+        </li>
+
+        <!-- Page Numbers -->
+        <li
+          class="page-item"
+          *ngFor="let page of pageNumbers"
+          [class.active]="currentPage === page"
+        >
+          <button
+            type="button"
+            class="page-link"
+            (click)="changePage(page)"
+            [attr.aria-current]="currentPage === page ? 'page' : null"
+          >
+            {{ page }}
+          </button>
+        </li>
+
+        <!-- Next -->
+        <li
+          class="page-item"
+          [class.disabled]="currentPage === totalPages"
+        >
+          <button
+            type="button"
+            class="page-link"
+            (click)="nextPage()"
+            [disabled]="currentPage === totalPages"
+            aria-label="Next page"
+          >
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        </li>
+
+      </ul>
+    </nav>
+  </div>
+</section>
+
+<!-- ================= NO DATA ================= -->
+<section
+  class="container text-center py-5"
+  *ngIf="issues().length === 0 && !isLoading"
+>
+  <div class="vip-no-data">
+    <i class="fa fa-users"></i>
+    <h4>No Public Issues Found</h4>
+    <p>There are currently no public issues available.</p>
+  </div>
+</section>
+
+<!-- ================= FEATURED ISSUE ================= -->
+<section
+  class="featured-issue-section my-4"
+  *ngIf="paginatedIssues.length > 0"
+>
   <div class="container">
+
     <div
       class="row align-items-center bg-light p-3 rounded-20 featured-issue"
-      (click)="viewIssue(issues()[0].id)"
+      (click)="viewIssue(paginatedIssues[0].id)"
       role="link"
       tabindex="0"
-      (keydown.enter)="viewIssue(issues()[0].id)"
+      (keydown.enter)="viewIssue(paginatedIssues[0].id)"
+      (keydown.space)="$event.preventDefault(); viewIssue(paginatedIssues[0].id)"
     >
+
       <!-- Featured Image -->
       <div class="col-lg-4 col-md-5 mb-3 mb-md-0">
         <img
-          [src]="issues()[0].issue_pic"
+          [src]="paginatedIssues[0].issue_pic"
           class="img-fluid rounded-20 featured-issue-img"
-          [alt]="issues()[0].issue_title"
+          [alt]="paginatedIssues[0].issue_title"
         />
       </div>
 
       <!-- Featured Content -->
       <div class="col-lg-8 col-md-7">
+
         <span class="featured-category mb-2">
-          {{ issues()[0].category }}
+          {{ paginatedIssues[0].category }}
         </span>
 
         <h2 class="featured-title mt-2">
-          {{ issues()[0].issue_title }}
+          {{ paginatedIssues[0].issue_title }}
         </h2>
 
         <p class="featured-description">
-          {{ issues()[0].issue_description }}
+          {{ paginatedIssues[0].issue_description }}
         </p>
 
         <div
@@ -70,7 +154,7 @@
           <button
             type="button"
             class="button border py-2 px-3"
-            (click)="$event.stopPropagation(); viewIssue(issues()[0].id)"
+            (click)="$event.stopPropagation(); viewIssue(paginatedIssues[0].id)"
           >
             Read More
           </button>
@@ -82,21 +166,26 @@
               alt="Calendar"
               class="me-1"
             />
-            {{ issues()[0].created_on }}
+            {{ paginatedIssues[0].created_on }}
           </p>
         </div>
+
       </div>
     </div>
   </div>
 </section>
 
-<!-- REMAINING ISSUE CARDS -->
-<section class="blog-wrap my-4">
+<!-- ================= REMAINING ISSUE CARDS ================= -->
+<section
+  class="blog-wrap my-4"
+  *ngIf="paginatedIssues.length > 0"
+>
   <div class="container">
     <div class="row">
+
       <div
         class="col-lg-4 col-md-6 my-2"
-        *ngFor="let issue of issues().slice(1)"
+        *ngFor="let issue of paginatedIssues.slice(1)"
       >
         <div
           class="blog-card issue-card border rounded-20 bg-white h-100"
@@ -107,6 +196,7 @@
           (keydown.space)="$event.preventDefault(); viewIssue(issue.id)"
           [attr.aria-label]="'View issue: ' + issue.issue_title"
         >
+
           <!-- Category -->
           <div class="blog-cate p-2">
             <p class="bg-white border rounded-20 px-2 text-end mb-0">
@@ -138,6 +228,7 @@
           <div
             class="row align-items-center justify-content-between px-2 pb-3 mt-auto"
           >
+
             <div class="col-auto">
               <p class="mb-0">
                 <img
@@ -159,21 +250,84 @@
                 Read More
               </a>
             </div>
+
           </div>
         </div>
       </div>
 
-      <!-- No Data -->
-      <div
-        class="col-12 text-center py-5"
-        *ngIf="issues().length === 0 && !isLoading"
-      >
-        <div class="vip-no-data">
-          <i class="fa fa-users"></i>
-          <h4>No Public Issues Found</h4>
-          <p>There are currently no public issues available.</p>
-        </div>
-      </div>
     </div>
+  </div>
+</section>
+
+<!-- ================= BOTTOM PAGINATION ================= -->
+<section
+  class="container my-4"
+  *ngIf="totalPages > 1 && !isLoading"
+>
+  <div class="bottom-pagination-wrapper">
+
+    <p class="pagination-record-info mb-0">
+      Showing
+      {{ (currentPage - 1) * pageSize + 1 }}
+      -
+      {{
+        currentPage * pageSize > issues().length
+          ? issues().length
+          : currentPage * pageSize
+      }}
+      of {{ issues().length }} issues
+    </p>
+
+    <nav aria-label="Bottom pagination">
+      <ul class="pagination mb-0">
+
+        <!-- Previous -->
+        <li class="page-item" [class.disabled]="currentPage === 1">
+          <button
+            type="button"
+            class="page-link"
+            (click)="previousPage()"
+            [disabled]="currentPage === 1"
+            aria-label="Previous page"
+          >
+            <i class="fas fa-chevron-left"></i>
+          </button>
+        </li>
+
+        <!-- Page Numbers -->
+        <li
+          class="page-item"
+          *ngFor="let page of pageNumbers"
+          [class.active]="currentPage === page"
+        >
+          <button
+            type="button"
+            class="page-link"
+            (click)="changePage(page)"
+            [attr.aria-current]="currentPage === page ? 'page' : null"
+          >
+            {{ page }}
+          </button>
+        </li>
+
+        <!-- Next -->
+        <li
+          class="page-item"
+          [class.disabled]="currentPage === totalPages"
+        >
+          <button
+            type="button"
+            class="page-link"
+            (click)="nextPage()"
+            [disabled]="currentPage === totalPages"
+            aria-label="Next page"
+          >
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        </li>
+
+      </ul>
+    </nav>
+
   </div>
 </section>

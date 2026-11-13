@@ -20,6 +20,9 @@ export class IssuesComponent {
   private pendingApiCalls = 0;
   isLoading = false;
   showAllIssues = false;
+  // Pagination
+  currentPage: number = 1;
+  pageSize: number = 7;
 
   constructor(
     private authService: AuthService,
@@ -41,6 +44,41 @@ export class IssuesComponent {
         this.isLoading = this.pendingApiCalls > 0;
       }),
     );
+  }
+
+  get paginatedIssues(): any[] {
+    const startIndex = (this.currentPage - 1) * this.pageSize;
+
+    return this.issues().slice(startIndex, startIndex + this.pageSize);
+  }
+
+  get totalPages(): number {
+    return Math.ceil(this.issues().length / this.pageSize);
+  }
+
+  get pageNumbers(): number[] {
+    return Array.from({ length: this.totalPages }, (_, index) => index + 1);
+  }
+
+  changePage(page: number): void {
+    if (page < 1 || page > this.totalPages) {
+      return;
+    }
+
+    this.currentPage = page;
+
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  }
+
+  previousPage(): void {
+    this.changePage(this.currentPage - 1);
+  }
+
+  nextPage(): void {
+    this.changePage(this.currentPage + 1);
   }
 
   loadAllIssues() {
@@ -86,7 +124,7 @@ export class IssuesComponent {
   viewIssue(issueId: number): void {
     this.globalService.setIssueID(issueId);
     this.globalService.setIsIssueLogin(true);
-    
+
     this.router.navigate(['/issue-details', issueId]);
   }
 }

@@ -1,181 +1,186 @@
-/* Issue card layout */
-.blog-wrap .row > [class*="col-"] {
-  display: flex;
-}
+/* ================= PUBLIC ISSUE CARDS ================= */
 
-.blog-card {
-  display: flex;
-  flex-direction: column;
+.blog-home-01,
+.blog-home-02,
+.blog-home-03,
+.blog-home-04 {
   width: 100%;
-  height: 100%;
+  position: relative;
   overflow: hidden;
-  border-radius: 20px;
-  transition:
-    transform 0.3s ease,
-    box-shadow 0.3s ease;
-}
-
-/* Entire card is clickable */
-.issue-card {
-  cursor: pointer;
-  background: linear-gradient(135deg, #ffffff, #f5f7fa);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
-}
-
-.issue-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.16);
-}
-
-.issue-card:focus-visible {
-  outline: 3px solid #8e2790;
-  outline-offset: 3px;
-}
-
-/* Category section */
-.blog-wrap .blog-cate {
-  min-height: 50px;
+  margin: 0;
+  padding: 25px;
   display: flex;
-  align-items: center;
-  justify-content: flex-end;
+  align-items: flex-end;
+  border-radius: 20px;
+  isolation: isolate;
+  // cursor: pointer;
+  background: #222;
 }
 
-.blog-wrap .blog-cate p {
-  display: inline-block;
+/* Large cards */
+.blog-home-01,
+.blog-home-04 {
+  min-height: 580px;
+}
+
+/* Middle small cards */
+.blog-home-02,
+.blog-home-03 {
+  min-height: 280px;
+  margin-bottom: 20px;
+}
+
+/* Remove bottom margin from last middle card */
+.blog-home-03 {
   margin-bottom: 0;
 }
 
-/* Responsive issue image */
-.blog-image-wrapper {
+/* Background image */
+.dynamic-issue-card .issue-bg-image {
+  position: absolute;
+  inset: 0;
   width: 100%;
-  overflow: hidden;
-}
-
-.blog-wrap .blog-img {
-  display: block;
-  width: 100%;
-  height: 230px;
+  height: 100%;
   object-fit: cover;
+  object-position: center;
+  z-index: 0;
   transition: transform 0.4s ease;
 }
 
-.issue-card:hover .blog-img {
-  transform: scale(1.04);
+/* Image hover effect */
+.dynamic-issue-card:hover .issue-bg-image {
+  transform: scale(1.05);
 }
 
-/* Issue title and description */
-.blog-content {
-  flex: 1 0 auto;
+/* Dark overlay */
+.dynamic-issue-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.88) 0%,
+    rgba(0, 0, 0, 0.45) 45%,
+    rgba(0, 0, 0, 0.05) 100%
+  );
+  z-index: 1;
+  pointer-events: none;
 }
 
-.blog-content > p:first-child {
-  font-size: 18px;
-  font-weight: 600;
-  color: #212529;
-  line-height: 1.4;
-  overflow-wrap: anywhere;
-}
-
-/* Show description in exactly two lines */
-.issue-description {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  overflow-wrap: anywhere;
-  font-size: 14px;
-  color: #6c757d;
-  line-height: 1.6;
-  max-height: 3.2em;
-}
-
-/* Footer and Read More */
-.blog-wrap .button {
-  padding: 0.8em 2em;
-  font-size: 16px;
-  text-transform: uppercase;
-  letter-spacing: 2.5px;
-  font-weight: 500;
-  color: #000;
-  background-color: #fff;
-  border: none;
-  border-radius: 45px;
-  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease 0s;
-  cursor: pointer;
-  outline: none;
-  display: inline-block;
-}
-
-.blog-wrap .button:hover {
-  background-color: #90caff;
-    box-shadow: 0px 15px 20px rgba(139, 204, 254, 0.4);
-    color: #fff !important;
-    transform: translateY(-7px);
-}
-
-/* Explore All Issues button */
-.explore-issues-btn {
-  background-color: #8e2790;
+/* Card content */
+.dynamic-issue-card .blog-content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
   color: #fff;
-  border: 2px solid #8e2790;
+}
+
+/* Issue title */
+.dynamic-issue-card .blog-content h2 {
+  color: #fff;
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.4;
+  margin-bottom: 12px;
+}
+
+/* Issue description */
+.dynamic-issue-card .blog-content p {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: 15px;
+}
+
+/* Read More button */
+.dynamic-issue-card .blog-content .button {
+  display: inline-block;
+  // color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  border: 1px solid rgba(255, 255, 255, 0.8) !important;
+  border-radius: 5px;
+  padding: 8px 16px;
+  transition: all 0.3s ease;
+}
+
+.dynamic-issue-card .blog-content .button:hover {
+  background: #fff;
+  color: #8e2790;
+  border-color: #fff !important;
+}
+
+.blog-home-01[_ngcontent-ng-c2291530877],
+.blog-home-04[_ngcontent-ng-c2291530877] {
+  min-height: 580px;
+}
+
+.blog-home-02[_ngcontent-ng-c2291530877],
+.blog-home-03[_ngcontent-ng-c2291530877] {
+  min-height: 280px;
+  margin-bottom: 20px;
+}
+
+/* ================= RESPONSIVE DESIGN ================= */
+
+@media (max-width: 991px) {
+  .blog-home-01,
+  .blog-home-04 {
+    min-height: 350px;
+  }
+
+  .blog-home-02,
+  .blog-home-03 {
+    min-height: 200px;
+  }
+}
+
+@media (max-width: 767px) {
+  .blog-home-01,
+  .blog-home-04 {
+    min-height: 300px;
+    padding: 20px;
+  }
+
+  .blog-home-02,
+  .blog-home-03 {
+    min-height: 200px;
+    padding: 20px;
+  }
+
+  .dynamic-issue-card .blog-content h2 {
+    font-size: 17px;
+  }
+
+  .dynamic-issue-card .blog-content p {
+    font-size: 13px;
+  }
+}
+
+.explore-all-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #8e2790;
+  color: #fff;
+  border: 1px solid #8e2790;
   border-radius: 30px;
-  font-size: 16px;
+  padding: 11px 22px;
+  font-size: 15px;
   font-weight: 600;
   text-decoration: none;
   transition: all 0.3s ease;
 }
 
-.explore-issues-btn:hover {
-  background-color: #fff;
+.explore-all-btn:hover {
+  background: #fff;
   color: #8e2790;
-  box-shadow: 0 4px 12px rgba(142, 39, 144, 0.2);
+  border-color: #8e2790;
 }
 
-.explore-issues-btn i {
-  transition: transform 0.3s ease;
-}
-
-.explore-issues-btn:hover i {
-  transform: translateX(4px);
-}
-
-/* Compact Latest Issues Header */
-.latest-issues-header .main-bg {
-  padding: 25px 0;
-}
-
-.latest-issues-header .header-content {
-  padding: 10px 0;
-}
-
-.latest-issues-header h1 {
-  font-size: clamp(28px, 3vw, 42px);
-  line-height: 1.2;
-}
-
-.latest-issues-header p {
-  font-size: 15px;
-  line-height: 1.5;
-}
-
-/* Mobile */
-@media (max-width: 767px) {
-  .latest-issues-header .main-bg {
-    padding: 15px 0;
-  }
-
-  .latest-issues-header .header-content {
-    padding: 5px 0;
-  }
-
-  .latest-issues-header h1 {
-    font-size: 28px;
-  }
-
-  .latest-issues-header p {
-    font-size: 14px;
+@media (max-width: 991px) {
+  .explore-all-btn {
+    margin-top: 5px;
   }
 }

@@ -1,3 +1,4 @@
+
 <!-- Loader -->
 <div class="loader-overlay" *ngIf="isLoading">
   <div class="loader" role="status" aria-label="Loading"></div>
@@ -34,39 +35,124 @@
   </div>
 </section>
 
+<!-- ================= TOP PAGINATION ================= -->
+<section
+  class="container mt-4"
+  *ngIf="schemeTotalPages > 1 && !isLoading"
+>
+  <div class="top-pagination-wrapper">
+
+    <span class="pagination-info">
+      Page {{ schemeCurrentPage }} of {{ schemeTotalPages }}
+    </span>
+
+    <nav aria-label="Top schemes pagination">
+      <ul class="pagination mb-0">
+
+        <!-- Previous -->
+        <li
+          class="page-item"
+          [class.disabled]="schemeCurrentPage === 1"
+        >
+          <button
+            type="button"
+            class="page-link"
+            (click)="previousSchemePage()"
+            [disabled]="schemeCurrentPage === 1"
+            aria-label="Previous page"
+          >
+            <i class="fas fa-chevron-left"></i>
+          </button>
+        </li>
+
+        <!-- Page Numbers -->
+        <li
+          class="page-item"
+          *ngFor="let page of schemePageNumbers"
+          [class.active]="schemeCurrentPage === page"
+        >
+          <button
+            type="button"
+            class="page-link"
+            (click)="changeSchemePage(page)"
+            [attr.aria-current]="schemeCurrentPage === page ? 'page' : null"
+          >
+            {{ page }}
+          </button>
+        </li>
+
+        <!-- Next -->
+        <li
+          class="page-item"
+          [class.disabled]="schemeCurrentPage === schemeTotalPages"
+        >
+          <button
+            type="button"
+            class="page-link"
+            (click)="nextSchemePage()"
+            [disabled]="schemeCurrentPage === schemeTotalPages"
+            aria-label="Next page"
+          >
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        </li>
+
+      </ul>
+    </nav>
+  </div>
+</section>
+
+<!-- ================= NO DATA ================= -->
+<section
+  class="container text-center py-5"
+  *ngIf="schemes().length === 0 && !isLoading"
+>
+  <div class="vip-no-data">
+    <i class="fa fa-book"></i>
+    <h4>No Government Schemes Found</h4>
+    <p>There are currently no schemes available.</p>
+  </div>
+</section>
+
 <!-- ================= FEATURED FIRST SCHEME ================= -->
-<section class="featured-scheme-section my-4" *ngIf="schemes().length > 0">
+<section
+  class="featured-scheme-section my-4"
+  *ngIf="paginatedSchemes.length > 0"
+>
   <div class="container">
+
     <div
       class="row align-items-center bg-light p-3 rounded-20 featured-scheme"
-      (click)="viewScheme(schemes()[0].id)"
+      (click)="viewScheme(paginatedSchemes[0].id)"
       role="link"
       tabindex="0"
-      (keydown.enter)="viewScheme(schemes()[0].id)"
-      (keydown.space)="$event.preventDefault(); viewScheme(schemes()[0].id)"
-      [attr.aria-label]="'View scheme: ' + schemes()[0].scheme_title"
+      (keydown.enter)="viewScheme(paginatedSchemes[0].id)"
+      (keydown.space)="$event.preventDefault(); viewScheme(paginatedSchemes[0].id)"
+      [attr.aria-label]="'View scheme: ' + paginatedSchemes[0].scheme_title"
     >
+
       <!-- Featured Image -->
       <div class="col-lg-4 col-md-5 mb-3 mb-md-0">
         <img
-          [src]="schemes()[0].scheme_pic"
+          [src]="paginatedSchemes[0].scheme_pic"
           class="img-fluid rounded-20 featured-scheme-img"
-          [alt]="schemes()[0].scheme_title"
+          [alt]="paginatedSchemes[0].scheme_title"
         />
       </div>
 
       <!-- Featured Content -->
       <div class="col-lg-8 col-md-7">
+
         <span class="featured-scheme-type mb-2">
-          {{ schemes()[0].scheme_type_name }}
+          {{ paginatedSchemes[0].scheme_type_name }}
         </span>
 
         <h2 class="featured-scheme-title mt-2">
-          {{ schemes()[0].scheme_title }}
+          {{ paginatedSchemes[0].scheme_title }}
         </h2>
 
         <p class="featured-scheme-description">
-          {{ schemes()[0].scheme_description }}
+          {{ paginatedSchemes[0].scheme_description }}
         </p>
 
         <div
@@ -75,7 +161,7 @@
           <button
             type="button"
             class="button border py-2 px-3"
-            (click)="$event.stopPropagation(); viewScheme(schemes()[0].id)"
+            (click)="$event.stopPropagation(); viewScheme(paginatedSchemes[0].id)"
           >
             Read More
           </button>
@@ -87,41 +173,26 @@
               alt="Calendar"
               class="me-1"
             />
-            {{ schemes()[0].created_on }}
+            {{ paginatedSchemes[0].created_on }}
           </p>
         </div>
+
       </div>
     </div>
   </div>
 </section>
 
 <!-- ================= REMAINING SCHEME CARDS ================= -->
-<section class="blog-wrap my-4">
+<section
+  class="blog-wrap my-4"
+  *ngIf="paginatedSchemes.length > 0"
+>
   <div class="container">
-    <!-- Explore All / Show Less -->
-    <!-- <div class="text-end mb-3" *ngIf="schemes().length > 6">
-      <button
-        type="button"
-        class="btn explore-issues-btn"
-        (click)="showAllSchemes = !showAllSchemes"
-      >
-        {{ showAllSchemes ? 'Show Less' : 'Explore All Schemes' }}
-
-        <i
-          class="fa ms-2"
-          [ngClass]="showAllSchemes ? 'fa-arrow-up' : 'fa-arrow-right'"
-        ></i>
-      </button>
-    </div> -->
-
     <div class="row">
+
       <div
         class="col-lg-4 col-md-6 my-2"
-        *ngFor="
-          let scheme of showAllSchemes
-            ? schemes().slice(1)
-            : schemes().slice(1, 6)
-        "
+        *ngFor="let scheme of paginatedSchemes.slice(1)"
       >
         <div
           class="blog-card scheme-card border rounded-20 bg-white h-100"
@@ -132,6 +203,7 @@
           (keydown.space)="$event.preventDefault(); viewScheme(scheme.id)"
           [attr.aria-label]="'View scheme: ' + scheme.scheme_title"
         >
+
           <!-- Scheme Type -->
           <div class="blog-cate p-2">
             <p class="bg-white border rounded-20 px-2 text-end mb-0">
@@ -163,6 +235,7 @@
           <div
             class="scheme-card-footer d-flex align-items-center justify-content-between flex-wrap gap-2 px-3 pb-3 mt-auto"
           >
+
             <button
               type="button"
               class="button border py-2 px-3"
@@ -181,21 +254,87 @@
               />
               {{ scheme.created_on }}
             </p>
+
           </div>
         </div>
       </div>
 
-      <!-- No Data -->
-      <div
-        class="col-12 text-center py-5"
-        *ngIf="schemes().length === 0 && !isLoading"
-      >
-        <div class="vip-no-data">
-          <i class="fa fa-book"></i>
-          <h4>No Government Schemes Found</h4>
-          <p>There are currently no schemes available.</p>
-        </div>
-      </div>
     </div>
+  </div>
+</section>
+
+<!-- ================= BOTTOM PAGINATION ================= -->
+<section
+  class="container my-4"
+  *ngIf="schemeTotalPages > 1 && !isLoading"
+>
+  <div class="bottom-pagination-wrapper">
+
+    <p class="pagination-record-info mb-0">
+      Showing
+      {{ (schemeCurrentPage - 1) * schemePageSize + 1 }}
+      -
+      {{
+        schemeCurrentPage * schemePageSize > schemes().length
+          ? schemes().length
+          : schemeCurrentPage * schemePageSize
+      }}
+      of {{ schemes().length }} schemes
+    </p>
+
+    <nav aria-label="Bottom schemes pagination">
+      <ul class="pagination mb-0">
+
+        <!-- Previous -->
+        <li
+          class="page-item"
+          [class.disabled]="schemeCurrentPage === 1"
+        >
+          <button
+            type="button"
+            class="page-link"
+            (click)="previousSchemePage()"
+            [disabled]="schemeCurrentPage === 1"
+            aria-label="Previous page"
+          >
+            <i class="fas fa-chevron-left"></i>
+          </button>
+        </li>
+
+        <!-- Page Numbers -->
+        <li
+          class="page-item"
+          *ngFor="let page of schemePageNumbers"
+          [class.active]="schemeCurrentPage === page"
+        >
+          <button
+            type="button"
+            class="page-link"
+            (click)="changeSchemePage(page)"
+            [attr.aria-current]="schemeCurrentPage === page ? 'page' : null"
+          >
+            {{ page }}
+          </button>
+        </li>
+
+        <!-- Next -->
+        <li
+          class="page-item"
+          [class.disabled]="schemeCurrentPage === schemeTotalPages"
+        >
+          <button
+            type="button"
+            class="page-link"
+            (click)="nextSchemePage()"
+            [disabled]="schemeCurrentPage === schemeTotalPages"
+            aria-label="Next page"
+          >
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        </li>
+
+      </ul>
+    </nav>
+
   </div>
 </section>

@@ -1,4 +1,3 @@
-
 import { Component, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs/operators';
@@ -11,7 +10,6 @@ import { AuthService } from 'src/app/services/auth.service';
   styleUrls: ['./schemes.component.scss'],
 })
 export class SchemesComponent {
-
   schemes = signal<any[]>([]);
   message = signal('');
   loading = signal(true);
@@ -23,10 +21,15 @@ export class SchemesComponent {
 
   showAllSchemes = false;
 
+  /* ================= SCHEME PAGINATION ================= */
+
+  schemeCurrentPage: number = 1;
+  schemePageSize: number = 7;
+
   constructor(
     private authService: AuthService,
     private apiService: ApiService,
-    private router: Router
+    private router: Router,
   ) {
     this.loadTopFiveSchemes();
   }
@@ -37,19 +40,60 @@ export class SchemesComponent {
 
     return this.apiService.request('POST', endpoint, payload).pipe(
       finalize(() => {
-        this.pendingApiCalls = Math.max(
-          0,
-          this.pendingApiCalls - 1
-        );
+        this.pendingApiCalls = Math.max(0, this.pendingApiCalls - 1);
 
         this.isLoading = this.pendingApiCalls > 0;
       }),
     );
   }
 
+  // Current page schemes
+  get paginatedSchemes(): any[] {
+    const startIndex = (this.schemeCurrentPage - 1) * this.schemePageSize;
+
+    return this.schemes().slice(startIndex, startIndex + this.schemePageSize);
+  }
+
+  // Total pages
+  get schemeTotalPages(): number {
+    return Math.ceil(this.schemes().length / this.schemePageSize);
+  }
+
+  // Page numbers
+  get schemePageNumbers(): number[] {
+    return Array.from(
+      { length: this.schemeTotalPages },
+      (_, index) => index + 1,
+    );
+  }
+
+  // Change page
+  changeSchemePage(page: number): void {
+    if (page < 1 || page > this.schemeTotalPages) {
+      return;
+    }
+
+    this.schemeCurrentPage = page;
+
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  }
+
+  // Previous page
+  previousSchemePage(): void {
+    this.changeSchemePage(this.schemeCurrentPage - 1);
+  }
+
+  // Next page
+  nextSchemePage(): void {
+    this.changeSchemePage(this.schemeCurrentPage + 1);
+  }
+
   viewScheme(schemeId: number | string): void {
-  this.router.navigate(['/scheme-details', schemeId]);
-}
+    this.router.navigate(['/scheme-details', schemeId]);
+  }
 
   loadTopFiveSchemes() {
     this.loading.set(true);
@@ -58,7 +102,7 @@ export class SchemesComponent {
     const payload = {
       mode: 'mobile',
       post_date: '',
-      scheme_type: ''
+      scheme_type: '',
     };
 
     this.requestWithLoader('/allSchemes', payload).subscribe({
@@ -78,9 +122,7 @@ export class SchemesComponent {
         } else if (err.status === 500) {
           this.message.set('Server error. Please try again later');
         } else {
-          this.message.set(
-            'Something went wrong. Please try again later'
-          );
+          this.message.set('Something went wrong. Please try again later');
         }
       },
     });
